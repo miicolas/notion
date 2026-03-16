@@ -1,5 +1,11 @@
-import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router"
+import {
+  HeadContent,
+  Outlet,
+  Scripts,
+  createRootRoute,
+} from "@tanstack/react-router"
 
+import { TooltipProvider } from "@workspace/ui/components/tooltip"
 import appCss from "@workspace/ui/globals.css?url"
 
 export const Route = createRootRoute({
@@ -24,7 +30,16 @@ export const Route = createRootRoute({
     ],
   }),
   shellComponent: RootDocument,
+  component: RootComponent,
 })
+
+function RootComponent() {
+  return (
+    <TooltipProvider>
+      <Outlet />
+    </TooltipProvider>
+  )
+}
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
