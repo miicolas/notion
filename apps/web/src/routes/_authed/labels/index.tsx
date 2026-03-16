@@ -18,14 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from "@workspace/ui/components/table"
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbList,
-  BreadcrumbPage,
-} from "@workspace/ui/components/breadcrumb"
-import { Separator } from "@workspace/ui/components/separator"
-import { SidebarTrigger } from "@workspace/ui/components/sidebar"
+import { PageHeader } from "@/components/page-header"
 import { Plus, Pencil, Trash2 } from "lucide-react"
 import { useRouter } from "@tanstack/react-router"
 
@@ -71,19 +64,7 @@ function LabelsPage() {
 
   return (
     <>
-      <header className="sticky top-0 flex h-14 shrink-0 items-center gap-2 bg-background">
-        <div className="flex flex-1 items-center gap-2 px-3">
-          <SidebarTrigger />
-          <Separator orientation="vertical" className="mr-2 h-4" />
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbPage>Labels</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-        </div>
-      </header>
+      <PageHeader title="Labels" />
       <div className="flex flex-1 flex-col gap-4 p-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold">Labels</h1>

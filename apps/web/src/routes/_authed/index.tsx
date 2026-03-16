@@ -1,14 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router"
 import { getProjects } from "@/lib/projects"
 import { getIssues } from "@/lib/issues"
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbList,
-  BreadcrumbPage,
-} from "@workspace/ui/components/breadcrumb"
-import { Separator } from "@workspace/ui/components/separator"
-import { SidebarTrigger } from "@workspace/ui/components/sidebar"
+import { PageHeader } from "@/components/page-header"
 import { Badge } from "@workspace/ui/components/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/components/card"
 import { FolderKanban, CheckCircle2, Clock, AlertTriangle } from "lucide-react"
@@ -43,21 +36,7 @@ function DashboardPage() {
 
   return (
     <>
-      <header className="sticky top-0 flex h-14 shrink-0 items-center gap-2 bg-background">
-        <div className="flex flex-1 items-center gap-2 px-3">
-          <SidebarTrigger />
-          <Separator orientation="vertical" className="mr-2 h-4" />
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbPage className="line-clamp-1">
-                  Dashboard
-                </BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-        </div>
-      </header>
+      <PageHeader title="Dashboard" />
       <div className="flex flex-1 flex-col gap-4 p-4">
         <div className="grid gap-4 md:grid-cols-4">
           <Card>

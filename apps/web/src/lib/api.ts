@@ -2,7 +2,8 @@ import { getRequest } from "@tanstack/react-start/server"
 
 export const API_URL = process.env.API_URL ?? "http://localhost:3001"
 
-export async function apiFetch<T = unknown>(
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function apiFetch<T = any>(
   path: string,
   init?: RequestInit,
 ): Promise<T> {

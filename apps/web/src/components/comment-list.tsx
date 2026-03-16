@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar"
+import { UserAvatar } from "./user-avatar"
 import type { Comment } from "@/lib/types"
 
 export function CommentList({ comments }: { comments: Comment[] }) {
@@ -12,12 +12,7 @@ export function CommentList({ comments }: { comments: Comment[] }) {
     <div className="space-y-4">
       {comments.map((comment) => (
         <div key={comment.id} className="flex gap-3">
-          <Avatar className="size-8">
-            <AvatarImage src={comment.author.image ?? undefined} />
-            <AvatarFallback className="text-xs">
-              {comment.author.name.charAt(0)}
-            </AvatarFallback>
-          </Avatar>
+          <UserAvatar name={comment.author.name} image={comment.author.image} className="size-8" />
           <div className="flex-1">
             <div className="flex items-center gap-2">
               <span className="text-sm font-medium">{comment.author.name}</span>
