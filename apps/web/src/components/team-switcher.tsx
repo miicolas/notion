@@ -1,5 +1,5 @@
-import * as React from "react"
-import { ChevronDown, Plus } from "lucide-react"
+import { useRouter } from "@tanstack/react-router"
+import { Building2, ChevronDown, Plus } from "lucide-react"
 
 import {
   DropdownMenu,
@@ -15,19 +15,27 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@workspace/ui/components/sidebar"
+import { authClient } from "@/lib/auth-client"
+import type { Organization } from "@/lib/types"
 
 export function TeamSwitcher({
-  teams,
+  organizations,
+  activeOrganization,
 }: {
-  teams: {
-    name: string
-    logo: React.ElementType
-    plan: string
-  }[]
+  organizations: Organization[]
+  activeOrganization?: Organization | null
 }) {
-  const [activeTeam, setActiveTeam] = React.useState(teams[0])
+  const router = useRouter()
+  const activeOrg = activeOrganization ?? organizations[0]
 
-  if (!activeTeam) {
+  async function handleSwitchOrg(org: Organization) {
+    await authClient.organization.setActive({
+      organizationId: org.id,
+    })
+    router.invalidate()
+  }
+
+  if (!activeOrg) {
     return null
   }
 
@@ -38,9 +46,9 @@ export function TeamSwitcher({
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton className="w-fit px-1.5">
               <div className="flex aspect-square size-5 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
-                <activeTeam.logo className="size-3" />
+                <Building2 className="size-3" />
               </div>
-              <span className="truncate font-semibold">{activeTeam.name}</span>
+              <span className="truncate font-semibold">{activeOrg.name}</span>
               <ChevronDown className="opacity-50" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
@@ -51,27 +59,32 @@ export function TeamSwitcher({
             sideOffset={4}
           >
             <DropdownMenuLabel className="text-xs text-muted-foreground">
-              Teams
+              Organizations
             </DropdownMenuLabel>
-            {teams.map((team, index) => (
+            {organizations.map((org, index) => (
               <DropdownMenuItem
-                key={team.name}
-                onClick={() => setActiveTeam(team)}
+                key={org.id}
+                onClick={() => handleSwitchOrg(org)}
                 className="gap-2 p-2"
               >
                 <div className="flex size-6 items-center justify-center rounded-sm border">
-                  <team.logo className="size-4 shrink-0" />
+                  <Building2 className="size-4 shrink-0" />
                 </div>
-                {team.name}
+                {org.name}
                 <DropdownMenuShortcut>{index + 1}</DropdownMenuShortcut>
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="gap-2 p-2">
+            <DropdownMenuItem
+              className="gap-2 p-2"
+              onClick={() => router.navigate({ to: "/onboarding" })}
+            >
               <div className="flex size-6 items-center justify-center rounded-md border bg-background">
                 <Plus className="size-4" />
               </div>
-              <div className="font-medium text-muted-foreground">Add team</div>
+              <div className="font-medium text-muted-foreground">
+                Add organization
+              </div>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

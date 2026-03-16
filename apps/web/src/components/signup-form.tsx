@@ -50,7 +50,7 @@ export function SignupForm({
       return
     }
 
-    router.navigate({ to: "/" })
+    router.navigate({ to: "/onboarding" })
   }
 
   return (

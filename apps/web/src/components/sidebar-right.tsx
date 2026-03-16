@@ -15,13 +15,7 @@ import {
   SidebarSeparator,
 } from "@workspace/ui/components/sidebar"
 
-// This is sample data.
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   calendars: [
     {
       name: "My Calendars",
@@ -39,8 +33,11 @@ const data = {
 }
 
 export function SidebarRight({
+  user,
   ...props
-}: React.ComponentProps<typeof Sidebar>) {
+}: React.ComponentProps<typeof Sidebar> & {
+  user: { name: string; email: string; image?: string | null }
+}) {
   return (
     <Sidebar
       collapsible="none"
@@ -48,7 +45,7 @@ export function SidebarRight({
       {...props}
     >
       <SidebarHeader className="h-16 border-b border-sidebar-border">
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarHeader>
       <SidebarContent>
         <DatePicker />

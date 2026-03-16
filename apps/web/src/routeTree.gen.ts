@@ -13,6 +13,15 @@ import { Route as SignUpRouteImport } from './routes/sign-up'
 import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as AuthedRouteImport } from './routes/_authed'
 import { Route as AuthedIndexRouteImport } from './routes/_authed/index'
+import { Route as AuthedOnboardingRouteImport } from './routes/_authed/onboarding'
+import { Route as AuthedProjectsIndexRouteImport } from './routes/_authed/projects/index'
+import { Route as AuthedLabelsIndexRouteImport } from './routes/_authed/labels/index'
+import { Route as AuthedClientsIndexRouteImport } from './routes/_authed/clients/index'
+import { Route as AuthedProjectsProjectIdRouteImport } from './routes/_authed/projects/$projectId'
+import { Route as AuthedIssuesIssueIdRouteImport } from './routes/_authed/issues/$issueId'
+import { Route as AuthedClientsClientIdRouteImport } from './routes/_authed/clients/$clientId'
+import { Route as AuthedProjectsProjectIdIndexRouteImport } from './routes/_authed/projects/$projectId/index'
+import { Route as AuthedProjectsProjectIdSettingsRouteImport } from './routes/_authed/projects/$projectId/settings'
 
 const SignUpRoute = SignUpRouteImport.update({
   id: '/sign-up',
@@ -33,30 +42,140 @@ const AuthedIndexRoute = AuthedIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthedRoute,
 } as any)
+const AuthedOnboardingRoute = AuthedOnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedProjectsIndexRoute = AuthedProjectsIndexRouteImport.update({
+  id: '/projects/',
+  path: '/projects/',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedLabelsIndexRoute = AuthedLabelsIndexRouteImport.update({
+  id: '/labels/',
+  path: '/labels/',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedClientsIndexRoute = AuthedClientsIndexRouteImport.update({
+  id: '/clients/',
+  path: '/clients/',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedProjectsProjectIdRoute = AuthedProjectsProjectIdRouteImport.update({
+  id: '/projects/$projectId',
+  path: '/projects/$projectId',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedIssuesIssueIdRoute = AuthedIssuesIssueIdRouteImport.update({
+  id: '/issues/$issueId',
+  path: '/issues/$issueId',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedClientsClientIdRoute = AuthedClientsClientIdRouteImport.update({
+  id: '/clients/$clientId',
+  path: '/clients/$clientId',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedProjectsProjectIdIndexRoute =
+  AuthedProjectsProjectIdIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthedProjectsProjectIdRoute,
+  } as any)
+const AuthedProjectsProjectIdSettingsRoute =
+  AuthedProjectsProjectIdSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthedProjectsProjectIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthedIndexRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
+  '/onboarding': typeof AuthedOnboardingRoute
+  '/clients/$clientId': typeof AuthedClientsClientIdRoute
+  '/issues/$issueId': typeof AuthedIssuesIssueIdRoute
+  '/projects/$projectId': typeof AuthedProjectsProjectIdRouteWithChildren
+  '/clients/': typeof AuthedClientsIndexRoute
+  '/labels/': typeof AuthedLabelsIndexRoute
+  '/projects/': typeof AuthedProjectsIndexRoute
+  '/projects/$projectId/settings': typeof AuthedProjectsProjectIdSettingsRoute
+  '/projects/$projectId/': typeof AuthedProjectsProjectIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
+  '/onboarding': typeof AuthedOnboardingRoute
   '/': typeof AuthedIndexRoute
+  '/clients/$clientId': typeof AuthedClientsClientIdRoute
+  '/issues/$issueId': typeof AuthedIssuesIssueIdRoute
+  '/clients': typeof AuthedClientsIndexRoute
+  '/labels': typeof AuthedLabelsIndexRoute
+  '/projects': typeof AuthedProjectsIndexRoute
+  '/projects/$projectId/settings': typeof AuthedProjectsProjectIdSettingsRoute
+  '/projects/$projectId': typeof AuthedProjectsProjectIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_authed': typeof AuthedRouteWithChildren
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
+  '/_authed/onboarding': typeof AuthedOnboardingRoute
   '/_authed/': typeof AuthedIndexRoute
+  '/_authed/clients/$clientId': typeof AuthedClientsClientIdRoute
+  '/_authed/issues/$issueId': typeof AuthedIssuesIssueIdRoute
+  '/_authed/projects/$projectId': typeof AuthedProjectsProjectIdRouteWithChildren
+  '/_authed/clients/': typeof AuthedClientsIndexRoute
+  '/_authed/labels/': typeof AuthedLabelsIndexRoute
+  '/_authed/projects/': typeof AuthedProjectsIndexRoute
+  '/_authed/projects/$projectId/settings': typeof AuthedProjectsProjectIdSettingsRoute
+  '/_authed/projects/$projectId/': typeof AuthedProjectsProjectIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/sign-in' | '/sign-up'
+  fullPaths:
+    | '/'
+    | '/sign-in'
+    | '/sign-up'
+    | '/onboarding'
+    | '/clients/$clientId'
+    | '/issues/$issueId'
+    | '/projects/$projectId'
+    | '/clients/'
+    | '/labels/'
+    | '/projects/'
+    | '/projects/$projectId/settings'
+    | '/projects/$projectId/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/sign-in' | '/sign-up' | '/'
-  id: '__root__' | '/_authed' | '/sign-in' | '/sign-up' | '/_authed/'
+  to:
+    | '/sign-in'
+    | '/sign-up'
+    | '/onboarding'
+    | '/'
+    | '/clients/$clientId'
+    | '/issues/$issueId'
+    | '/clients'
+    | '/labels'
+    | '/projects'
+    | '/projects/$projectId/settings'
+    | '/projects/$projectId'
+  id:
+    | '__root__'
+    | '/_authed'
+    | '/sign-in'
+    | '/sign-up'
+    | '/_authed/onboarding'
+    | '/_authed/'
+    | '/_authed/clients/$clientId'
+    | '/_authed/issues/$issueId'
+    | '/_authed/projects/$projectId'
+    | '/_authed/clients/'
+    | '/_authed/labels/'
+    | '/_authed/projects/'
+    | '/_authed/projects/$projectId/settings'
+    | '/_authed/projects/$projectId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -95,15 +214,108 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedIndexRouteImport
       parentRoute: typeof AuthedRoute
     }
+    '/_authed/onboarding': {
+      id: '/_authed/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof AuthedOnboardingRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/projects/': {
+      id: '/_authed/projects/'
+      path: '/projects'
+      fullPath: '/projects/'
+      preLoaderRoute: typeof AuthedProjectsIndexRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/labels/': {
+      id: '/_authed/labels/'
+      path: '/labels'
+      fullPath: '/labels/'
+      preLoaderRoute: typeof AuthedLabelsIndexRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/clients/': {
+      id: '/_authed/clients/'
+      path: '/clients'
+      fullPath: '/clients/'
+      preLoaderRoute: typeof AuthedClientsIndexRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/projects/$projectId': {
+      id: '/_authed/projects/$projectId'
+      path: '/projects/$projectId'
+      fullPath: '/projects/$projectId'
+      preLoaderRoute: typeof AuthedProjectsProjectIdRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/issues/$issueId': {
+      id: '/_authed/issues/$issueId'
+      path: '/issues/$issueId'
+      fullPath: '/issues/$issueId'
+      preLoaderRoute: typeof AuthedIssuesIssueIdRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/clients/$clientId': {
+      id: '/_authed/clients/$clientId'
+      path: '/clients/$clientId'
+      fullPath: '/clients/$clientId'
+      preLoaderRoute: typeof AuthedClientsClientIdRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/projects/$projectId/': {
+      id: '/_authed/projects/$projectId/'
+      path: '/'
+      fullPath: '/projects/$projectId/'
+      preLoaderRoute: typeof AuthedProjectsProjectIdIndexRouteImport
+      parentRoute: typeof AuthedProjectsProjectIdRoute
+    }
+    '/_authed/projects/$projectId/settings': {
+      id: '/_authed/projects/$projectId/settings'
+      path: '/settings'
+      fullPath: '/projects/$projectId/settings'
+      preLoaderRoute: typeof AuthedProjectsProjectIdSettingsRouteImport
+      parentRoute: typeof AuthedProjectsProjectIdRoute
+    }
   }
 }
 
+interface AuthedProjectsProjectIdRouteChildren {
+  AuthedProjectsProjectIdSettingsRoute: typeof AuthedProjectsProjectIdSettingsRoute
+  AuthedProjectsProjectIdIndexRoute: typeof AuthedProjectsProjectIdIndexRoute
+}
+
+const AuthedProjectsProjectIdRouteChildren: AuthedProjectsProjectIdRouteChildren =
+  {
+    AuthedProjectsProjectIdSettingsRoute: AuthedProjectsProjectIdSettingsRoute,
+    AuthedProjectsProjectIdIndexRoute: AuthedProjectsProjectIdIndexRoute,
+  }
+
+const AuthedProjectsProjectIdRouteWithChildren =
+  AuthedProjectsProjectIdRoute._addFileChildren(
+    AuthedProjectsProjectIdRouteChildren,
+  )
+
 interface AuthedRouteChildren {
+  AuthedOnboardingRoute: typeof AuthedOnboardingRoute
   AuthedIndexRoute: typeof AuthedIndexRoute
+  AuthedClientsClientIdRoute: typeof AuthedClientsClientIdRoute
+  AuthedIssuesIssueIdRoute: typeof AuthedIssuesIssueIdRoute
+  AuthedProjectsProjectIdRoute: typeof AuthedProjectsProjectIdRouteWithChildren
+  AuthedClientsIndexRoute: typeof AuthedClientsIndexRoute
+  AuthedLabelsIndexRoute: typeof AuthedLabelsIndexRoute
+  AuthedProjectsIndexRoute: typeof AuthedProjectsIndexRoute
 }
 
 const AuthedRouteChildren: AuthedRouteChildren = {
+  AuthedOnboardingRoute: AuthedOnboardingRoute,
   AuthedIndexRoute: AuthedIndexRoute,
+  AuthedClientsClientIdRoute: AuthedClientsClientIdRoute,
+  AuthedIssuesIssueIdRoute: AuthedIssuesIssueIdRoute,
+  AuthedProjectsProjectIdRoute: AuthedProjectsProjectIdRouteWithChildren,
+  AuthedClientsIndexRoute: AuthedClientsIndexRoute,
+  AuthedLabelsIndexRoute: AuthedLabelsIndexRoute,
+  AuthedProjectsIndexRoute: AuthedProjectsIndexRoute,
 }
 
 const AuthedRouteWithChildren =

@@ -15,6 +15,20 @@
       "when": 1773653766788,
       "tag": "0001_nebulous_squirrel_girl",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1773657210622,
+      "tag": "0002_icy_whizzer",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1773658374896,
+      "tag": "0003_complete_purifiers",
+      "breakpoints": true
     }
   ]
 }

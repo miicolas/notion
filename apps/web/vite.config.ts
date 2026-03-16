@@ -7,7 +7,7 @@ import { nitro } from "nitro/vite"
 
 const config = defineConfig({
   plugins: [
-    nitro(),
+    nitro({ preset: "aws_lambda" }),
     viteTsConfigPaths({
       projects: ["./tsconfig.json"],
     }),
