@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start"
-import { apiFetch } from "./api"
+import { apiFetch } from "./api.server"
 
 export const getLabels = createServerFn({ method: "GET" }).handler(
   async () => apiFetch("/api/labels"),

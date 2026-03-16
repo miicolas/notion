@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start"
-import { apiFetch } from "./api"
+import { apiFetch } from "./api.server"
 
 export const getComments = createServerFn({ method: "GET" })
   .inputValidator((issueId: string) => issueId)

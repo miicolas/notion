@@ -1,14 +1,9 @@
 import { createServerFn } from "@tanstack/react-start"
-import { apiFetch } from "./api"
+import { apiFetch } from "./api.server"
 
-export const getProjects = createServerFn({ method: "GET" })
-  .inputValidator((params?: { status?: string; clientId?: string }) => params)
-  .handler(async ({ data: params }) => {
-    const url = new URL("/api/projects", "http://localhost")
-    if (params?.status) url.searchParams.set("status", params.status)
-    if (params?.clientId) url.searchParams.set("clientId", params.clientId)
-    return apiFetch(`/api/projects${url.search}`)
-  })
+export const getProjects = createServerFn({ method: "GET" }).handler(
+  async () => apiFetch("/api/projects"),
+)
 
 export const getProject = createServerFn({ method: "GET" })
   .inputValidator((id: string) => id)

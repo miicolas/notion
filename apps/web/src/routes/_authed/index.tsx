@@ -11,7 +11,7 @@ export const Route = createFileRoute("/_authed/")({
     try {
       const [projects, issues] = await Promise.all([
         getProjects(),
-        getIssues(),
+        getIssues({ data: {} }),
       ])
       return { projects, issues }
     } catch {
