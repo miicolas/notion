@@ -1,85 +1,116 @@
 export type Organization = {
-  id: string
-  name: string
-  slug: string
-  logo?: string | null
-}
+  id: string;
+  name: string;
+  slug: string;
+  logo?: string | null;
+};
 
 export type Client = {
-  id: string
-  name: string
-  email?: string | null
-  phone?: string | null
-  address?: string | null
-  website?: string | null
-  logo?: string | null
-  notes?: string | null
-  projects?: Project[]
-}
+  id: string;
+  name: string;
+  email?: string | null;
+  phone?: string | null;
+  address?: string | null;
+  website?: string | null;
+  logo?: string | null;
+  notes?: string | null;
+  projects?: Project[];
+};
 
 export type Project = {
-  id: string
-  name: string
-  description?: string | null
-  status: string
-  clientId?: string | null
-  client?: { id: string; name: string } | null
-  issues?: { id: string }[]
-  startDate?: string | null
-  endDate?: string | null
-}
+  id: string;
+  name: string;
+  description?: string | null;
+  status: string;
+  clientId?: string | null;
+  client?: { id: string; name: string } | null;
+  issues?: { id: string }[];
+  startDate?: string | null;
+  endDate?: string | null;
+};
 
 export type Member = {
-  id: string
+  id: string;
   user: {
-    id: string
-    name: string
-    email?: string
-    image?: string | null
-  }
-}
+    id: string;
+    name: string;
+    email?: string;
+    image?: string | null;
+  };
+};
 
 export type LabelItem = {
-  id: string
-  name: string
-  color: string
-}
+  id: string;
+  name: string;
+  color: string;
+};
+
+export type Sprint = {
+  id: string;
+  projectId: string;
+  name: string;
+  goal?: string | null;
+  startDate: string;
+  endDate: string;
+  status: "planned" | "active" | "completed";
+};
 
 export type Issue = {
-  id: string
-  title: string
-  description?: string | null
-  status: string
-  priority: string
-  sortOrder: number
-  projectId?: string
-  deadline?: string | null
-  assigneeId?: string | null
+  id: string;
+  title: string;
+  description?: string | null;
+  status: string;
+  priority: string;
+  sortOrder: number;
+  projectId?: string;
+  deadline?: string | null;
+  assigneeId?: string | null;
+  sprintId?: string | null;
   assignee?: {
-    user: { id: string; name: string; image?: string | null }
-  } | null
-  issueLabels?: { label: LabelItem }[]
-  project?: { id: string; name: string } | null
-  comments?: Comment[]
-}
+    user: { id: string; name: string; image?: string | null };
+  } | null;
+  issueLabels?: { label: LabelItem }[];
+  project?: { id: string; name: string } | null;
+  sprint?: { id: string; name: string; status: string } | null;
+  comments?: Comment[];
+};
 
 export type Comment = {
-  id: string
-  content: string
-  createdAt: string
-  author: { id: string; name: string; image?: string | null }
-}
+  id: string;
+  content: string;
+  createdAt: string;
+  author: { id: string; name: string; image?: string | null };
+};
+
+export type Team = {
+  id: string;
+  name: string;
+  organizationId: string;
+  createdAt: string;
+  members?: TeamMember[];
+};
+
+export type TeamMember = {
+  id: string;
+  teamId: string;
+  userId: string;
+  user?: { id: string; name: string; email?: string; image?: string | null };
+};
 
 export type DashboardStats = {
-  issuesByStatus: { status: string; count: number }[]
-  issuesByPriority: { priority: string; count: number }[]
-  issuesByAssignee: { assigneeId: string; assigneeName: string; count: number }[]
-  issuesByProject: { projectId: string; projectName: string; count: number }[]
-  issuesOverTime: { date: string; count: number }[]
-}
+  issuesByStatus: { status: string; count: number }[];
+  issuesByPriority: { priority: string; count: number }[];
+  issuesByAssignee: {
+    assigneeId: string;
+    assigneeName: string;
+    count: number;
+  }[];
+  issuesByProject: { projectId: string; projectName: string; count: number }[];
+  issuesOverTime: { date: string; count: number }[];
+};
 
 export type WidgetConfig = {
-  id: string
-  type: string
-  size: "sm" | "md" | "lg"
-}
+  id: string;
+  type: string;
+  size: "sm" | "md" | "lg";
+};

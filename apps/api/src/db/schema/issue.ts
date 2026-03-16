@@ -8,6 +8,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { organization, member } from "./auth";
 import { project } from "./project";
+import { sprint } from "./sprint";
 import { issueLabel } from "./issue-label";
 import { comment } from "./comment";
 
@@ -22,6 +23,9 @@ export const issue = pgTable(
       .notNull()
       .references(() => project.id, { onDelete: "cascade" }),
     assigneeId: text("assignee_id").references(() => member.id, {
+      onDelete: "set null",
+    }),
+    sprintId: text("sprint_id").references(() => sprint.id, {
       onDelete: "set null",
     }),
     title: text("title").notNull(),
@@ -48,6 +52,7 @@ export const issue = pgTable(
     index("issue_organizationId_idx").on(table.organizationId),
     index("issue_projectId_idx").on(table.projectId),
     index("issue_assigneeId_idx").on(table.assigneeId),
+    index("issue_sprintId_idx").on(table.sprintId),
     index("issue_status_idx").on(table.status),
   ],
 );
@@ -64,6 +69,10 @@ export const issueRelations = relations(issue, ({ one, many }) => ({
   assignee: one(member, {
     fields: [issue.assigneeId],
     references: [member.id],
+  }),
+  sprint: one(sprint, {
+    fields: [issue.sprintId],
+    references: [sprint.id],
   }),
   issueLabels: many(issueLabel),
   comments: many(comment),

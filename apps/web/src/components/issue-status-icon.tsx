@@ -1,11 +1,5 @@
-import {
-  Circle,
-  CircleDot,
-  Loader,
-  CheckCircle2,
-  XCircle,
-} from "lucide-react"
-import { cn } from "@workspace/ui/lib/utils"
+import { Circle, CircleDot, Loader, CheckCircle2, XCircle } from "lucide-react";
+import { cn } from "@workspace/ui/lib/utils";
 
 const statusConfig = {
   backlog: { icon: Circle, color: "text-muted-foreground", label: "Backlog" },
@@ -13,20 +7,20 @@ const statusConfig = {
   in_progress: { icon: Loader, color: "text-yellow-500", label: "In Progress" },
   done: { icon: CheckCircle2, color: "text-green-500", label: "Done" },
   cancelled: { icon: XCircle, color: "text-red-500", label: "Cancelled" },
-} as const
+} as const;
 
-export type IssueStatus = keyof typeof statusConfig
+export type IssueStatus = keyof typeof statusConfig;
 
 export function IssueStatusIcon({
   status,
   className,
 }: {
-  status: IssueStatus
-  className?: string
+  status: IssueStatus;
+  className?: string;
 }) {
-  const config = statusConfig[status]
-  const Icon = config.icon
-  return <Icon className={cn("size-4", config.color, className)} />
+  const config = statusConfig[status];
+  const Icon = config.icon;
+  return <Icon className={cn("size-4", config.color, className)} />;
 }
 
-export { statusConfig }
+export { statusConfig };

@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom"
-import { Badge } from "@workspace/ui/components/badge"
+import { Link } from "react-router-dom";
+import { Badge } from "@workspace/ui/components/badge";
 import {
   Table,
   TableBody,
@@ -7,8 +7,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@workspace/ui/components/table"
-import type { Project } from "@/lib/types"
+} from "@workspace/ui/components/table";
+import type { Project } from "@/lib/types";
 
 export function ProjectTable({ projects }: { projects: Project[] }) {
   if (projects.length === 0) {
@@ -16,7 +16,7 @@ export function ProjectTable({ projects }: { projects: Project[] }) {
       <div className="flex h-40 items-center justify-center text-muted-foreground">
         No projects yet. Create your first project to get started.
       </div>
-    )
+    );
   }
 
   return (
@@ -44,14 +44,18 @@ export function ProjectTable({ projects }: { projects: Project[] }) {
               {project.client?.name ?? "\u2014"}
             </TableCell>
             <TableCell>
-              <Badge variant={project.status === "active" ? "default" : "secondary"}>
+              <Badge
+                variant={project.status === "active" ? "default" : "secondary"}
+              >
                 {project.status}
               </Badge>
             </TableCell>
-            <TableCell className="text-right">{project.issues?.length ?? 0}</TableCell>
+            <TableCell className="text-right">
+              {project.issues?.length ?? 0}
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>
     </Table>
-  )
+  );
 }

@@ -1,21 +1,21 @@
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3001"
+import { API_URL } from "./api";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function apiFetch<T = any>(
   path: string,
   init?: RequestInit,
 ): Promise<T> {
-  const headers: Record<string, string> = {}
-  if (init?.body) headers["Content-Type"] = "application/json"
+  const headers: Record<string, string> = {};
+  if (init?.body) headers["Content-Type"] = "application/json";
 
   const res = await fetch(`${API_URL}${path}`, {
     ...init,
     headers: { ...headers, ...init?.headers },
     credentials: "include",
-  })
+  });
   if (!res.ok) {
-    const error = await res.json().catch(() => ({ message: res.statusText }))
-    throw new Error(error.message ?? `API error ${res.status}`)
+    const error = await res.json().catch(() => ({ message: res.statusText }));
+    throw new Error(error.message ?? `API error ${res.status}`);
   }
-  return res.json()
+  return res.json();
 }

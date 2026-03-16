@@ -1,4 +1,4 @@
-import * as React from "react"
+import * as React from "react";
 import {
   DndContext,
   type DragEndEvent,
@@ -10,26 +10,36 @@ import {
   useSensors,
   closestCorners,
   useDroppable,
-} from "@dnd-kit/core"
+} from "@dnd-kit/core";
 import {
   SortableContext,
   verticalListSortingStrategy,
   useSortable,
   arrayMove,
-} from "@dnd-kit/sortable"
-import { CSS } from "@dnd-kit/utilities"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { reorderIssue } from "@/lib/issues"
-import { IssueStatusIcon, statusConfig, type IssueStatus } from "./issue-status-icon"
-import { IssuePriorityIcon, type Priority } from "./issue-priority-icon"
-import { LabelBadge } from "./label-badge"
-import { UserAvatar } from "./user-avatar"
-import { Card, CardContent } from "@workspace/ui/components/card"
-import { CopyPromptButton } from "./copy-prompt-button"
-import { Link } from "react-router-dom"
-import type { Issue } from "@/lib/types"
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { reorderIssue } from "@/lib/issues";
+import {
+  IssueStatusIcon,
+  statusConfig,
+  type IssueStatus,
+} from "./issue-status-icon";
+import { IssuePriorityIcon, type Priority } from "./issue-priority-icon";
+import { LabelBadge } from "./label-badge";
+import { UserAvatar } from "./user-avatar";
+import { Card, CardContent } from "@workspace/ui/components/card";
+import { CopyPromptButton } from "./copy-prompt-button";
+import { Link } from "react-router-dom";
+import type { Issue } from "@/lib/types";
 
-const COLUMNS: IssueStatus[] = ["backlog", "todo", "in_progress", "done", "cancelled"]
+const COLUMNS: IssueStatus[] = [
+  "backlog",
+  "todo",
+  "in_progress",
+  "done",
+  "cancelled",
+];
 
 function IssueCard({ issue }: { issue: Issue }) {
   return (
@@ -56,7 +66,11 @@ function IssueCard({ issue }: { issue: Issue }) {
         </div>
         {issue.assignee && (
           <div className="flex items-center gap-1.5">
-            <UserAvatar name={issue.assignee.user.name} image={issue.assignee.user.image} className="size-5" />
+            <UserAvatar
+              name={issue.assignee.user.name}
+              image={issue.assignee.user.image}
+              className="size-5"
+            />
             <span className="text-xs text-muted-foreground">
               {issue.assignee.user.name}
             </span>
@@ -64,24 +78,30 @@ function IssueCard({ issue }: { issue: Issue }) {
         )}
       </CardContent>
     </Card>
-  )
+  );
 }
 
 function SortableIssueCard({ issue }: { issue: Issue }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id: issue.id, data: { status: issue.status } })
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: issue.id, data: { status: issue.status } });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
-  }
+  };
 
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
       <IssueCard issue={issue} />
     </div>
-  )
+  );
 }
 
 function DroppableColumn({
@@ -89,12 +109,12 @@ function DroppableColumn({
   count,
   children,
 }: {
-  status: IssueStatus
-  count: number
-  children: React.ReactNode
+  status: IssueStatus;
+  count: number;
+  children: React.ReactNode;
 }) {
-  const { setNodeRef, isOver } = useDroppable({ id: status })
-  const config = statusConfig[status]
+  const { setNodeRef, isOver } = useDroppable({ id: status });
+  const config = statusConfig[status];
 
   return (
     <div
@@ -108,139 +128,144 @@ function DroppableColumn({
       </div>
       {children}
     </div>
-  )
+  );
 }
 
 function buildColumns(issues: Issue[]): Record<string, Issue[]> {
-  const map: Record<string, Issue[]> = {}
-  for (const col of COLUMNS) map[col] = []
+  const map: Record<string, Issue[]> = {};
+  for (const col of COLUMNS) map[col] = [];
   for (const issue of issues) {
-    if (map[issue.status]) map[issue.status].push(issue)
+    if (map[issue.status]) map[issue.status].push(issue);
   }
-  return map
+  return map;
 }
 
-function findColumnOfItem(columns: Record<string, Issue[]>, itemId: string): string | null {
+function findColumnOfItem(
+  columns: Record<string, Issue[]>,
+  itemId: string,
+): string | null {
   for (const [status, items] of Object.entries(columns)) {
-    if (items.some((i) => i.id === itemId)) return status
+    if (items.some((i) => i.id === itemId)) return status;
   }
-  return null
+  return null;
 }
 
 export function IssueKanban({ issues }: { issues: Issue[] }) {
-  const queryClient = useQueryClient()
-  const [activeIssue, setActiveIssue] = React.useState<Issue | null>(null)
-  const [columns, setColumns] = React.useState(() => buildColumns(issues))
-  const isDraggingOrMutating = React.useRef(false)
-  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }))
+  const queryClient = useQueryClient();
+  const [activeIssue, setActiveIssue] = React.useState<Issue | null>(null);
+  const [columns, setColumns] = React.useState(() => buildColumns(issues));
+  const isDraggingOrMutating = React.useRef(false);
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+  );
 
   // Sync local state when server data changes, but never during drag or pending mutation
   React.useEffect(() => {
     if (!isDraggingOrMutating.current) {
-      setColumns(buildColumns(issues))
+      setColumns(buildColumns(issues));
     }
-  }, [issues])
+  }, [issues]);
 
   const reorderMutation = useMutation({
     mutationFn: reorderIssue,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["issues"] })
+      queryClient.invalidateQueries({ queryKey: ["issues"] });
     },
     onSettled: () => {
-      isDraggingOrMutating.current = false
+      isDraggingOrMutating.current = false;
     },
     onError: () => {
-      setColumns(buildColumns(issues))
+      setColumns(buildColumns(issues));
     },
-  })
+  });
 
   function handleDragStart(event: DragStartEvent) {
-    isDraggingOrMutating.current = true
-    const issue = issues.find((i) => i.id === event.active.id)
-    if (issue) setActiveIssue(issue)
+    isDraggingOrMutating.current = true;
+    const issue = issues.find((i) => i.id === event.active.id);
+    if (issue) setActiveIssue(issue);
   }
 
   function handleDragOver(event: DragOverEvent) {
-    const { active, over } = event
-    if (!over) return
+    const { active, over } = event;
+    if (!over) return;
 
-    const activeId = active.id as string
-    const overId = over.id as string
+    const activeId = active.id as string;
+    const overId = over.id as string;
 
-    const activeColumn = findColumnOfItem(columns, activeId)
-    if (!activeColumn) return
+    const activeColumn = findColumnOfItem(columns, activeId);
+    if (!activeColumn) return;
 
     // Determine over column
-    let overColumn: string | null
+    let overColumn: string | null;
     if (COLUMNS.includes(overId as IssueStatus)) {
-      overColumn = overId
+      overColumn = overId;
     } else {
-      overColumn = findColumnOfItem(columns, overId)
+      overColumn = findColumnOfItem(columns, overId);
     }
-    if (!overColumn || activeColumn === overColumn) return
+    if (!overColumn || activeColumn === overColumn) return;
 
     // Move item to new column optimistically
     setColumns((prev) => {
-      const sourceItems = [...prev[activeColumn]]
-      const destItems = [...prev[overColumn]]
+      const sourceItems = [...prev[activeColumn]];
+      const destItems = [...prev[overColumn]];
 
-      const activeIndex = sourceItems.findIndex((i) => i.id === activeId)
-      if (activeIndex === -1) return prev
+      const activeIndex = sourceItems.findIndex((i) => i.id === activeId);
+      if (activeIndex === -1) return prev;
 
-      const [movedItem] = sourceItems.splice(activeIndex, 1)
-      const updatedItem = { ...movedItem, status: overColumn }
+      const [movedItem] = sourceItems.splice(activeIndex, 1);
+      const updatedItem = { ...movedItem, status: overColumn };
 
       // Find insertion index
-      const overIndex = destItems.findIndex((i) => i.id === overId)
+      const overIndex = destItems.findIndex((i) => i.id === overId);
       if (overIndex >= 0) {
-        destItems.splice(overIndex, 0, updatedItem)
+        destItems.splice(overIndex, 0, updatedItem);
       } else {
-        destItems.push(updatedItem)
+        destItems.push(updatedItem);
       }
 
-      return { ...prev, [activeColumn]: sourceItems, [overColumn]: destItems }
-    })
+      return { ...prev, [activeColumn]: sourceItems, [overColumn]: destItems };
+    });
   }
 
   function handleDragEnd(event: DragEndEvent) {
-    const { active, over } = event
-    setActiveIssue(null)
-    if (!over) return
+    const { active, over } = event;
+    setActiveIssue(null);
+    if (!over) return;
 
-    const activeId = active.id as string
-    const overId = over.id as string
+    const activeId = active.id as string;
+    const overId = over.id as string;
 
-    const activeColumn = findColumnOfItem(columns, activeId)
-    if (!activeColumn) return
+    const activeColumn = findColumnOfItem(columns, activeId);
+    if (!activeColumn) return;
 
     // Reorder within same column
     const overColumn = COLUMNS.includes(overId as IssueStatus)
       ? overId
-      : findColumnOfItem(columns, overId)
-    if (!overColumn) return
+      : findColumnOfItem(columns, overId);
+    if (!overColumn) return;
 
     if (activeColumn === overColumn) {
-      const items = columns[activeColumn]
-      const oldIndex = items.findIndex((i) => i.id === activeId)
-      const newIndex = items.findIndex((i) => i.id === overId)
+      const items = columns[activeColumn];
+      const oldIndex = items.findIndex((i) => i.id === activeId);
+      const newIndex = items.findIndex((i) => i.id === overId);
 
       if (oldIndex !== newIndex && newIndex >= 0) {
-        const reordered = arrayMove(items, oldIndex, newIndex)
-        setColumns((prev) => ({ ...prev, [activeColumn]: reordered }))
+        const reordered = arrayMove(items, oldIndex, newIndex);
+        setColumns((prev) => ({ ...prev, [activeColumn]: reordered }));
       }
     }
 
     // Find final position and send to server
-    const finalColumn = findColumnOfItem(columns, activeId)
-    if (!finalColumn) return
-    const finalItems = columns[finalColumn]
-    const finalIndex = finalItems.findIndex((i) => i.id === activeId)
+    const finalColumn = findColumnOfItem(columns, activeId);
+    if (!finalColumn) return;
+    const finalItems = columns[finalColumn];
+    const finalIndex = finalItems.findIndex((i) => i.id === activeId);
 
     reorderMutation.mutate({
       id: activeId,
       sortOrder: finalIndex >= 0 ? finalIndex : 0,
       status: finalColumn,
-    })
+    });
   }
 
   return (
@@ -252,11 +277,20 @@ export function IssueKanban({ issues }: { issues: Issue[] }) {
       onDragEnd={handleDragEnd}
     >
       <div className="min-w-0 overflow-x-auto">
-        <div className="flex gap-4 pb-4" style={{ minWidth: `${COLUMNS.length * 288 + (COLUMNS.length - 1) * 16}px` }}>
+        <div
+          className="flex gap-4 pb-4"
+          style={{
+            minWidth: `${COLUMNS.length * 288 + (COLUMNS.length - 1) * 16}px`,
+          }}
+        >
           {COLUMNS.map((status) => {
-            const columnIssues = columns[status] ?? []
+            const columnIssues = columns[status] ?? [];
             return (
-              <DroppableColumn key={status} status={status} count={columnIssues.length}>
+              <DroppableColumn
+                key={status}
+                status={status}
+                count={columnIssues.length}
+              >
                 <SortableContext
                   id={status}
                   items={columnIssues.map((i) => i.id)}
@@ -269,7 +303,7 @@ export function IssueKanban({ issues }: { issues: Issue[] }) {
                   </div>
                 </SortableContext>
               </DroppableColumn>
-            )
+            );
           })}
         </div>
       </div>
@@ -277,5 +311,5 @@ export function IssueKanban({ issues }: { issues: Issue[] }) {
         {activeIssue ? <IssueCard issue={activeIssue} /> : null}
       </DragOverlay>
     </DndContext>
-  )
+  );
 }

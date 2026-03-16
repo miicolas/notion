@@ -1,34 +1,48 @@
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { Button } from "@workspace/ui/components/button"
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
+import { z } from "zod";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Button } from "@workspace/ui/components/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@workspace/ui/components/card"
-import { Input } from "@workspace/ui/components/input"
-import { Field, FieldGroup, FieldLabel } from "@workspace/ui/components/field"
-import { Separator } from "@workspace/ui/components/separator"
-import { authClient } from "@/lib/auth-client"
-import { useAuth } from "@/lib/auth-context"
-import { getUserInvitations } from "@/lib/organization"
+} from "@workspace/ui/components/card";
+import { Input } from "@workspace/ui/components/input";
+import { Field, FieldGroup, FieldLabel } from "@workspace/ui/components/field";
+import { Separator } from "@workspace/ui/components/separator";
+import { authClient } from "@/lib/auth-client";
+import { useAuth } from "@/lib/auth-context";
+import { getUserInvitations } from "@/lib/organization";
+
+const orgSchema = z.object({
+  orgName: z.string().min(1),
+});
+
+type OrgFormValues = z.infer<typeof orgSchema>;
 
 export function OnboardingPage() {
-  const navigate = useNavigate()
-  const queryClient = useQueryClient()
-  const { refetch } = useAuth()
-  const [orgName, setOrgName] = useState("")
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [actionLoading, setActionLoading] = useState<string | null>(null)
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { refetch } = useAuth();
+  const [error, setError] = useState<string | null>(null);
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
+
+  const form = useForm<OrgFormValues>({
+    resolver: standardSchemaResolver(orgSchema),
+    defaultValues: { orgName: "" },
+  });
+
+  const orgName = form.watch("orgName");
 
   const { data: invitations = [] } = useQuery({
     queryKey: ["invitations"],
     queryFn: getUserInvitations,
-  })
+  });
 
   function generateSlug(name: string) {
     return name
@@ -36,73 +50,71 @@ export function OnboardingPage() {
       .replace(/[^a-z0-9\s-]/g, "")
       .replace(/\s+/g, "-")
       .replace(/-+/g, "-")
-      .trim()
+      .trim();
   }
 
-  async function handleCreateOrg(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    setError(null)
-    setLoading(true)
+  async function onSubmit(data: OrgFormValues) {
+    setError(null);
 
-    const slug = generateSlug(orgName)
+    const slug = generateSlug(data.orgName);
     if (!slug) {
-      setError("Please enter a valid organization name.")
-      setLoading(false)
-      return
+      form.setError("orgName", {
+        message: "Please enter a valid organization name.",
+      });
+      return;
     }
 
     const { error: createError } = await authClient.organization.create({
-      name: orgName,
+      name: data.orgName,
       slug,
-    })
+    });
 
     if (createError) {
-      setError(createError.message ?? "Failed to create organization.")
-      setLoading(false)
-      return
+      setError(createError.message ?? "Failed to create organization.");
+      return;
     }
 
-    await refetch()
-    navigate("/")
+    await refetch();
+    navigate("/");
   }
 
   async function handleAccept(invitationId: string) {
-    setActionLoading(invitationId)
+    setActionLoading(invitationId);
     const { error: acceptError } =
       await authClient.organization.acceptInvitation({
         invitationId,
-      })
+      });
 
     if (acceptError) {
-      setError(acceptError.message ?? "Failed to accept invitation.")
-      setActionLoading(null)
-      return
+      setError(acceptError.message ?? "Failed to accept invitation.");
+      setActionLoading(null);
+      return;
     }
 
-    await refetch()
-    navigate("/")
+    await refetch();
+    navigate("/");
   }
 
   async function handleReject(invitationId: string) {
-    setActionLoading(invitationId)
+    setActionLoading(invitationId);
     const { error: rejectError } =
       await authClient.organization.rejectInvitation({
         invitationId,
-      })
+      });
 
     if (rejectError) {
-      setError(rejectError.message ?? "Failed to reject invitation.")
-      setActionLoading(null)
-      return
+      setError(rejectError.message ?? "Failed to reject invitation.");
+      setActionLoading(null);
+      return;
     }
 
-    queryClient.invalidateQueries({ queryKey: ["invitations"] })
-    setActionLoading(null)
+    queryClient.invalidateQueries({ queryKey: ["invitations"] });
+    setActionLoading(null);
   }
 
   const pendingInvitations = invitations.filter(
     (inv: { status: string }) => inv.status === "pending",
-  )
+  );
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
@@ -122,16 +134,14 @@ export function OnboardingPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleCreateOrg}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
               <FieldGroup>
                 <Field>
                   <FieldLabel htmlFor="org-name">Organization name</FieldLabel>
                   <Input
                     id="org-name"
-                    value={orgName}
-                    onChange={(e) => setOrgName(e.target.value)}
                     placeholder="My Organization"
-                    required
+                    {...form.register("orgName")}
                   />
                   {orgName && (
                     <p className="text-muted-foreground text-xs">
@@ -139,8 +149,10 @@ export function OnboardingPage() {
                     </p>
                   )}
                 </Field>
-                <Button type="submit" disabled={loading}>
-                  {loading ? "Creating..." : "Create Organization"}
+                <Button type="submit" disabled={form.formState.isSubmitting}>
+                  {form.formState.isSubmitting
+                    ? "Creating..."
+                    : "Create Organization"}
                 </Button>
               </FieldGroup>
             </form>
@@ -165,10 +177,10 @@ export function OnboardingPage() {
               <CardContent className="space-y-3">
                 {pendingInvitations.map(
                   (inv: {
-                    id: string
-                    organizationName?: string
-                    organizationSlug?: string
-                    role?: string
+                    id: string;
+                    organizationName?: string;
+                    organizationSlug?: string;
+                    role?: string;
                   }) => (
                     <div
                       key={inv.id}
@@ -176,7 +188,9 @@ export function OnboardingPage() {
                     >
                       <div>
                         <p className="text-sm font-medium">
-                          {inv.organizationName ?? inv.organizationSlug ?? "Organization"}
+                          {inv.organizationName ??
+                            inv.organizationSlug ??
+                            "Organization"}
                         </p>
                         {inv.role && (
                           <p className="text-muted-foreground text-xs capitalize">
@@ -214,5 +228,5 @@ export function OnboardingPage() {
         )}
       </div>
     </div>
-  )
+  );
 }

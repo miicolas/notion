@@ -3,6 +3,7 @@ import { pgTable, text, timestamp, index } from "drizzle-orm/pg-core";
 import { organization } from "./auth";
 import { client } from "./client";
 import { issue } from "./issue";
+import { sprint } from "./sprint";
 
 export const project = pgTable(
   "project",
@@ -43,4 +44,5 @@ export const projectRelations = relations(project, ({ one, many }) => ({
     references: [client.id],
   }),
   issues: many(issue),
+  sprints: many(sprint),
 }));

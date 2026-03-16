@@ -1,22 +1,22 @@
-import { Outlet, useParams } from "react-router-dom"
-import { useQuery } from "@tanstack/react-query"
-import { getProject } from "@/lib/projects"
+import { Outlet, useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { getProject } from "@/lib/projects";
 
 export function ProjectLayout() {
-  const { projectId } = useParams<{ projectId: string }>()
+  const { projectId } = useParams<{ projectId: string }>();
 
   const { data: project, isPending } = useQuery({
     queryKey: ["project", projectId],
     queryFn: () => getProject(projectId!),
     enabled: !!projectId,
-  })
+  });
 
   if (isPending || !project) {
     return (
       <div className="flex flex-1 items-center justify-center">
         <div className="text-muted-foreground">Loading...</div>
       </div>
-    )
+    );
   }
 
   return (
@@ -29,5 +29,5 @@ export function ProjectLayout() {
       </div>
       <Outlet />
     </div>
-  )
+  );
 }

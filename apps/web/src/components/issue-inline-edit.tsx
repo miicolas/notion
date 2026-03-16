@@ -1,6 +1,6 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { updateIssue } from "@/lib/issues"
-import { getMembers } from "@/lib/members"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { updateIssue } from "@/lib/issues";
+import { getMembers } from "@/lib/members";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,22 +10,30 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuItem,
-} from "@workspace/ui/components/dropdown-menu"
-import { IssueStatusIcon, statusConfig, type IssueStatus } from "./issue-status-icon"
-import { IssuePriorityIcon, priorityConfig, type Priority } from "./issue-priority-icon"
-import { UserAvatar } from "./user-avatar"
-import { UserCircle } from "lucide-react"
-import { cn } from "@workspace/ui/lib/utils"
+} from "@workspace/ui/components/dropdown-menu";
+import {
+  IssueStatusIcon,
+  statusConfig,
+  type IssueStatus,
+} from "./issue-status-icon";
+import {
+  IssuePriorityIcon,
+  priorityConfig,
+  type Priority,
+} from "./issue-priority-icon";
+import { UserAvatar } from "./user-avatar";
+import { UserCircle } from "lucide-react";
+import { cn } from "@workspace/ui/lib/utils";
 
 function useInlineUpdate() {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: updateIssue,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["issues"] })
-      queryClient.invalidateQueries({ queryKey: ["issue"] })
+      queryClient.invalidateQueries({ queryKey: ["issues"] });
+      queryClient.invalidateQueries({ queryKey: ["issue"] });
     },
-  })
+  });
 }
 
 export function StatusDropdown({
@@ -33,12 +41,12 @@ export function StatusDropdown({
   value,
   children,
 }: {
-  issueId: string
-  value: string
-  children?: React.ReactNode
+  issueId: string;
+  value: string;
+  children?: React.ReactNode;
 }) {
-  const mutation = useInlineUpdate()
-  const config = statusConfig[value as IssueStatus]
+  const mutation = useInlineUpdate();
+  const config = statusConfig[value as IssueStatus];
 
   return (
     <DropdownMenu>
@@ -57,18 +65,21 @@ export function StatusDropdown({
           value={value}
           onValueChange={(v) => mutation.mutate({ id: issueId, status: v })}
         >
-          {(Object.entries(statusConfig) as [IssueStatus, (typeof statusConfig)[IssueStatus]][]).map(
-            ([key, cfg]) => (
-              <DropdownMenuRadioItem key={key} value={key}>
-                <IssueStatusIcon status={key} />
-                <span>{cfg.label}</span>
-              </DropdownMenuRadioItem>
-            ),
-          )}
+          {(
+            Object.entries(statusConfig) as [
+              IssueStatus,
+              (typeof statusConfig)[IssueStatus],
+            ][]
+          ).map(([key, cfg]) => (
+            <DropdownMenuRadioItem key={key} value={key}>
+              <IssueStatusIcon status={key} />
+              <span>{cfg.label}</span>
+            </DropdownMenuRadioItem>
+          ))}
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }
 
 export function PriorityDropdown({
@@ -76,12 +87,12 @@ export function PriorityDropdown({
   value,
   children,
 }: {
-  issueId: string
-  value: string
-  children?: React.ReactNode
+  issueId: string;
+  value: string;
+  children?: React.ReactNode;
 }) {
-  const mutation = useInlineUpdate()
-  const config = priorityConfig[value as Priority]
+  const mutation = useInlineUpdate();
+  const config = priorityConfig[value as Priority];
 
   return (
     <DropdownMenu>
@@ -100,18 +111,21 @@ export function PriorityDropdown({
           value={value}
           onValueChange={(v) => mutation.mutate({ id: issueId, priority: v })}
         >
-          {(Object.entries(priorityConfig) as [Priority, (typeof priorityConfig)[Priority]][]).map(
-            ([key, cfg]) => (
-              <DropdownMenuRadioItem key={key} value={key}>
-                <IssuePriorityIcon priority={key} />
-                <span>{cfg.label}</span>
-              </DropdownMenuRadioItem>
-            ),
-          )}
+          {(
+            Object.entries(priorityConfig) as [
+              Priority,
+              (typeof priorityConfig)[Priority],
+            ][]
+          ).map(([key, cfg]) => (
+            <DropdownMenuRadioItem key={key} value={key}>
+              <IssuePriorityIcon priority={key} />
+              <span>{cfg.label}</span>
+            </DropdownMenuRadioItem>
+          ))}
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }
 
 export function AssigneeDropdown({
@@ -119,15 +133,17 @@ export function AssigneeDropdown({
   assignee,
   children,
 }: {
-  issueId: string
-  assignee?: { user: { id: string; name: string; image?: string | null } } | null
-  children?: React.ReactNode
+  issueId: string;
+  assignee?: {
+    user: { id: string; name: string; image?: string | null };
+  } | null;
+  children?: React.ReactNode;
 }) {
-  const mutation = useInlineUpdate()
+  const mutation = useInlineUpdate();
   const { data: members = [] } = useQuery({
     queryKey: ["members"],
     queryFn: getMembers,
-  })
+  });
 
   return (
     <DropdownMenu>
@@ -136,7 +152,10 @@ export function AssigneeDropdown({
           <button className="flex items-center gap-2 rounded-md px-2 py-1 text-sm hover:bg-accent transition-colors">
             {assignee ? (
               <>
-                <UserAvatar name={assignee.user.name} image={assignee.user.image} />
+                <UserAvatar
+                  name={assignee.user.name}
+                  image={assignee.user.image}
+                />
                 <span>{assignee.user.name}</span>
               </>
             ) : (
@@ -161,7 +180,9 @@ export function AssigneeDropdown({
         {members.map((member) => (
           <DropdownMenuItem
             key={member.id}
-            onClick={() => mutation.mutate({ id: issueId, assigneeId: member.id })}
+            onClick={() =>
+              mutation.mutate({ id: issueId, assigneeId: member.id })
+            }
             className={cn(assignee?.user.id === member.user.id && "bg-accent")}
           >
             <UserAvatar name={member.user.name} image={member.user.image} />
@@ -170,5 +191,5 @@ export function AssigneeDropdown({
         ))}
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

@@ -1,23 +1,24 @@
-import * as React from "react"
+import * as React from "react";
 import {
   Home,
   Users,
+  UsersRound,
   FolderKanban,
   Tags,
   Settings2,
-} from "lucide-react"
+} from "lucide-react";
 
-import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
-import { NavSecondary } from "@/components/nav-secondary"
-import { TeamSwitcher } from "@/components/team-switcher"
-import type { Organization, Project } from "@/lib/types"
+import { NavMain } from "@/components/nav-main";
+import { NavProjects } from "@/components/nav-projects";
+import { NavSecondary } from "@/components/nav-secondary";
+import { TeamSwitcher } from "@/components/team-switcher";
+import type { Organization, Project } from "@/lib/types";
 import {
   Sidebar,
   SidebarContent,
   SidebarHeader,
   SidebarRail,
-} from "@workspace/ui/components/sidebar"
+} from "@workspace/ui/components/sidebar";
 
 const navMain = [
   {
@@ -36,7 +37,12 @@ const navMain = [
     url: "/projects",
     icon: FolderKanban,
   },
-]
+  {
+    title: "Teams",
+    url: "/teams",
+    icon: UsersRound,
+  },
+];
 
 const navSecondary = [
   {
@@ -49,7 +55,7 @@ const navSecondary = [
     url: "#",
     icon: Settings2,
   },
-]
+];
 
 export function SidebarLeft({
   organizations,
@@ -57,9 +63,9 @@ export function SidebarLeft({
   projects = [],
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
-  organizations: Organization[]
-  activeOrganization?: Organization | null
-  projects?: Project[]
+  organizations: Organization[];
+  activeOrganization?: Organization | null;
+  projects?: Project[];
 }) {
   return (
     <Sidebar className="border-r-0" {...props}>
@@ -76,5 +82,5 @@ export function SidebarLeft({
       </SidebarContent>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

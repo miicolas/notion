@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 import {
   BadgeCheck,
   Bell,
@@ -6,14 +6,14 @@ import {
   CreditCard,
   LogOut,
   Sparkles,
-} from "lucide-react"
+} from "lucide-react";
 
-import { signOut } from "@/lib/auth-client"
+import { signOut } from "@/lib/auth-client";
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@workspace/ui/components/avatar"
+} from "@workspace/ui/components/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,42 +22,42 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@workspace/ui/components/dropdown-menu"
+} from "@workspace/ui/components/dropdown-menu";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@workspace/ui/components/sidebar"
+} from "@workspace/ui/components/sidebar";
 
 export function NavUser({
   user,
 }: {
   user: {
-    name: string
-    email: string
-    image?: string | null
-  }
+    name: string;
+    email: string;
+    image?: string | null;
+  };
 }) {
-  const { isMobile } = useSidebar()
-  const navigate = useNavigate()
+  const { isMobile } = useSidebar();
+  const navigate = useNavigate();
 
   const initials = user.name
     .split(" ")
     .map((part) => part[0])
     .join("")
     .toUpperCase()
-    .slice(0, 2)
+    .slice(0, 2);
 
   const handleSignOut = async () => {
     await signOut({
       fetchOptions: {
         onSuccess: () => {
-          navigate("/sign-in")
+          navigate("/sign-in");
         },
       },
-    })
-  }
+    });
+  };
 
   return (
     <SidebarMenu>
@@ -70,7 +70,9 @@ export function NavUser({
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={user.image ?? undefined} alt={user.name} />
-                <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
+                <AvatarFallback className="rounded-lg">
+                  {initials}
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">{user.name}</span>
@@ -89,7 +91,9 @@ export function NavUser({
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage src={user.image ?? undefined} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
+                  <AvatarFallback className="rounded-lg">
+                    {initials}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">{user.name}</span>
@@ -128,5 +132,5 @@ export function NavUser({
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }

@@ -1,40 +1,52 @@
-import * as React from "react"
-import { Button } from "@workspace/ui/components/button"
-import { Textarea } from "@workspace/ui/components/textarea"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { createComment } from "@/lib/comments"
+import { useForm } from "react-hook-form";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
+import { z } from "zod";
+import { Button } from "@workspace/ui/components/button";
+import { Textarea } from "@workspace/ui/components/textarea";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createComment } from "@/lib/comments";
+
+const commentSchema = z.object({
+  content: z.string().min(1),
+});
+
+type CommentFormValues = z.infer<typeof commentSchema>;
 
 export function CommentForm({ issueId }: { issueId: string }) {
-  const queryClient = useQueryClient()
-  const [content, setContent] = React.useState("")
+  const queryClient = useQueryClient();
+  const form = useForm<CommentFormValues>({
+    resolver: standardSchemaResolver(commentSchema),
+    defaultValues: { content: "" },
+  });
 
   const mutation = useMutation({
-    mutationFn: () => createComment({ issueId, content }),
+    mutationFn: (data: CommentFormValues) =>
+      createComment({ issueId, content: data.content }),
     onSuccess: () => {
-      setContent("")
-      queryClient.invalidateQueries({ queryKey: ["issue", issueId] })
+      form.reset();
+      queryClient.invalidateQueries({ queryKey: ["issue", issueId] });
     },
-  })
-
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    if (!content.trim()) return
-    mutation.mutate()
-  }
+  });
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+    <form
+      onSubmit={form.handleSubmit((data) => mutation.mutate(data))}
+      className="flex flex-col gap-2"
+    >
       <Textarea
         placeholder="Write a comment..."
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
+        {...form.register("content")}
         rows={3}
       />
       <div className="flex justify-end">
-        <Button type="submit" size="sm" disabled={mutation.isPending || !content.trim()}>
+        <Button
+          type="submit"
+          size="sm"
+          disabled={mutation.isPending || !form.watch("content").trim()}
+        >
           {mutation.isPending ? "Posting..." : "Comment"}
         </Button>
       </div>
     </form>
-  )
+  );
 }

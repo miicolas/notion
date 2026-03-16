@@ -1,12 +1,15 @@
-import * as React from "react"
-import { useQuery } from "@tanstack/react-query"
-import { Link } from "react-router-dom"
-import { DatePicker } from "@/components/date-picker"
-import { NavUser } from "@/components/nav-user"
-import { IssuePriorityIcon, type Priority } from "@/components/issue-priority-icon"
-import { useAuth } from "@/lib/auth-context"
-import { getIssues } from "@/lib/issues"
-import { getMembers } from "@/lib/members"
+import * as React from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
+import { DatePicker } from "@/components/date-picker";
+import { NavUser } from "@/components/nav-user";
+import {
+  IssuePriorityIcon,
+  type Priority,
+} from "@/components/issue-priority-icon";
+import { useAuth } from "@/lib/auth-context";
+import { getIssues } from "@/lib/issues";
+import { getMembers } from "@/lib/members";
 import {
   Sidebar,
   SidebarContent,
@@ -16,58 +19,58 @@ import {
   SidebarGroupLabel,
   SidebarGroupContent,
   SidebarSeparator,
-} from "@workspace/ui/components/sidebar"
+} from "@workspace/ui/components/sidebar";
 
 export function SidebarRight({
   user,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
-  user: { name: string; email: string; image?: string | null }
+  user: { name: string; email: string; image?: string | null };
 }) {
-  const { user: authUser } = useAuth()
-  const [selectedDate, setSelectedDate] = React.useState<Date | undefined>()
+  const { user: authUser } = useAuth();
+  const [selectedDate, setSelectedDate] = React.useState<Date | undefined>();
 
   const { data: members } = useQuery({
     queryKey: ["members"],
     queryFn: getMembers,
-  })
+  });
 
   const currentMember = React.useMemo(
     () => members?.find((m) => m.user.id === authUser?.id),
     [members, authUser?.id],
-  )
+  );
 
   const { data: issues } = useQuery({
     queryKey: ["issues", "assigned", currentMember?.id],
     queryFn: () => getIssues({ assigneeId: currentMember!.id }),
     enabled: !!currentMember?.id,
-  })
+  });
 
   const taskDates = React.useMemo(() => {
-    if (!issues) return []
-    const dates: Date[] = []
+    if (!issues) return [];
+    const dates: Date[] = [];
     for (const issue of issues) {
       if (issue.deadline) {
-        dates.push(new Date(issue.deadline))
+        dates.push(new Date(issue.deadline));
       }
     }
-    return dates
-  }, [issues])
+    return dates;
+  }, [issues]);
 
   const filteredIssues = React.useMemo(() => {
-    if (!issues) return []
+    if (!issues) return [];
     if (selectedDate) {
-      const dateStr = selectedDate.toISOString().split("T")[0]
+      const dateStr = selectedDate.toISOString().split("T")[0];
       return issues.filter(
         (issue) => issue.deadline && issue.deadline.startsWith(dateStr),
-      )
+      );
     }
     // Show upcoming tasks (with deadline >= today)
-    const today = new Date().toISOString().split("T")[0]
+    const today = new Date().toISOString().split("T")[0];
     return issues
       .filter((issue) => issue.deadline && issue.deadline >= today)
-      .sort((a, b) => (a.deadline! > b.deadline! ? 1 : -1))
-  }, [issues, selectedDate])
+      .sort((a, b) => (a.deadline! > b.deadline! ? 1 : -1));
+  }, [issues, selectedDate]);
 
   return (
     <Sidebar
@@ -118,10 +121,13 @@ export function SidebarRight({
                       {issue.project && issue.deadline && <span>·</span>}
                       {issue.deadline && (
                         <span>
-                          {new Date(issue.deadline).toLocaleDateString("fr-FR", {
-                            day: "numeric",
-                            month: "short",
-                          })}
+                          {new Date(issue.deadline).toLocaleDateString(
+                            "fr-FR",
+                            {
+                              day: "numeric",
+                              month: "short",
+                            },
+                          )}
                         </span>
                       )}
                     </div>
@@ -134,5 +140,5 @@ export function SidebarRight({
       </SidebarContent>
       <SidebarFooter />
     </Sidebar>
-  )
+  );
 }

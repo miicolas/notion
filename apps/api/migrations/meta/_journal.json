@@ -29,6 +29,13 @@
       "when": 1773658374896,
       "tag": "0003_complete_purifiers",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1773675713453,
+      "tag": "0004_bumpy_multiple_man",
+      "breakpoints": true
     }
   ]
 }

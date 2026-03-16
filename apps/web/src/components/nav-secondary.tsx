@@ -1,6 +1,6 @@
-import React from "react"
-import { Link } from "react-router-dom"
-import { type LucideIcon } from "lucide-react"
+import React from "react";
+import { Link } from "react-router-dom";
+import { type LucideIcon } from "lucide-react";
 
 import {
   SidebarGroup,
@@ -9,18 +9,18 @@ import {
   SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@workspace/ui/components/sidebar"
+} from "@workspace/ui/components/sidebar";
 
 export function NavSecondary({
   items,
   ...props
 }: {
   items: {
-    title: string
-    url: string
-    icon: LucideIcon
-    badge?: React.ReactNode
-  }[]
+    title: string;
+    url: string;
+    icon: LucideIcon;
+    badge?: React.ReactNode;
+  }[];
 } & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
   return (
     <SidebarGroup {...props}>
@@ -40,5 +40,5 @@ export function NavSecondary({
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>
-  )
+  );
 }

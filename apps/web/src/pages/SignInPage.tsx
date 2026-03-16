@@ -1,9 +1,9 @@
-import { useSearchParams } from "react-router-dom"
-import { LoginForm } from "@/components/login-form"
+import { useSearchParams } from "react-router-dom";
+import { LoginForm } from "@/components/login-form";
 
 export function SignInPage() {
-  const [searchParams] = useSearchParams()
-  const redirectTo = searchParams.get("redirect") ?? undefined
+  const [searchParams] = useSearchParams();
+  const redirectTo = searchParams.get("redirect") ?? undefined;
 
   return (
     <div className="flex min-h-svh flex-col items-center justify-center bg-muted p-6 md:p-10">
@@ -11,5 +11,5 @@ export function SignInPage() {
         <LoginForm redirectTo={redirectTo} />
       </div>
     </div>
-  )
+  );
 }

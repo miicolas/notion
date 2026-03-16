@@ -1,15 +1,15 @@
-import { Area, AreaChart, XAxis, YAxis } from "recharts"
+import { Area, AreaChart, XAxis, YAxis } from "recharts";
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
-} from "@workspace/ui/components/chart"
-import type { WidgetProps } from "../widget-registry"
+} from "@workspace/ui/components/chart";
+import type { WidgetProps } from "../widget-registry";
 
 const chartConfig = {
   count: { label: "Issues", color: "var(--chart-1)" },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 export function IssuesOverTimeChart({ stats }: WidgetProps) {
   const data = stats.issuesOverTime.map((d) => ({
@@ -18,13 +18,18 @@ export function IssuesOverTimeChart({ stats }: WidgetProps) {
       month: "short",
     }),
     count: d.count,
-  }))
+  }));
 
   return (
     <ChartContainer config={chartConfig} className="h-[200px] w-full">
       <AreaChart data={data}>
         <XAxis dataKey="date" tickLine={false} axisLine={false} fontSize={12} />
-        <YAxis tickLine={false} axisLine={false} fontSize={12} allowDecimals={false} />
+        <YAxis
+          tickLine={false}
+          axisLine={false}
+          fontSize={12}
+          allowDecimals={false}
+        />
         <ChartTooltip content={<ChartTooltipContent />} />
         <Area
           type="monotone"
@@ -36,5 +41,5 @@ export function IssuesOverTimeChart({ stats }: WidgetProps) {
         />
       </AreaChart>
     </ChartContainer>
-  )
+  );
 }

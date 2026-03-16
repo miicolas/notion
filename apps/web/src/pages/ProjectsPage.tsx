@@ -1,26 +1,26 @@
-import { useState } from "react"
-import { useQuery } from "@tanstack/react-query"
-import { useAuth } from "@/lib/auth-context"
-import { getProjects } from "@/lib/projects"
-import { getClients } from "@/lib/clients"
-import { ProjectTable } from "@/components/project-table"
-import { ProjectForm } from "@/components/project-form"
-import { Button } from "@workspace/ui/components/button"
-import { Plus } from "lucide-react"
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/lib/auth-context";
+import { getProjects } from "@/lib/projects";
+import { getClients } from "@/lib/clients";
+import { ProjectTable } from "@/components/project-table";
+import { ProjectForm } from "@/components/project-form";
+import { Button } from "@workspace/ui/components/button";
+import { Plus } from "lucide-react";
 
 export function ProjectsPage() {
-  const { activeOrganization } = useAuth()
+  const { activeOrganization } = useAuth();
   const { data: projects = [] } = useQuery({
     queryKey: ["projects"],
     queryFn: getProjects,
     enabled: !!activeOrganization,
-  })
+  });
   const { data: clients = [] } = useQuery({
     queryKey: ["clients"],
     queryFn: getClients,
     enabled: !!activeOrganization,
-  })
-  const [showForm, setShowForm] = useState(false)
+  });
+  const [showForm, setShowForm] = useState(false);
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
@@ -38,5 +38,5 @@ export function ProjectsPage() {
         onOpenChange={setShowForm}
       />
     </div>
-  )
+  );
 }

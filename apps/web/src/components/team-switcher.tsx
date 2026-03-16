@@ -1,6 +1,6 @@
-import { useNavigate } from "react-router-dom"
-import { useQueryClient } from "@tanstack/react-query"
-import { Building2, ChevronDown, Plus } from "lucide-react"
+import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
+import { Building2, ChevronDown, Plus } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -10,38 +10,38 @@ import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from "@workspace/ui/components/dropdown-menu"
+} from "@workspace/ui/components/dropdown-menu";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@workspace/ui/components/sidebar"
-import { authClient } from "@/lib/auth-client"
-import { useAuth } from "@/lib/auth-context"
-import type { Organization } from "@/lib/types"
+} from "@workspace/ui/components/sidebar";
+import { authClient } from "@/lib/auth-client";
+import { useAuth } from "@/lib/auth-context";
+import type { Organization } from "@/lib/types";
 
 export function TeamSwitcher({
   organizations,
   activeOrganization,
 }: {
-  organizations: Organization[]
-  activeOrganization?: Organization | null
+  organizations: Organization[];
+  activeOrganization?: Organization | null;
 }) {
-  const navigate = useNavigate()
-  const queryClient = useQueryClient()
-  const { refetch } = useAuth()
-  const activeOrg = activeOrganization ?? organizations[0]
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { refetch } = useAuth();
+  const activeOrg = activeOrganization ?? organizations[0];
 
   async function handleSwitchOrg(org: Organization) {
     await authClient.organization.setActive({
       organizationId: org.id,
-    })
-    await refetch()
-    queryClient.invalidateQueries()
+    });
+    await refetch();
+    queryClient.invalidateQueries();
   }
 
   if (!activeOrg) {
-    return null
+    return null;
   }
 
   return (
@@ -95,5 +95,5 @@ export function TeamSwitcher({
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }

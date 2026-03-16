@@ -9,6 +9,8 @@ import labelsRoutes from "./routes/labels";
 import commentsRoutes from "./routes/comments";
 import membersRoutes from "./routes/members";
 import dashboardRoutes from "./routes/dashboard";
+import sprintsRoutes from "./routes/sprints";
+import teamsRoutes from "./routes/teams";
 
 const ORIGIN = "https://d2v9z14bwlzu0y.cloudfront.net";
 
@@ -45,6 +47,8 @@ app.route("/api/labels", labelsRoutes);
 app.route("/api/comments", commentsRoutes);
 app.route("/api/members", membersRoutes);
 app.route("/api/dashboard", dashboardRoutes);
+app.route("/api/sprints", sprintsRoutes);
+app.route("/api/teams", teamsRoutes);
 
 app.get("/", (c) => {
   return c.json({ message: "API is running" });

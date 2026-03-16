@@ -1,18 +1,20 @@
-import { Routes, Route } from "react-router-dom"
-import { ProtectedRoute } from "@/lib/auth-context"
-import { AuthedLayout } from "@/layouts/AuthedLayout"
-import { ProjectLayout } from "@/layouts/ProjectLayout"
-import { SignInPage } from "@/pages/SignInPage"
-import { SignUpPage } from "@/pages/SignUpPage"
-import { DashboardPage } from "@/pages/DashboardPage"
-import { OnboardingPage } from "@/pages/OnboardingPage"
-import { ProjectsPage } from "@/pages/ProjectsPage"
-import { ProjectIssuesPage } from "@/pages/ProjectIssuesPage"
-import { ProjectSettingsPage } from "@/pages/ProjectSettingsPage"
-import { IssueDetailPage } from "@/pages/IssueDetailPage"
-import { ClientsPage } from "@/pages/ClientsPage"
-import { ClientDetailPage } from "@/pages/ClientDetailPage"
-import { LabelsPage } from "@/pages/LabelsPage"
+import { Routes, Route } from "react-router-dom";
+import { ProtectedRoute } from "@/lib/auth-context";
+import { AuthedLayout } from "@/layouts/AuthedLayout";
+import { ProjectLayout } from "@/layouts/ProjectLayout";
+import { SignInPage } from "@/pages/SignInPage";
+import { SignUpPage } from "@/pages/SignUpPage";
+import { DashboardPage } from "@/pages/DashboardPage";
+import { OnboardingPage } from "@/pages/OnboardingPage";
+import { ProjectsPage } from "@/pages/ProjectsPage";
+import { ProjectIssuesPage } from "@/pages/ProjectIssuesPage";
+import { ProjectSettingsPage } from "@/pages/ProjectSettingsPage";
+import { IssueDetailPage } from "@/pages/IssueDetailPage";
+import { ClientsPage } from "@/pages/ClientsPage";
+import { ClientDetailPage } from "@/pages/ClientDetailPage";
+import { LabelsPage } from "@/pages/LabelsPage";
+import { TeamsPage } from "@/pages/TeamsPage";
+import { TeamDetailPage } from "@/pages/TeamDetailPage";
 
 export function App() {
   return (
@@ -34,8 +36,10 @@ export function App() {
           <Route path="/clients" element={<ClientsPage />} />
           <Route path="/clients/:clientId" element={<ClientDetailPage />} />
           <Route path="/labels" element={<LabelsPage />} />
+          <Route path="/teams" element={<TeamsPage />} />
+          <Route path="/teams/:teamId" element={<TeamDetailPage />} />
         </Route>
       </Route>
     </Routes>
-  )
+  );
 }

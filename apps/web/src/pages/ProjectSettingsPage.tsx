@@ -1,34 +1,34 @@
-import { useState } from "react"
-import { useParams, useNavigate } from "react-router-dom"
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { deleteProject } from "@/lib/projects"
-import { getClients } from "@/lib/clients"
-import { ProjectForm } from "@/components/project-form"
-import { Button } from "@workspace/ui/components/button"
-import { Trash2 } from "lucide-react"
+import { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteProject } from "@/lib/projects";
+import { getClients } from "@/lib/clients";
+import { ProjectForm } from "@/components/project-form";
+import { Button } from "@workspace/ui/components/button";
+import { Trash2 } from "lucide-react";
 
 export function ProjectSettingsPage() {
-  const { projectId } = useParams<{ projectId: string }>()
-  const navigate = useNavigate()
-  const queryClient = useQueryClient()
-  const [showEdit, setShowEdit] = useState(false)
+  const { projectId } = useParams<{ projectId: string }>();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const [showEdit, setShowEdit] = useState(false);
 
   const { data: clients = [] } = useQuery({
     queryKey: ["clients"],
     queryFn: getClients,
-  })
+  });
 
   const deleteMutation = useMutation({
     mutationFn: () => deleteProject(projectId!),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["projects"] })
-      navigate("/projects")
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+      navigate("/projects");
     },
-  })
+  });
 
   function handleDelete() {
-    if (!confirm("Delete this project and all its issues?")) return
-    deleteMutation.mutate()
+    if (!confirm("Delete this project and all its issues?")) return;
+    deleteMutation.mutate();
   }
 
   return (
@@ -43,7 +43,11 @@ export function ProjectSettingsPage() {
           Delete project
         </Button>
       </div>
-      <ProjectForm clients={clients} open={showEdit} onOpenChange={setShowEdit} />
+      <ProjectForm
+        clients={clients}
+        open={showEdit}
+        onOpenChange={setShowEdit}
+      />
     </div>
-  )
+  );
 }

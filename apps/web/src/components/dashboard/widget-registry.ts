@@ -1,5 +1,5 @@
-import type { ComponentType } from "react"
-import type { DashboardStats, WidgetConfig } from "@/lib/types"
+import type { ComponentType } from "react";
+import type { DashboardStats, WidgetConfig } from "@/lib/types";
 import {
   BarChart3,
   PieChart,
@@ -7,24 +7,24 @@ import {
   Users,
   FolderKanban,
   Activity,
-} from "lucide-react"
-import { IssuesByStatusChart } from "./widgets/issues-by-status-chart"
-import { IssuesByPriorityChart } from "./widgets/issues-by-priority-chart"
-import { IssuesOverTimeChart } from "./widgets/issues-over-time-chart"
-import { IssuesByAssigneeChart } from "./widgets/issues-by-assignee-chart"
-import { IssuesByProjectChart } from "./widgets/issues-by-project-chart"
-import { RecentActivityWidget } from "./widgets/recent-activity-widget"
+} from "lucide-react";
+import { IssuesByStatusChart } from "./widgets/issues-by-status-chart";
+import { IssuesByPriorityChart } from "./widgets/issues-by-priority-chart";
+import { IssuesOverTimeChart } from "./widgets/issues-over-time-chart";
+import { IssuesByAssigneeChart } from "./widgets/issues-by-assignee-chart";
+import { IssuesByProjectChart } from "./widgets/issues-by-project-chart";
+import { RecentActivityWidget } from "./widgets/recent-activity-widget";
 
-export type WidgetProps = { stats: DashboardStats }
+export type WidgetProps = { stats: DashboardStats };
 
 export type WidgetDefinition = {
-  type: string
-  label: string
-  description: string
-  icon: ComponentType<{ className?: string }>
-  defaultSize: WidgetConfig["size"]
-  component: ComponentType<WidgetProps>
-}
+  type: string;
+  label: string;
+  description: string;
+  icon: ComponentType<{ className?: string }>;
+  defaultSize: WidgetConfig["size"];
+  component: ComponentType<WidgetProps>;
+};
 
 export const WIDGET_REGISTRY: Record<string, WidgetDefinition> = {
   "issues-by-status": {
@@ -75,7 +75,7 @@ export const WIDGET_REGISTRY: Record<string, WidgetDefinition> = {
     defaultSize: "md",
     component: RecentActivityWidget,
   },
-}
+};
 
 export const DEFAULT_WIDGETS: WidgetConfig[] = [
   { id: "1", type: "issues-by-status", size: "md" },
@@ -84,4 +84,4 @@ export const DEFAULT_WIDGETS: WidgetConfig[] = [
   { id: "4", type: "issues-by-assignee", size: "md" },
   { id: "5", type: "issues-by-project", size: "sm" },
   { id: "6", type: "recent-activity", size: "md" },
-]
+];

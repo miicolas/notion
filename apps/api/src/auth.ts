@@ -51,7 +51,9 @@ export const auth = betterAuth({
         user,
       } as any, // eslint-disable-line @typescript-eslint/no-explicit-any -- ac.newRole({}) produces `never` constraint
     }),
-    organization(),
+    organization({
+      teams: { enabled: true },
+    }),
     openAPI(),
     multiSession(),
     testUtils({ captureOTP: true }),

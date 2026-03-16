@@ -1,66 +1,69 @@
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
-import { cn } from "@workspace/ui/lib/utils"
-import { Button } from "@workspace/ui/components/button"
-import { Card, CardContent } from "@workspace/ui/components/card"
+import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
+import { z } from "zod";
+import { cn } from "@workspace/ui/lib/utils";
+import { Button } from "@workspace/ui/components/button";
+import { Card, CardContent } from "@workspace/ui/components/card";
 import {
   Field,
   FieldDescription,
   FieldGroup,
   FieldLabel,
   FieldSeparator,
-} from "@workspace/ui/components/field"
-import { Input } from "@workspace/ui/components/input"
-import { signUp } from "@/lib/auth-client"
-import { useAuth } from "@/lib/auth-context"
+} from "@workspace/ui/components/field";
+import { Input } from "@workspace/ui/components/input";
+import { signUp } from "@/lib/auth-client";
+import { useAuth } from "@/lib/auth-context";
+
+const signupSchema = z
+  .object({
+    name: z.string().min(1),
+    email: z.string().email(),
+    password: z.string().min(1),
+    confirmPassword: z.string().min(1),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match.",
+    path: ["confirmPassword"],
+  });
+
+type SignupFormValues = z.infer<typeof signupSchema>;
 
 export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const navigate = useNavigate()
-  const { refetch } = useAuth()
-  const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
+  const navigate = useNavigate();
+  const { refetch } = useAuth();
+  const form = useForm<SignupFormValues>({
+    resolver: standardSchemaResolver(signupSchema),
+    defaultValues: { name: "", email: "", password: "", confirmPassword: "" },
+  });
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    setError(null)
-    setLoading(true)
-
-    const formData = new FormData(e.currentTarget)
-    const email = formData.get("email") as string
-    const password = formData.get("password") as string
-    const confirmPassword = formData.get("confirm-password") as string
-    const name = formData.get("name") as string
-
-    if (password !== confirmPassword) {
-      setError("Passwords do not match.")
-      setLoading(false)
-      return
-    }
-
+  async function onSubmit(data: SignupFormValues) {
     const { error: authError } = await signUp.email({
-      email,
-      password,
-      name,
-    })
+      email: data.email,
+      password: data.password,
+      name: data.name,
+    });
 
     if (authError) {
-      setError(authError.message ?? "An error occurred.")
-      setLoading(false)
-      return
+      form.setError("root", {
+        message: authError.message ?? "An error occurred.",
+      });
+      return;
     }
 
-    await refetch()
-    navigate("/onboarding")
+    await refetch();
+    navigate("/onboarding");
   }
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8" onSubmit={handleSubmit}>
+          <form className="p-6 md:p-8" onSubmit={form.handleSubmit(onSubmit)}>
             <FieldGroup>
               <div className="flex flex-col items-center gap-2 text-center">
                 <h1 className="text-2xl font-bold">Create your account</h1>
@@ -70,16 +73,19 @@ export function SignupForm({
               </div>
               <Field>
                 <FieldLabel htmlFor="name">Name</FieldLabel>
-                <Input id="name" name="name" placeholder="John Doe" required />
+                <Input
+                  id="name"
+                  placeholder="John Doe"
+                  {...form.register("name")}
+                />
               </Field>
               <Field>
                 <FieldLabel htmlFor="email">Email</FieldLabel>
                 <Input
                   id="email"
-                  name="email"
                   type="email"
                   placeholder="m@example.com"
-                  required
+                  {...form.register("email")}
                 />
               </Field>
               <Field>
@@ -88,31 +94,38 @@ export function SignupForm({
                     <FieldLabel htmlFor="password">Password</FieldLabel>
                     <Input
                       id="password"
-                      name="password"
                       type="password"
-                      required
+                      {...form.register("password")}
                     />
                   </Field>
                   <Field>
-                    <FieldLabel htmlFor="confirm-password">Confirm</FieldLabel>
+                    <FieldLabel htmlFor="confirmPassword">Confirm</FieldLabel>
                     <Input
-                      id="confirm-password"
-                      name="confirm-password"
+                      id="confirmPassword"
                       type="password"
-                      required
+                      {...form.register("confirmPassword")}
                     />
                   </Field>
                 </Field>
                 <FieldDescription>
                   Must be at least 8 characters long.
                 </FieldDescription>
+                {form.formState.errors.confirmPassword && (
+                  <p className="text-sm text-destructive">
+                    {form.formState.errors.confirmPassword.message}
+                  </p>
+                )}
               </Field>
-              {error && (
-                <p className="text-sm text-destructive text-center">{error}</p>
+              {form.formState.errors.root && (
+                <p className="text-sm text-destructive text-center">
+                  {form.formState.errors.root.message}
+                </p>
               )}
               <Field>
-                <Button type="submit" disabled={loading}>
-                  {loading ? "Creating account..." : "Create Account"}
+                <Button type="submit" disabled={form.formState.isSubmitting}>
+                  {form.formState.isSubmitting
+                    ? "Creating account..."
+                    : "Create Account"}
                 </Button>
               </Field>
               <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
@@ -147,5 +160,5 @@ export function SignupForm({
         .
       </FieldDescription>
     </div>
-  )
+  );
 }

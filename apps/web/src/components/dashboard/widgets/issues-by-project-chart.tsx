@@ -1,11 +1,11 @@
-import { RadialBar, RadialBarChart } from "recharts"
+import { RadialBar, RadialBarChart } from "recharts";
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
-} from "@workspace/ui/components/chart"
-import type { WidgetProps } from "../widget-registry"
+} from "@workspace/ui/components/chart";
+import type { WidgetProps } from "../widget-registry";
 
 const colors = [
   "var(--chart-1)",
@@ -13,18 +13,18 @@ const colors = [
   "var(--chart-3)",
   "var(--chart-4)",
   "var(--chart-5)",
-]
+];
 
 export function IssuesByProjectChart({ stats }: WidgetProps) {
   const data = stats.issuesByProject.map((d, i) => ({
     name: d.projectName,
     count: d.count,
     fill: colors[i % colors.length],
-  }))
+  }));
 
   const chartConfig = Object.fromEntries(
     data.map((d) => [d.name, { label: d.name, color: d.fill }]),
-  ) as ChartConfig
+  ) as ChartConfig;
 
   return (
     <ChartContainer config={chartConfig} className="h-[200px] w-full">
@@ -39,5 +39,5 @@ export function IssuesByProjectChart({ stats }: WidgetProps) {
         <RadialBar dataKey="count" background />
       </RadialBarChart>
     </ChartContainer>
-  )
+  );
 }

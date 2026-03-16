@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -6,21 +6,25 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@workspace/ui/components/table"
-import { LabelBadge } from "./label-badge"
-import { StatusDropdown, PriorityDropdown, AssigneeDropdown } from "./issue-inline-edit"
-import { CopyPromptButton } from "./copy-prompt-button"
-import type { Issue } from "@/lib/types"
+} from "@workspace/ui/components/table";
+import { LabelBadge } from "./label-badge";
+import {
+  StatusDropdown,
+  PriorityDropdown,
+  AssigneeDropdown,
+} from "./issue-inline-edit";
+import { CopyPromptButton } from "./copy-prompt-button";
+import type { Issue } from "@/lib/types";
 
 export function IssueTable({ issues }: { issues: Issue[] }) {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   if (issues.length === 0) {
     return (
       <div className="flex h-40 items-center justify-center text-muted-foreground">
         No issues yet.
       </div>
-    )
+    );
   }
 
   return (
@@ -49,9 +53,7 @@ export function IssueTable({ issues }: { issues: Issue[] }) {
             <TableCell onClick={(e) => e.stopPropagation()}>
               <StatusDropdown issueId={issue.id} value={issue.status} />
             </TableCell>
-            <TableCell className="font-medium">
-              {issue.title}
-            </TableCell>
+            <TableCell className="font-medium">{issue.title}</TableCell>
             <TableCell>
               <div className="flex gap-1">
                 {issue.issueLabels?.map((il) => (
@@ -78,5 +80,5 @@ export function IssueTable({ issues }: { issues: Issue[] }) {
         ))}
       </TableBody>
     </Table>
-  )
+  );
 }

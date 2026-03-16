@@ -1,43 +1,123 @@
-import { useState } from "react"
-import { useParams, useSearchParams } from "react-router-dom"
-import { useQuery } from "@tanstack/react-query"
-import { getIssues } from "@/lib/issues"
-import { getLabels } from "@/lib/labels"
-import { getMembers } from "@/lib/members"
-import { IssueTable } from "@/components/issue-table"
-import { IssueKanban } from "@/components/issue-kanban"
-import { IssueForm } from "@/components/issue-form"
-import { Button } from "@workspace/ui/components/button"
-import { Plus, LayoutList, Kanban } from "lucide-react"
+import { useState } from "react";
+import { useParams, useSearchParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { getIssues } from "@/lib/issues";
+import { getLabels } from "@/lib/labels";
+import { getMembers } from "@/lib/members";
+import { getSprints } from "@/lib/sprints";
+import { getTeams } from "@/lib/teams";
+import { IssueTable } from "@/components/issue-table";
+import { IssueKanban } from "@/components/issue-kanban";
+import { IssueForm } from "@/components/issue-form";
+import { SprintList } from "@/components/sprint-list";
+import { Button } from "@workspace/ui/components/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@workspace/ui/components/select";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@workspace/ui/components/sheet";
+import { Plus, LayoutList, Kanban, Settings } from "lucide-react";
 
 export function ProjectIssuesPage() {
-  const { projectId } = useParams<{ projectId: string }>()
-  const [searchParams, setSearchParams] = useSearchParams()
-  const view = searchParams.get("view") ?? "table"
-  const [showForm, setShowForm] = useState(false)
+  const { projectId } = useParams<{ projectId: string }>();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const view = searchParams.get("view") ?? "table";
+  const [showForm, setShowForm] = useState(false);
+  const [showSprintSheet, setShowSprintSheet] = useState(false);
+  const [selectedSprintId, setSelectedSprintId] = useState<string>("backlog");
+  const [selectedTeamId, setSelectedTeamId] = useState<string>("all");
+
+  const { data: sprints = [] } = useQuery({
+    queryKey: ["sprints", projectId],
+    queryFn: () => getSprints(projectId!),
+    enabled: !!projectId,
+  });
+
+  const { data: teams = [] } = useQuery({
+    queryKey: ["teams"],
+    queryFn: getTeams,
+  });
+
+  const sprintIdParam =
+    selectedSprintId === "backlog" ? "none" : selectedSprintId;
+  const teamIdParam = selectedTeamId === "all" ? undefined : selectedTeamId;
 
   const { data: issues = [] } = useQuery({
-    queryKey: ["issues", { projectId }],
-    queryFn: () => getIssues({ projectId }),
-  })
+    queryKey: [
+      "issues",
+      { projectId, sprintId: sprintIdParam, teamId: teamIdParam },
+    ],
+    queryFn: () =>
+      getIssues({ projectId, sprintId: sprintIdParam, teamId: teamIdParam }),
+  });
   const { data: labels = [] } = useQuery({
     queryKey: ["labels"],
     queryFn: getLabels,
-  })
+  });
   const { data: members = [] } = useQuery({
     queryKey: ["members"],
     queryFn: getMembers,
-  })
+  });
 
   function toggleView() {
-    setSearchParams({ view: view === "kanban" ? "table" : "kanban" })
+    setSearchParams({ view: view === "kanban" ? "table" : "kanban" });
   }
+
+  const activeSprints = sprints.filter((s) => s.status === "active");
+  const plannedSprints = sprints.filter((s) => s.status === "planned");
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
       <div className="flex items-center justify-between">
         <h2 className="font-semibold">Issues</h2>
         <div className="flex items-center gap-2">
+          <Select value={selectedSprintId} onValueChange={setSelectedSprintId}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select sprint" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="backlog">Backlog</SelectItem>
+              {activeSprints.map((s) => (
+                <SelectItem key={s.id} value={s.id}>
+                  {s.name} (active)
+                </SelectItem>
+              ))}
+              {plannedSprints.map((s) => (
+                <SelectItem key={s.id} value={s.id}>
+                  {s.name} (planned)
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select value={selectedTeamId} onValueChange={setSelectedTeamId}>
+            <SelectTrigger className="w-[160px]">
+              <SelectValue placeholder="All teams" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All teams</SelectItem>
+              {teams.map((t) => (
+                <SelectItem key={t.id} value={t.id}>
+                  {t.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowSprintSheet(true)}
+          >
+            <Settings className="mr-1 size-4" />
+            Sprints
+          </Button>
           <Button variant="outline" size="sm" onClick={toggleView}>
             {view === "kanban" ? (
               <>
@@ -68,9 +148,21 @@ export function ProjectIssuesPage() {
         projectId={projectId!}
         labels={labels}
         members={members}
+        sprints={sprints}
         open={showForm}
         onOpenChange={setShowForm}
       />
+
+      <Sheet open={showSprintSheet} onOpenChange={setShowSprintSheet}>
+        <SheetContent>
+          <SheetHeader>
+            <SheetTitle>Manage Sprints</SheetTitle>
+          </SheetHeader>
+          <div className="p-6 pt-0">
+            <SprintList sprints={sprints} projectId={projectId!} />
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
-  )
+  );
 }

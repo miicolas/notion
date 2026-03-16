@@ -1,13 +1,13 @@
-import { Link } from "react-router-dom"
-import { FolderKanban, Plus } from "lucide-react"
+import { Link } from "react-router-dom";
+import { FolderKanban, Plus } from "lucide-react";
 import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@workspace/ui/components/sidebar"
-import type { Project } from "@/lib/types"
+} from "@workspace/ui/components/sidebar";
+import type { Project } from "@/lib/types";
 
 export function NavProjects({ projects }: { projects: Project[] }) {
   return (
@@ -34,5 +34,5 @@ export function NavProjects({ projects }: { projects: Project[] }) {
         </SidebarMenuItem>
       </SidebarMenu>
     </SidebarGroup>
-  )
+  );
 }

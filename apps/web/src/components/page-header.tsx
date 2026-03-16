@@ -1,14 +1,20 @@
-import type { ReactNode } from "react"
+import type { ReactNode } from "react";
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbList,
   BreadcrumbPage,
-} from "@workspace/ui/components/breadcrumb"
-import { Separator } from "@workspace/ui/components/separator"
-import { SidebarTrigger } from "@workspace/ui/components/sidebar"
+} from "@workspace/ui/components/breadcrumb";
+import { Separator } from "@workspace/ui/components/separator";
+import { SidebarTrigger } from "@workspace/ui/components/sidebar";
 
-export function PageHeader({ title, children }: { title: string; children?: ReactNode }) {
+export function PageHeader({
+  title,
+  children,
+}: {
+  title: string;
+  children?: ReactNode;
+}) {
   return (
     <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center gap-2 bg-background">
       <div className="flex flex-1 items-center gap-2 px-3">
@@ -24,5 +30,5 @@ export function PageHeader({ title, children }: { title: string; children?: Reac
       </div>
       {children && <div className="px-3">{children}</div>}
     </header>
-  )
+  );
 }

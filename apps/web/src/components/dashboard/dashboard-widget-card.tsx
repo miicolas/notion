@@ -1,15 +1,20 @@
-import { useSortable } from "@dnd-kit/sortable"
-import { GripVertical, X } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/components/card"
-import { Button } from "@workspace/ui/components/button"
-import type { WidgetConfig, DashboardStats } from "@/lib/types"
-import { WIDGET_REGISTRY } from "./widget-registry"
+import { useSortable } from "@dnd-kit/sortable";
+import { GripVertical, X } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@workspace/ui/components/card";
+import { Button } from "@workspace/ui/components/button";
+import type { WidgetConfig, DashboardStats } from "@/lib/types";
+import { WIDGET_REGISTRY } from "./widget-registry";
 
 const sizeClasses: Record<WidgetConfig["size"], string> = {
   sm: "col-span-1",
   md: "md:col-span-2 col-span-1",
   lg: "md:col-span-3 col-span-1",
-}
+};
 
 export function DashboardWidgetCard({
   config,
@@ -17,12 +22,12 @@ export function DashboardWidgetCard({
   onRemove,
   isDragOverlay,
 }: {
-  config: WidgetConfig
-  stats: DashboardStats
-  onRemove: (id: string) => void
-  isDragOverlay?: boolean
+  config: WidgetConfig;
+  stats: DashboardStats;
+  onRemove: (id: string) => void;
+  isDragOverlay?: boolean;
 }) {
-  const def = WIDGET_REGISTRY[config.type]
+  const def = WIDGET_REGISTRY[config.type];
   const {
     attributes,
     listeners,
@@ -30,7 +35,7 @@ export function DashboardWidgetCard({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: config.id })
+  } = useSortable({ id: config.id });
 
   // Only use translate, never scale — prevents deformation across different col-spans
   const style = {
@@ -39,11 +44,11 @@ export function DashboardWidgetCard({
       : undefined,
     transition,
     opacity: isDragging ? 0.3 : 1,
-  }
+  };
 
-  if (!def) return null
+  if (!def) return null;
 
-  const WidgetComponent = def.component
+  const WidgetComponent = def.component;
 
   if (isDragOverlay) {
     return (
@@ -58,7 +63,7 @@ export function DashboardWidgetCard({
           <WidgetComponent stats={stats} />
         </CardContent>
       </Card>
-    )
+    );
   }
 
   return (
@@ -89,5 +94,5 @@ export function DashboardWidgetCard({
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

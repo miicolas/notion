@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query"
-import { useState } from "react"
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import {
   DndContext,
   type DragEndEvent,
@@ -9,73 +9,76 @@ import {
   useSensor,
   useSensors,
   closestCenter,
-} from "@dnd-kit/core"
+} from "@dnd-kit/core";
+import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
+import { useAuth } from "@/lib/auth-context";
+import { getProjects } from "@/lib/projects";
+import { getIssues } from "@/lib/issues";
+import { getDashboardStats } from "@/lib/dashboard";
+import { useDashboardConfig } from "@/hooks/use-dashboard-config";
+import { PageHeader } from "@/components/page-header";
+import { DashboardWidgetCard } from "@/components/dashboard/dashboard-widget-card";
+import { AddWidgetDialog } from "@/components/dashboard/add-widget-dialog";
 import {
-  SortableContext,
-  rectSortingStrategy,
-} from "@dnd-kit/sortable"
-import { useAuth } from "@/lib/auth-context"
-import { getProjects } from "@/lib/projects"
-import { getIssues } from "@/lib/issues"
-import { getDashboardStats } from "@/lib/dashboard"
-import { useDashboardConfig } from "@/hooks/use-dashboard-config"
-import { PageHeader } from "@/components/page-header"
-import { DashboardWidgetCard } from "@/components/dashboard/dashboard-widget-card"
-import { AddWidgetDialog } from "@/components/dashboard/add-widget-dialog"
-import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/components/card"
-import { FolderKanban, CheckCircle2, Clock, AlertTriangle } from "lucide-react"
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@workspace/ui/components/card";
+import { FolderKanban, CheckCircle2, Clock, AlertTriangle } from "lucide-react";
 
 export function DashboardPage() {
-  const { activeOrganization } = useAuth()
-  const { widgets, addWidget, removeWidget, reorderWidgets } = useDashboardConfig()
+  const { activeOrganization } = useAuth();
+  const { widgets, addWidget, removeWidget, reorderWidgets } =
+    useDashboardConfig();
 
   const { data: projects = [] } = useQuery({
     queryKey: ["projects"],
     queryFn: getProjects,
     enabled: !!activeOrganization,
-  })
+  });
   const { data: issues = [] } = useQuery({
     queryKey: ["issues"],
     queryFn: () => getIssues(),
     enabled: !!activeOrganization,
-  })
+  });
   const { data: stats } = useQuery({
     queryKey: ["dashboard-stats"],
     queryFn: getDashboardStats,
     enabled: !!activeOrganization,
-  })
+  });
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
-  )
+  );
 
-  const activeProjects = projects.filter((p) => p.status === "active")
+  const activeProjects = projects.filter((p) => p.status === "active");
   const todoCount = issues.filter(
     (i) => i.status === "todo" || i.status === "in_progress",
-  ).length
-  const doneCount = issues.filter((i) => i.status === "done").length
+  ).length;
+  const doneCount = issues.filter((i) => i.status === "done").length;
   const urgentCount = issues.filter(
     (i) => i.priority === "urgent" || i.priority === "high",
-  ).length
+  ).length;
 
-  const [activeWidgetId, setActiveWidgetId] = useState<string | null>(null)
+  const [activeWidgetId, setActiveWidgetId] = useState<string | null>(null);
   const activeWidget = activeWidgetId
     ? widgets.find((w) => w.id === activeWidgetId)
-    : null
+    : null;
 
   function handleDragStart(event: DragStartEvent) {
-    setActiveWidgetId(event.active.id as string)
+    setActiveWidgetId(event.active.id as string);
   }
 
   function handleDragEnd(event: DragEndEvent) {
-    setActiveWidgetId(null)
-    const { active, over } = event
-    if (!over || active.id === over.id) return
+    setActiveWidgetId(null);
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
 
-    const oldIndex = widgets.findIndex((w) => w.id === active.id)
-    const newIndex = widgets.findIndex((w) => w.id === over.id)
+    const oldIndex = widgets.findIndex((w) => w.id === active.id);
+    const newIndex = widgets.findIndex((w) => w.id === over.id);
     if (oldIndex !== -1 && newIndex !== -1) {
-      reorderWidgets(oldIndex, newIndex)
+      reorderWidgets(oldIndex, newIndex);
     }
   }
 
@@ -94,7 +97,9 @@ export function DashboardPage() {
         <div className="grid gap-4 md:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Active Projects</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Active Projects
+              </CardTitle>
               <FolderKanban className="size-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -169,5 +174,5 @@ export function DashboardPage() {
         )}
       </div>
     </>
-  )
+  );
 }

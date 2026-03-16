@@ -1,21 +1,21 @@
-import { Link } from "react-router-dom"
-import { type LucideIcon } from "lucide-react"
+import { Link } from "react-router-dom";
+import { type LucideIcon } from "lucide-react";
 
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@workspace/ui/components/sidebar"
+} from "@workspace/ui/components/sidebar";
 
 export function NavMain({
   items,
 }: {
   items: {
-    title: string
-    url: string
-    icon: LucideIcon
-    isActive?: boolean
-  }[]
+    title: string;
+    url: string;
+    icon: LucideIcon;
+    isActive?: boolean;
+  }[];
 }) {
   return (
     <SidebarMenu>
@@ -30,5 +30,5 @@ export function NavMain({
         </SidebarMenuItem>
       ))}
     </SidebarMenu>
-  )
+  );
 }

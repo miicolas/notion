@@ -1,31 +1,35 @@
-import { Link } from "react-router-dom"
-import { useQuery } from "@tanstack/react-query"
-import { useAuth } from "@/lib/auth-context"
-import { getProjects } from "@/lib/projects"
-import { getIssues } from "@/lib/issues"
-import { Badge } from "@workspace/ui/components/badge"
-import type { WidgetProps } from "../widget-registry"
+import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/lib/auth-context";
+import { getProjects } from "@/lib/projects";
+import { getIssues } from "@/lib/issues";
+import { Badge } from "@workspace/ui/components/badge";
+import type { WidgetProps } from "../widget-registry";
 
 export function RecentActivityWidget(_props: WidgetProps) {
-  const { activeOrganization } = useAuth()
+  const { activeOrganization } = useAuth();
   const { data: projects = [] } = useQuery({
     queryKey: ["projects"],
     queryFn: getProjects,
     enabled: !!activeOrganization,
-  })
+  });
   const { data: issues = [] } = useQuery({
     queryKey: ["issues"],
     queryFn: () => getIssues(),
     enabled: !!activeOrganization,
-  })
+  });
 
-  const recentProjects = projects.filter((p) => p.status === "active").slice(0, 5)
-  const recentIssues = issues.slice(0, 5)
+  const recentProjects = projects
+    .filter((p) => p.status === "active")
+    .slice(0, 5);
+  const recentIssues = issues.slice(0, 5);
 
   return (
     <div className="grid gap-4 md:grid-cols-2">
       <div>
-        <h4 className="mb-2 text-sm font-medium text-muted-foreground">Projets récents</h4>
+        <h4 className="mb-2 text-sm font-medium text-muted-foreground">
+          Projets récents
+        </h4>
         {recentProjects.length === 0 ? (
           <p className="text-sm text-muted-foreground">Aucun projet.</p>
         ) : (
@@ -44,7 +48,9 @@ export function RecentActivityWidget(_props: WidgetProps) {
         )}
       </div>
       <div>
-        <h4 className="mb-2 text-sm font-medium text-muted-foreground">Issues récentes</h4>
+        <h4 className="mb-2 text-sm font-medium text-muted-foreground">
+          Issues récentes
+        </h4>
         {recentIssues.length === 0 ? (
           <p className="text-sm text-muted-foreground">Aucune issue.</p>
         ) : (
@@ -56,12 +62,14 @@ export function RecentActivityWidget(_props: WidgetProps) {
                 className="flex items-center justify-between rounded-md px-2 py-1.5 hover:bg-muted"
               >
                 <span className="text-sm">{issue.title}</span>
-                <Badge variant="outline">{issue.status.replace("_", " ")}</Badge>
+                <Badge variant="outline">
+                  {issue.status.replace("_", " ")}
+                </Badge>
               </Link>
             ))}
           </div>
         )}
       </div>
     </div>
-  )
+  );
 }

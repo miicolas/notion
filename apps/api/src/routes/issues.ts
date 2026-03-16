@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { eq, and, inArray, sql } from "drizzle-orm";
+import { eq, and, inArray, sql, isNull } from "drizzle-orm";
 import { db } from "../db";
 import * as schema from "../db/schema";
 import { authMiddleware, type AuthContext } from "../middleware/auth";
@@ -16,9 +16,17 @@ app.get("/", async (c) => {
   const priority = c.req.query("priority");
   const assigneeId = c.req.query("assigneeId");
   const labelId = c.req.query("labelId");
+  const sprintId = c.req.query("sprintId");
 
   let conditions = [eq(schema.issue.organizationId, organizationId)];
   if (projectId) conditions.push(eq(schema.issue.projectId, projectId));
+  if (sprintId) {
+    if (sprintId === "none") {
+      conditions.push(isNull(schema.issue.sprintId));
+    } else {
+      conditions.push(eq(schema.issue.sprintId, sprintId));
+    }
+  }
   if (status)
     conditions.push(
       eq(
@@ -40,6 +48,31 @@ app.get("/", async (c) => {
     );
   if (assigneeId) conditions.push(eq(schema.issue.assigneeId, assigneeId));
 
+  // Filter by team: get team members' userIds, resolve to org member IDs, filter issues
+  const teamId = c.req.query("teamId");
+  if (teamId) {
+    const teamMembers = await db.query.teamMember.findMany({
+      where: eq(schema.teamMember.teamId, teamId),
+    });
+    const teamUserIds = teamMembers.map((tm) => tm.userId);
+    if (teamUserIds.length > 0) {
+      const orgMembers = await db.query.member.findMany({
+        where: and(
+          eq(schema.member.organizationId, organizationId),
+          inArray(schema.member.userId, teamUserIds),
+        ),
+      });
+      const memberIds = orgMembers.map((m) => m.id);
+      if (memberIds.length > 0) {
+        conditions.push(inArray(schema.issue.assigneeId, memberIds));
+      } else {
+        return c.json([]);
+      }
+    } else {
+      return c.json([]);
+    }
+  }
+
   let issues = await db.query.issue.findMany({
     where: and(...conditions),
     with: {
@@ -52,6 +85,7 @@ app.get("/", async (c) => {
         with: { label: true },
       },
       project: { columns: { id: true, name: true } },
+      sprint: { columns: { id: true, name: true, status: true } },
     },
     orderBy: (issue, { asc }) => [asc(issue.sortOrder)],
   });
@@ -97,6 +131,7 @@ app.post("/", async (c) => {
       status: body.status ?? "backlog",
       priority: body.priority ?? "no_priority",
       deadline: body.deadline ? new Date(body.deadline) : null,
+      sprintId: body.sprintId ?? null,
       sortOrder: nextOrder,
     })
     .returning();
@@ -132,6 +167,7 @@ app.get("/:id", async (c) => {
       },
       issueLabels: { with: { label: true } },
       project: { columns: { id: true, name: true } },
+      sprint: { columns: { id: true, name: true, status: true } },
       comments: {
         with: {
           author: { columns: { id: true, name: true, image: true } },
@@ -160,6 +196,7 @@ app.patch("/:id", async (c) => {
     assigneeId,
     deadline,
     sortOrder,
+    sprintId,
   } = body;
 
   const issueUpdate: Record<string, unknown> = {};
@@ -171,6 +208,7 @@ app.patch("/:id", async (c) => {
   if (deadline !== undefined)
     issueUpdate.deadline = deadline ? new Date(deadline) : null;
   if (sortOrder !== undefined) issueUpdate.sortOrder = sortOrder;
+  if (sprintId !== undefined) issueUpdate.sprintId = sprintId;
 
   const result = await db.transaction(async (tx) => {
     const [updated] = await tx
