@@ -9,6 +9,18 @@ import labelsRoutes from "./routes/labels";
 import commentsRoutes from "./routes/comments";
 import membersRoutes from "./routes/members";
 
+const ORIGIN = "https://d2v9z14bwlzu0y.cloudfront.net";
+
+function setCorsHeaders(headers: Headers) {
+  headers.set("Access-Control-Allow-Origin", ORIGIN);
+  headers.set("Access-Control-Allow-Credentials", "true");
+  headers.set(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PATCH, DELETE, OPTIONS",
+  );
+  headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+}
+
 const app = new Hono();
 
 app.use(
