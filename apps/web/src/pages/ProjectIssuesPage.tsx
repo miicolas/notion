@@ -1,5 +1,6 @@
-import * as React from "react"
-import { createFileRoute } from "@tanstack/react-router"
+import { useState } from "react"
+import { useParams, useSearchParams } from "react-router-dom"
+import { useQuery } from "@tanstack/react-query"
 import { getIssues } from "@/lib/issues"
 import { getLabels } from "@/lib/labels"
 import { getMembers } from "@/lib/members"
@@ -8,35 +9,28 @@ import { IssueKanban } from "@/components/issue-kanban"
 import { IssueForm } from "@/components/issue-form"
 import { Button } from "@workspace/ui/components/button"
 import { Plus, LayoutList, Kanban } from "lucide-react"
-import { useRouter } from "@tanstack/react-router"
 
-export const Route = createFileRoute("/_authed/projects/$projectId/")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    view: (search.view as string) ?? "table",
-  }),
-  loader: async ({ params }) => {
-    const [issues, labels, members] = await Promise.all([
-      getIssues({ data: { projectId: params.projectId } }),
-      getLabels(),
-      getMembers(),
-    ])
-    return { issues, labels, members }
-  },
-  component: ProjectIssuesPage,
-})
+export function ProjectIssuesPage() {
+  const { projectId } = useParams<{ projectId: string }>()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const view = searchParams.get("view") ?? "table"
+  const [showForm, setShowForm] = useState(false)
 
-function ProjectIssuesPage() {
-  const { projectId } = Route.useParams()
-  const { view } = Route.useSearch()
-  const { issues, labels, members } = Route.useLoaderData()
-  const router = useRouter()
-  const [showForm, setShowForm] = React.useState(false)
+  const { data: issues = [] } = useQuery({
+    queryKey: ["issues", { projectId }],
+    queryFn: () => getIssues({ projectId }),
+  })
+  const { data: labels = [] } = useQuery({
+    queryKey: ["labels"],
+    queryFn: getLabels,
+  })
+  const { data: members = [] } = useQuery({
+    queryKey: ["members"],
+    queryFn: getMembers,
+  })
 
   function toggleView() {
-    router.navigate({
-      to: ".",
-      search: { view: view === "kanban" ? "table" : "kanban" },
-    })
+    setSearchParams({ view: view === "kanban" ? "table" : "kanban" })
   }
 
   return (
@@ -71,7 +65,7 @@ function ProjectIssuesPage() {
       )}
 
       <IssueForm
-        projectId={projectId}
+        projectId={projectId!}
         labels={labels}
         members={members}
         open={showForm}

@@ -15,14 +15,14 @@ import {
   useSortable,
 } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import { useRouter } from "@tanstack/react-router"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { reorderIssue } from "@/lib/issues"
 import { IssueStatusIcon, statusConfig, type IssueStatus } from "./issue-status-icon"
 import { IssuePriorityIcon, type Priority } from "./issue-priority-icon"
 import { LabelBadge } from "./label-badge"
 import { UserAvatar } from "./user-avatar"
 import { Card, CardContent } from "@workspace/ui/components/card"
-import { Link } from "@tanstack/react-router"
+import { Link } from "react-router-dom"
 import type { Issue } from "@/lib/types"
 
 const COLUMNS: IssueStatus[] = ["backlog", "todo", "in_progress", "done", "cancelled"]
@@ -34,8 +34,7 @@ function IssueCard({ issue }: { issue: Issue }) {
         <div className="flex items-center gap-2">
           <IssuePriorityIcon priority={issue.priority as Priority} />
           <Link
-            to="/issues/$issueId"
-            params={{ issueId: issue.id }}
+            to={`/issues/${issue.id}`}
             className="text-sm font-medium hover:underline"
           >
             {issue.title}
@@ -81,9 +80,16 @@ function SortableIssueCard({ issue }: { issue: Issue }) {
 }
 
 export function IssueKanban({ issues }: { issues: Issue[] }) {
-  const router = useRouter()
+  const queryClient = useQueryClient()
   const [activeIssue, setActiveIssue] = React.useState<Issue | null>(null)
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }))
+
+  const reorderMutation = useMutation({
+    mutationFn: reorderIssue,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["issues"] })
+    },
+  })
 
   const issuesByStatus = React.useMemo(() => {
     const map: Record<string, Issue[]> = {}
@@ -99,13 +105,12 @@ export function IssueKanban({ issues }: { issues: Issue[] }) {
     if (issue) setActiveIssue(issue)
   }
 
-  async function handleDragEnd(event: DragEndEvent) {
+  function handleDragEnd(event: DragEndEvent) {
     setActiveIssue(null)
     const { active, over } = event
     if (!over) return
 
     const issueId = active.id as string
-    // Determine target column: if dropped over a column container, use its id; otherwise use the issue's status
     let targetStatus: string
     if (COLUMNS.includes(over.id as IssueStatus)) {
       targetStatus = over.id as string
@@ -118,10 +123,7 @@ export function IssueKanban({ issues }: { issues: Issue[] }) {
     const overIndex = columnIssues.findIndex((i) => i.id === over.id)
     const newSortOrder = overIndex >= 0 ? overIndex : columnIssues.length
 
-    await reorderIssue({
-      data: { id: issueId, sortOrder: newSortOrder, status: targetStatus },
-    })
-    router.invalidate()
+    reorderMutation.mutate({ id: issueId, sortOrder: newSortOrder, status: targetStatus })
   }
 
   return (

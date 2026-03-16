@@ -1,5 +1,5 @@
-import * as React from "react"
-import { createFileRoute } from "@tanstack/react-router"
+import { useState } from "react"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { getLabels, createLabel, updateLabel, deleteLabel } from "@/lib/labels"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
@@ -20,46 +20,54 @@ import {
 } from "@workspace/ui/components/table"
 import { PageHeader } from "@/components/page-header"
 import { Plus, Pencil, Trash2 } from "lucide-react"
-import { useRouter } from "@tanstack/react-router"
-
-export const Route = createFileRoute("/_authed/labels/")({
-  loader: () => getLabels(),
-  component: LabelsPage,
-})
+import type { LabelItem } from "@/lib/types"
 
 const PRESET_COLORS = [
   "#ef4444", "#f97316", "#eab308", "#22c55e", "#3b82f6",
   "#8b5cf6", "#ec4899", "#6b7280",
 ]
 
-function LabelsPage() {
-  const labels = Route.useLoaderData() as any[]
-  const router = useRouter()
-  const [showForm, setShowForm] = React.useState(false)
-  const [editing, setEditing] = React.useState<any>(null)
+export function LabelsPage() {
+  const queryClient = useQueryClient()
+  const { data: labels = [] } = useQuery({
+    queryKey: ["labels"],
+    queryFn: getLabels,
+  })
+  const [showForm, setShowForm] = useState(false)
+  const [editing, setEditing] = useState<LabelItem | null>(null)
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  const saveMutation = useMutation({
+    mutationFn: (data: { id?: string; name: string; color: string }) => {
+      if (data.id) return updateLabel(data as { id: string; name: string; color: string })
+      return createLabel({ name: data.name, color: data.color })
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["labels"] })
+      setShowForm(false)
+      setEditing(null)
+    },
+  })
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteLabel,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["labels"] })
+    },
+  })
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
-    const data = {
+    saveMutation.mutate({
+      id: editing?.id,
       name: formData.get("name") as string,
       color: formData.get("color") as string,
-    }
-
-    if (editing) {
-      await updateLabel({ data: { id: editing.id, ...data } })
-    } else {
-      await createLabel({ data })
-    }
-    setShowForm(false)
-    setEditing(null)
-    router.invalidate()
+    })
   }
 
-  async function handleDelete(id: string) {
+  function handleDelete(id: string) {
     if (!confirm("Delete this label?")) return
-    await deleteLabel({ data: id })
-    router.invalidate()
+    deleteMutation.mutate(id)
   }
 
   return (

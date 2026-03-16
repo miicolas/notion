@@ -9,8 +9,8 @@ import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
 import { Textarea } from "@workspace/ui/components/textarea"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { createClient, updateClient } from "@/lib/clients"
-import { useRouter } from "@tanstack/react-router"
 import type { Client } from "@/lib/types"
 
 export function ClientForm({
@@ -22,30 +22,31 @@ export function ClientForm({
   open: boolean
   onOpenChange: (open: boolean) => void
 }) {
-  const router = useRouter()
-  const [pending, setPending] = React.useState(false)
+  const queryClient = useQueryClient()
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  const mutation = useMutation({
+    mutationFn: (data: Record<string, unknown>) => {
+      if (client) return updateClient({ id: client.id, ...data })
+      return createClient(data as any)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["clients"] })
+      queryClient.invalidateQueries({ queryKey: ["client"] })
+      onOpenChange(false)
+    },
+  })
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    setPending(true)
     const formData = new FormData(e.currentTarget)
-    const data = {
+    mutation.mutate({
       name: formData.get("name") as string,
       email: (formData.get("email") as string) || undefined,
       phone: (formData.get("phone") as string) || undefined,
       address: (formData.get("address") as string) || undefined,
       website: (formData.get("website") as string) || undefined,
       notes: (formData.get("notes") as string) || undefined,
-    }
-
-    if (client) {
-      await updateClient({ data: { id: client.id, ...data } })
-    } else {
-      await createClient({ data })
-    }
-    setPending(false)
-    onOpenChange(false)
-    router.invalidate()
+    })
   }
 
   return (
@@ -83,8 +84,8 @@ export function ClientForm({
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={pending}>
-              {pending ? "Saving..." : client ? "Save" : "Create"}
+            <Button type="submit" disabled={mutation.isPending}>
+              {mutation.isPending ? "Saving..." : client ? "Save" : "Create"}
             </Button>
           </div>
         </form>

@@ -1,31 +1,32 @@
-import { createServerFn } from "@tanstack/react-start"
-import { apiFetch } from "./api.server"
+import { apiFetch } from "./api-client"
+import type { LabelItem } from "./types"
 
-export const getLabels = createServerFn({ method: "GET" }).handler(
-  async () => apiFetch("/api/labels"),
-)
+export async function getLabels(): Promise<LabelItem[]> {
+  return apiFetch("/api/labels")
+}
 
-export const createLabel = createServerFn({ method: "POST" })
-  .inputValidator((data: { name: string; color: string }) => data)
-  .handler(async ({ data }) =>
-    apiFetch("/api/labels", {
-      method: "POST",
-      body: JSON.stringify(data),
-    }),
-  )
-
-export const updateLabel = createServerFn({ method: "POST" })
-  .inputValidator((data: { id: string; name?: string; color?: string }) => data)
-  .handler(async ({ data }) => {
-    const { id, ...body } = data
-    return apiFetch(`/api/labels/${id}`, {
-      method: "PATCH",
-      body: JSON.stringify(body),
-    })
+export async function createLabel(data: {
+  name: string
+  color: string
+}): Promise<LabelItem> {
+  return apiFetch("/api/labels", {
+    method: "POST",
+    body: JSON.stringify(data),
   })
+}
 
-export const deleteLabel = createServerFn({ method: "POST" })
-  .inputValidator((id: string) => id)
-  .handler(async ({ data: id }) =>
-    apiFetch(`/api/labels/${id}`, { method: "DELETE" }),
-  )
+export async function updateLabel(data: {
+  id: string
+  name?: string
+  color?: string
+}): Promise<LabelItem> {
+  const { id, ...body } = data
+  return apiFetch(`/api/labels/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(body),
+  })
+}
+
+export async function deleteLabel(id: string): Promise<void> {
+  return apiFetch(`/api/labels/${id}`, { method: "DELETE" })
+}

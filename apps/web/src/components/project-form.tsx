@@ -16,8 +16,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { createProject, updateProject } from "@/lib/projects"
-import { useRouter } from "@tanstack/react-router"
 import type { Client, Project } from "@/lib/types"
 
 export function ProjectForm({
@@ -31,30 +31,31 @@ export function ProjectForm({
   open: boolean
   onOpenChange: (open: boolean) => void
 }) {
-  const router = useRouter()
-  const [pending, setPending] = React.useState(false)
+  const queryClient = useQueryClient()
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  const mutation = useMutation({
+    mutationFn: (data: Record<string, unknown>) => {
+      if (project) return updateProject({ id: project.id, ...data })
+      return createProject(data as any)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["projects"] })
+      queryClient.invalidateQueries({ queryKey: ["project"] })
+      onOpenChange(false)
+    },
+  })
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    setPending(true)
     const formData = new FormData(e.currentTarget)
-    const data = {
+    mutation.mutate({
       name: formData.get("name") as string,
       description: (formData.get("description") as string) || undefined,
       clientId: (formData.get("clientId") as string) || undefined,
       status: (formData.get("status") as string) || "active",
       startDate: (formData.get("startDate") as string) || undefined,
       endDate: (formData.get("endDate") as string) || undefined,
-    }
-
-    if (project) {
-      await updateProject({ data: { id: project.id, ...data } })
-    } else {
-      await createProject({ data })
-    }
-    setPending(false)
-    onOpenChange(false)
-    router.invalidate()
+    })
   }
 
   return (
@@ -123,8 +124,8 @@ export function ProjectForm({
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={pending}>
-              {pending ? "Saving..." : project ? "Save" : "Create"}
+            <Button type="submit" disabled={mutation.isPending}>
+              {mutation.isPending ? "Saving..." : project ? "Save" : "Create"}
             </Button>
           </div>
         </form>

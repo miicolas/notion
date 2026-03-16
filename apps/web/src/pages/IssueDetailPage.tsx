@@ -1,5 +1,6 @@
-import * as React from "react"
-import { createFileRoute, Link, useRouter } from "@tanstack/react-router"
+import { useState } from "react"
+import { useParams, useNavigate, Link } from "react-router-dom"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { getIssue, deleteIssue } from "@/lib/issues"
 import { getLabels } from "@/lib/labels"
 import { getMembers } from "@/lib/members"
@@ -10,32 +11,49 @@ import { IssueStatusIcon, statusConfig, type IssueStatus } from "@/components/is
 import { IssuePriorityIcon, priorityConfig, type Priority } from "@/components/issue-priority-icon"
 import { LabelBadge } from "@/components/label-badge"
 import { Button } from "@workspace/ui/components/button"
-
 import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar"
 import { ArrowLeft, Pencil, Trash2 } from "lucide-react"
 import { Separator } from "@workspace/ui/components/separator"
 
-export const Route = createFileRoute("/_authed/issues/$issueId")({
-  loader: async ({ params }) => {
-    const [issue, labels, members] = await Promise.all([
-      getIssue({ data: params.issueId }),
-      getLabels(),
-      getMembers(),
-    ])
-    return { issue, labels, members }
-  },
-  component: IssueDetailPage,
-})
+export function IssueDetailPage() {
+  const { issueId } = useParams<{ issueId: string }>()
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
+  const [showEdit, setShowEdit] = useState(false)
 
-function IssueDetailPage() {
-  const { issue, labels, members } = Route.useLoaderData()
-  const router = useRouter()
-  const [showEdit, setShowEdit] = React.useState(false)
+  const { data: issue, isPending } = useQuery({
+    queryKey: ["issue", issueId],
+    queryFn: () => getIssue(issueId!),
+    enabled: !!issueId,
+  })
+  const { data: labels = [] } = useQuery({
+    queryKey: ["labels"],
+    queryFn: getLabels,
+  })
+  const { data: members = [] } = useQuery({
+    queryKey: ["members"],
+    queryFn: getMembers,
+  })
 
-  async function handleDelete() {
+  const deleteMutation = useMutation({
+    mutationFn: () => deleteIssue(issue!.id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["issues"] })
+      navigate(-1)
+    },
+  })
+
+  if (isPending || !issue) {
+    return (
+      <div className="flex flex-1 items-center justify-center">
+        <div className="text-muted-foreground">Loading...</div>
+      </div>
+    )
+  }
+
+  function handleDelete() {
     if (!confirm("Delete this issue?")) return
-    await deleteIssue({ data: issue.id })
-    router.history.back()
+    deleteMutation.mutate()
   }
 
   const statusCfg = statusConfig[issue.status as IssueStatus]
@@ -44,16 +62,14 @@ function IssueDetailPage() {
   return (
     <div className="flex flex-1 flex-col gap-6 p-4">
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={() => router.history.back()}>
+        <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
           <ArrowLeft className="size-4" />
         </Button>
         <div className="flex-1">
           <h1 className="text-2xl font-bold">{issue.title}</h1>
           {issue.project && (
             <Link
-              to="/projects/$projectId"
-              params={{ projectId: issue.project.id }}
-              search={{ view: "table" }}
+              to={`/projects/${issue.project.id}?view=table`}
               className="text-sm text-muted-foreground hover:underline"
             >
               {issue.project.name}
@@ -97,7 +113,7 @@ function IssueDetailPage() {
         )}
       </div>
 
-      {issue.issueLabels?.length > 0 && (
+      {issue.issueLabels && issue.issueLabels.length > 0 && (
         <div className="flex gap-2">
           {issue.issueLabels.map((il: any) => (
             <LabelBadge key={il.label.id} name={il.label.name} color={il.label.color} />
@@ -126,7 +142,7 @@ function IssueDetailPage() {
 
       <IssueForm
         issue={issue}
-        projectId={issue.projectId}
+        projectId={issue.projectId!}
         labels={labels}
         members={members}
         open={showEdit}

@@ -1,6 +1,6 @@
-import { createServerFn } from "@tanstack/react-start"
-import { apiFetch } from "./api.server"
+import { apiFetch } from "./api-client"
+import type { Member } from "./types"
 
-export const getMembers = createServerFn({ method: "GET" }).handler(
-  async () => apiFetch("/api/members"),
-)
+export async function getMembers(): Promise<Member[]> {
+  return apiFetch("/api/members")
+}

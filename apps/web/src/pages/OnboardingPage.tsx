@@ -1,5 +1,6 @@
 import { useState } from "react"
-import { createFileRoute, useRouter } from "@tanstack/react-router"
+import { useNavigate } from "react-router-dom"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import {
   Card,
@@ -14,21 +15,18 @@ import { Separator } from "@workspace/ui/components/separator"
 import { authClient } from "@/lib/auth-client"
 import { getUserInvitations } from "@/lib/organization"
 
-export const Route = createFileRoute("/_authed/onboarding")({
-  loader: async () => {
-    const invitations = await getUserInvitations()
-    return { invitations }
-  },
-  component: OnboardingPage,
-})
-
-function OnboardingPage() {
-  const router = useRouter()
-  const { invitations } = Route.useLoaderData()
+export function OnboardingPage() {
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
   const [orgName, setOrgName] = useState("")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [actionLoading, setActionLoading] = useState<string | null>(null)
+
+  const { data: invitations = [] } = useQuery({
+    queryKey: ["invitations"],
+    queryFn: getUserInvitations,
+  })
 
   function generateSlug(name: string) {
     return name
@@ -62,7 +60,7 @@ function OnboardingPage() {
       return
     }
 
-    router.navigate({ to: "/" })
+    navigate("/")
   }
 
   async function handleAccept(invitationId: string) {
@@ -78,7 +76,7 @@ function OnboardingPage() {
       return
     }
 
-    router.navigate({ to: "/" })
+    navigate("/")
   }
 
   async function handleReject(invitationId: string) {
@@ -94,7 +92,7 @@ function OnboardingPage() {
       return
     }
 
-    router.invalidate()
+    queryClient.invalidateQueries({ queryKey: ["invitations"] })
     setActionLoading(null)
   }
 
@@ -133,7 +131,7 @@ function OnboardingPage() {
                   />
                   {orgName && (
                     <p className="text-muted-foreground text-xs">
-                      Slug: {generateSlug(orgName) || "—"}
+                      Slug: {generateSlug(orgName) || "\u2014"}
                     </p>
                   )}
                 </Field>

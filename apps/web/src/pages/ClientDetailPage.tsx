@@ -1,10 +1,10 @@
-import * as React from "react"
-import { createFileRoute, Link } from "@tanstack/react-router"
+import { useState } from "react"
+import { useParams, useNavigate, Link } from "react-router-dom"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { getClient, deleteClient } from "@/lib/clients"
 import { ClientForm } from "@/components/client-form"
 import { Button } from "@workspace/ui/components/button"
 import { Pencil, Trash2, ArrowLeft } from "lucide-react"
-import { useRouter } from "@tanstack/react-router"
 import {
   Table,
   TableBody,
@@ -14,20 +14,37 @@ import {
   TableRow,
 } from "@workspace/ui/components/table"
 
-export const Route = createFileRoute("/_authed/clients/$clientId")({
-  loader: ({ params }) => getClient({ data: params.clientId }),
-  component: ClientDetailPage,
-})
+export function ClientDetailPage() {
+  const { clientId } = useParams<{ clientId: string }>()
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
+  const [showEdit, setShowEdit] = useState(false)
 
-function ClientDetailPage() {
-  const client = Route.useLoaderData()
-  const router = useRouter()
-  const [showEdit, setShowEdit] = React.useState(false)
+  const { data: client, isPending } = useQuery({
+    queryKey: ["client", clientId],
+    queryFn: () => getClient(clientId!),
+    enabled: !!clientId,
+  })
 
-  async function handleDelete() {
+  const deleteMutation = useMutation({
+    mutationFn: () => deleteClient(client!.id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["clients"] })
+      navigate("/clients")
+    },
+  })
+
+  if (isPending || !client) {
+    return (
+      <div className="flex flex-1 items-center justify-center">
+        <div className="text-muted-foreground">Loading...</div>
+      </div>
+    )
+  }
+
+  function handleDelete() {
     if (!confirm("Delete this client?")) return
-    await deleteClient({ data: client.id })
-    router.navigate({ to: "/clients" })
+    deleteMutation.mutate()
   }
 
   return (
@@ -41,7 +58,7 @@ function ClientDetailPage() {
         <div className="flex-1">
           <h1 className="text-2xl font-bold">{client.name}</h1>
           <p className="text-muted-foreground">
-            {[client.email, client.phone].filter(Boolean).join(" · ") || "No contact info"}
+            {[client.email, client.phone].filter(Boolean).join(" \u00b7 ") || "No contact info"}
           </p>
         </div>
         <Button variant="outline" onClick={() => setShowEdit(true)}>
@@ -82,9 +99,7 @@ function ClientDetailPage() {
                 <TableRow key={project.id}>
                   <TableCell>
                     <Link
-                      to="/projects/$projectId"
-                      params={{ projectId: project.id }}
-                      search={{ view: "table" }}
+                      to={`/projects/${project.id}?view=table`}
                       className="font-medium hover:underline"
                     >
                       {project.name}
@@ -100,7 +115,11 @@ function ClientDetailPage() {
         )}
       </div>
 
-      <ClientForm client={client} open={showEdit} onOpenChange={setShowEdit} />
+      <ClientForm
+        client={client}
+        open={showEdit}
+        onOpenChange={setShowEdit}
+      />
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router"
+import { Link } from "react-router-dom"
 import {
   Table,
   TableBody,
@@ -34,16 +34,15 @@ export function ClientTable({ clients }: { clients: Client[] }) {
           <TableRow key={client.id}>
             <TableCell>
               <Link
-                to="/clients/$clientId"
-                params={{ clientId: client.id }}
+                to={`/clients/${client.id}`}
                 className="font-medium hover:underline"
               >
                 {client.name}
               </Link>
             </TableCell>
-            <TableCell className="text-muted-foreground">{client.email ?? "—"}</TableCell>
-            <TableCell className="text-muted-foreground">{client.phone ?? "—"}</TableCell>
-            <TableCell className="text-muted-foreground">{client.website ?? "—"}</TableCell>
+            <TableCell className="text-muted-foreground">{client.email ?? "\u2014"}</TableCell>
+            <TableCell className="text-muted-foreground">{client.phone ?? "\u2014"}</TableCell>
+            <TableCell className="text-muted-foreground">{client.website ?? "\u2014"}</TableCell>
             <TableCell className="text-right">{client.projects?.length ?? 0}</TableCell>
           </TableRow>
         ))}

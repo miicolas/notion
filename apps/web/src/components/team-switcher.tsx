@@ -1,4 +1,5 @@
-import { useRouter } from "@tanstack/react-router"
+import { useNavigate } from "react-router-dom"
+import { useQueryClient } from "@tanstack/react-query"
 import { Building2, ChevronDown, Plus } from "lucide-react"
 
 import {
@@ -16,6 +17,7 @@ import {
   SidebarMenuItem,
 } from "@workspace/ui/components/sidebar"
 import { authClient } from "@/lib/auth-client"
+import { useAuth } from "@/lib/auth-context"
 import type { Organization } from "@/lib/types"
 
 export function TeamSwitcher({
@@ -25,14 +27,17 @@ export function TeamSwitcher({
   organizations: Organization[]
   activeOrganization?: Organization | null
 }) {
-  const router = useRouter()
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
+  const { refetch } = useAuth()
   const activeOrg = activeOrganization ?? organizations[0]
 
   async function handleSwitchOrg(org: Organization) {
     await authClient.organization.setActive({
       organizationId: org.id,
     })
-    router.invalidate()
+    await refetch()
+    queryClient.invalidateQueries()
   }
 
   if (!activeOrg) {
@@ -77,7 +82,7 @@ export function TeamSwitcher({
             <DropdownMenuSeparator />
             <DropdownMenuItem
               className="gap-2 p-2"
-              onClick={() => router.navigate({ to: "/onboarding" })}
+              onClick={() => navigate("/onboarding")}
             >
               <div className="flex size-6 items-center justify-center rounded-md border bg-background">
                 <Plus className="size-4" />

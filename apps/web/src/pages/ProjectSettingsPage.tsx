@@ -1,28 +1,34 @@
-import * as React from "react"
-import { createFileRoute, useRouter } from "@tanstack/react-router"
+import { useState } from "react"
+import { useParams, useNavigate } from "react-router-dom"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { deleteProject } from "@/lib/projects"
 import { getClients } from "@/lib/clients"
 import { ProjectForm } from "@/components/project-form"
 import { Button } from "@workspace/ui/components/button"
 import { Trash2 } from "lucide-react"
 
-export const Route = createFileRoute(
-  "/_authed/projects/$projectId/settings",
-)({
-  loader: () => getClients(),
-  component: ProjectSettingsPage,
-})
+export function ProjectSettingsPage() {
+  const { projectId } = useParams<{ projectId: string }>()
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
+  const [showEdit, setShowEdit] = useState(false)
 
-function ProjectSettingsPage() {
-  const clients = Route.useLoaderData()
-  const router = useRouter()
-  const { projectId } = Route.useParams()
-  const [showEdit, setShowEdit] = React.useState(false)
+  const { data: clients = [] } = useQuery({
+    queryKey: ["clients"],
+    queryFn: getClients,
+  })
 
-  async function handleDelete() {
+  const deleteMutation = useMutation({
+    mutationFn: () => deleteProject(projectId!),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["projects"] })
+      navigate("/projects")
+    },
+  })
+
+  function handleDelete() {
     if (!confirm("Delete this project and all its issues?")) return
-    await deleteProject({ data: projectId })
-    router.navigate({ to: "/projects" })
+    deleteMutation.mutate()
   }
 
   return (

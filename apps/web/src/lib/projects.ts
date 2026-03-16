@@ -1,44 +1,39 @@
-import { createServerFn } from "@tanstack/react-start"
-import { apiFetch } from "./api.server"
+import { apiFetch } from "./api-client"
+import type { Project } from "./types"
 
-export const getProjects = createServerFn({ method: "GET" }).handler(
-  async () => apiFetch("/api/projects"),
-)
+export async function getProjects(): Promise<Project[]> {
+  return apiFetch("/api/projects")
+}
 
-export const getProject = createServerFn({ method: "GET" })
-  .inputValidator((id: string) => id)
-  .handler(async ({ data: id }) => apiFetch(`/api/projects/${id}`))
+export async function getProject(id: string): Promise<Project> {
+  return apiFetch(`/api/projects/${id}`)
+}
 
-export const createProject = createServerFn({ method: "POST" })
-  .inputValidator(
-    (data: {
-      name: string
-      description?: string
-      clientId?: string
-      status?: string
-      startDate?: string
-      endDate?: string
-    }) => data,
-  )
-  .handler(async ({ data }) =>
-    apiFetch("/api/projects", {
-      method: "POST",
-      body: JSON.stringify(data),
-    }),
-  )
-
-export const updateProject = createServerFn({ method: "POST" })
-  .inputValidator((data: { id: string; [key: string]: unknown }) => data)
-  .handler(async ({ data }) => {
-    const { id, ...body } = data
-    return apiFetch(`/api/projects/${id}`, {
-      method: "PATCH",
-      body: JSON.stringify(body),
-    })
+export async function createProject(data: {
+  name: string
+  description?: string
+  clientId?: string
+  status?: string
+  startDate?: string
+  endDate?: string
+}): Promise<Project> {
+  return apiFetch("/api/projects", {
+    method: "POST",
+    body: JSON.stringify(data),
   })
+}
 
-export const deleteProject = createServerFn({ method: "POST" })
-  .inputValidator((id: string) => id)
-  .handler(async ({ data: id }) =>
-    apiFetch(`/api/projects/${id}`, { method: "DELETE" }),
-  )
+export async function updateProject(data: {
+  id: string
+  [key: string]: unknown
+}): Promise<Project> {
+  const { id, ...body } = data
+  return apiFetch(`/api/projects/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(body),
+  })
+}
+
+export async function deleteProject(id: string): Promise<void> {
+  return apiFetch(`/api/projects/${id}`, { method: "DELETE" })
+}

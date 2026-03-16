@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router"
+import { Link } from "react-router-dom"
 import { FolderKanban, Plus } from "lucide-react"
 import {
   SidebarGroup,
@@ -17,7 +17,7 @@ export function NavProjects({ projects }: { projects: Project[] }) {
         {projects.map((project) => (
           <SidebarMenuItem key={project.id}>
             <SidebarMenuButton asChild>
-              <Link to="/projects/$projectId" params={{ projectId: project.id }} search={{ view: "table" }}>
+              <Link to={`/projects/${project.id}?view=table`}>
                 <FolderKanban className="size-4" />
                 <span>{project.name}</span>
               </Link>
@@ -26,7 +26,7 @@ export function NavProjects({ projects }: { projects: Project[] }) {
         ))}
         <SidebarMenuItem>
           <SidebarMenuButton asChild>
-            <Link to="/projects" search={{ create: true }}>
+            <Link to="/projects?create=true">
               <Plus className="size-4" />
               <span>New project</span>
             </Link>

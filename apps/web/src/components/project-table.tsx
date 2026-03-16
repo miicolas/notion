@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router"
+import { Link } from "react-router-dom"
 import { Badge } from "@workspace/ui/components/badge"
 import {
   Table,
@@ -34,16 +34,14 @@ export function ProjectTable({ projects }: { projects: Project[] }) {
           <TableRow key={project.id}>
             <TableCell>
               <Link
-                to="/projects/$projectId"
-                params={{ projectId: project.id }}
-                search={{ view: "table" }}
+                to={`/projects/${project.id}?view=table`}
                 className="font-medium hover:underline"
               >
                 {project.name}
               </Link>
             </TableCell>
             <TableCell className="text-muted-foreground">
-              {project.client?.name ?? "—"}
+              {project.client?.name ?? "\u2014"}
             </TableCell>
             <TableCell>
               <Badge variant={project.status === "active" ? "default" : "secondary"}>

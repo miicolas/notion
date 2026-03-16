@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router"
+import { Link } from "react-router-dom"
 import {
   Table,
   TableBody,
@@ -45,8 +45,7 @@ export function IssueTable({ issues }: { issues: Issue[] }) {
             </TableCell>
             <TableCell>
               <Link
-                to="/issues/$issueId"
-                params={{ issueId: issue.id }}
+                to={`/issues/${issue.id}`}
                 className="font-medium hover:underline"
               >
                 {issue.title}
@@ -70,13 +69,13 @@ export function IssueTable({ issues }: { issues: Issue[] }) {
                   <span className="text-sm">{issue.assignee.user.name}</span>
                 </div>
               ) : (
-                <span className="text-muted-foreground">—</span>
+                <span className="text-muted-foreground">&mdash;</span>
               )}
             </TableCell>
             <TableCell className="text-muted-foreground">
               {issue.deadline
                 ? new Date(issue.deadline).toLocaleDateString()
-                : "—"}
+                : "\u2014"}
             </TableCell>
           </TableRow>
         ))}

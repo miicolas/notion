@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useRouter } from "@tanstack/react-router"
+import { useNavigate } from "react-router-dom"
 import { cn } from "@workspace/ui/lib/utils"
 import { Button } from "@workspace/ui/components/button"
 import { Card, CardContent } from "@workspace/ui/components/card"
@@ -17,7 +17,7 @@ export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const router = useRouter()
+  const navigate = useNavigate()
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
@@ -50,7 +50,7 @@ export function SignupForm({
       return
     }
 
-    router.navigate({ to: "/onboarding" })
+    navigate("/onboarding")
   }
 
   return (

@@ -1,4 +1,4 @@
-import { useRouter } from "@tanstack/react-router"
+import { useNavigate } from "react-router-dom"
 import {
   BadgeCheck,
   Bell,
@@ -40,7 +40,7 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
-  const router = useRouter()
+  const navigate = useNavigate()
 
   const initials = user.name
     .split(" ")
@@ -53,9 +53,7 @@ export function NavUser({
     await signOut({
       fetchOptions: {
         onSuccess: () => {
-          router.invalidate().then(() => {
-            router.navigate({ to: "/sign-in", search: { redirect: undefined } })
-          })
+          navigate("/sign-in")
         },
       },
     })

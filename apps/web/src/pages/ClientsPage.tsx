@@ -1,19 +1,17 @@
-import * as React from "react"
-import { createFileRoute } from "@tanstack/react-router"
+import { useState } from "react"
+import { useQuery } from "@tanstack/react-query"
 import { getClients } from "@/lib/clients"
 import { ClientTable } from "@/components/client-table"
 import { ClientForm } from "@/components/client-form"
 import { Button } from "@workspace/ui/components/button"
 import { Plus } from "lucide-react"
 
-export const Route = createFileRoute("/_authed/clients/")({
-  loader: () => getClients(),
-  component: ClientsPage,
-})
-
-function ClientsPage() {
-  const clients = Route.useLoaderData()
-  const [showForm, setShowForm] = React.useState(false)
+export function ClientsPage() {
+  const { data: clients = [] } = useQuery({
+    queryKey: ["clients"],
+    queryFn: getClients,
+  })
+  const [showForm, setShowForm] = useState(false)
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
@@ -25,7 +23,10 @@ function ClientsPage() {
         </Button>
       </div>
       <ClientTable clients={clients} />
-      <ClientForm open={showForm} onOpenChange={setShowForm} />
+      <ClientForm
+        open={showForm}
+        onOpenChange={setShowForm}
+      />
     </div>
   )
 }

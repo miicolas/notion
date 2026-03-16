@@ -22,6 +22,27 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
+  databaseHooks: {
+    session: {
+      create: {
+        before: async (session) => {
+          // Auto-set active organization when session is created
+          const members = await db.query.member.findMany({
+            where: eq(schema.member.userId, session.userId),
+          });
+          if (members.length > 0) {
+            return {
+              data: {
+                ...session,
+                activeOrganizationId: members[0].organizationId,
+              },
+            };
+          }
+          return { data: session };
+        },
+      },
+    },
+  },
   plugins: [
     adminPlugin({
       ac,

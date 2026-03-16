@@ -16,8 +16,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { createIssue, updateIssue } from "@/lib/issues"
-import { useRouter } from "@tanstack/react-router"
 import { statusConfig } from "./issue-status-icon"
 import { priorityConfig } from "./issue-priority-icon"
 import { UserAvatar } from "./user-avatar"
@@ -38,17 +38,28 @@ export function IssueForm({
   open: boolean
   onOpenChange: (open: boolean) => void
 }) {
-  const router = useRouter()
-  const [pending, setPending] = React.useState(false)
+  const queryClient = useQueryClient()
   const [selectedLabels, setSelectedLabels] = React.useState<string[]>(
     issue?.issueLabels?.map((il) => il.label.id) ?? [],
   )
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  const mutation = useMutation({
+    mutationFn: (data: Record<string, unknown>) => {
+      if (issue) return updateIssue({ id: issue.id, ...data })
+      return createIssue({ projectId, ...data } as any)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["issues"] })
+      queryClient.invalidateQueries({ queryKey: ["issue"] })
+      queryClient.invalidateQueries({ queryKey: ["projects"] })
+      onOpenChange(false)
+    },
+  })
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    setPending(true)
     const formData = new FormData(e.currentTarget)
-    const data = {
+    mutation.mutate({
       title: formData.get("title") as string,
       description: (formData.get("description") as string) || undefined,
       status: formData.get("status") as string,
@@ -56,16 +67,7 @@ export function IssueForm({
       assigneeId: (formData.get("assigneeId") as string) || undefined,
       deadline: (formData.get("deadline") as string) || undefined,
       labelIds: selectedLabels,
-    }
-
-    if (issue) {
-      await updateIssue({ data: { id: issue.id, ...data } })
-    } else {
-      await createIssue({ data: { projectId, ...data } })
-    }
-    setPending(false)
-    onOpenChange(false)
-    router.invalidate()
+    })
   }
 
   function toggleLabel(labelId: string) {
@@ -205,8 +207,8 @@ export function IssueForm({
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={pending}>
-              {pending ? "Saving..." : issue ? "Save" : "Create"}
+            <Button type="submit" disabled={mutation.isPending}>
+              {mutation.isPending ? "Saving..." : issue ? "Save" : "Create"}
             </Button>
           </div>
         </form>
