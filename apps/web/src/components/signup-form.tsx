@@ -12,12 +12,14 @@ import {
 } from "@workspace/ui/components/field"
 import { Input } from "@workspace/ui/components/input"
 import { signUp } from "@/lib/auth-client"
+import { useAuth } from "@/lib/auth-context"
 
 export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const navigate = useNavigate()
+  const { refetch } = useAuth()
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
@@ -50,6 +52,7 @@ export function SignupForm({
       return
     }
 
+    await refetch()
     navigate("/onboarding")
   }
 

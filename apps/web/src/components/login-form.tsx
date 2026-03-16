@@ -12,6 +12,7 @@ import {
 } from "@workspace/ui/components/field"
 import { Input } from "@workspace/ui/components/input"
 import { signIn } from "@/lib/auth-client"
+import { useAuth } from "@/lib/auth-context"
 
 export function LoginForm({
   className,
@@ -19,6 +20,7 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"div"> & { redirectTo?: string }) {
   const navigate = useNavigate()
+  const { refetch } = useAuth()
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
@@ -42,6 +44,7 @@ export function LoginForm({
       return
     }
 
+    await refetch()
     navigate(redirectTo ?? "/")
   }
 

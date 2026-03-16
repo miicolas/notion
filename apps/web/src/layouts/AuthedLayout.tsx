@@ -30,7 +30,7 @@ export function AuthedLayout() {
         activeOrganization={activeOrganization}
         projects={projects}
       />
-      <SidebarInset>
+      <SidebarInset className="min-w-0 overflow-auto">
         <Outlet />
       </SidebarInset>
       <SidebarRight user={user!} />

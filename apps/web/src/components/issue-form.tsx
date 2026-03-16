@@ -1,4 +1,5 @@
 import * as React from "react"
+import { format } from "date-fns"
 import {
   Dialog,
   DialogContent,
@@ -16,11 +17,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@workspace/ui/components/popover"
+import { Calendar } from "@workspace/ui/components/calendar"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { RiCalendarLine } from "@remixicon/react"
 import { createIssue, updateIssue } from "@/lib/issues"
 import { statusConfig } from "./issue-status-icon"
 import { priorityConfig } from "./issue-priority-icon"
 import { UserAvatar } from "./user-avatar"
+import { cn } from "@workspace/ui/lib/utils"
 import type { Member, LabelItem, Issue } from "@/lib/types"
 
 export function IssueForm({
@@ -41,6 +50,9 @@ export function IssueForm({
   const queryClient = useQueryClient()
   const [selectedLabels, setSelectedLabels] = React.useState<string[]>(
     issue?.issueLabels?.map((il) => il.label.id) ?? [],
+  )
+  const [deadline, setDeadline] = React.useState<Date | undefined>(
+    issue?.deadline ? new Date(issue.deadline) : undefined,
   )
 
   const mutation = useMutation({
@@ -65,7 +77,7 @@ export function IssueForm({
       status: formData.get("status") as string,
       priority: formData.get("priority") as string,
       assigneeId: (formData.get("assigneeId") as string) || undefined,
-      deadline: (formData.get("deadline") as string) || undefined,
+      deadline: deadline ? format(deadline, "yyyy-MM-dd") : undefined,
       labelIds: selectedLabels,
     })
   }
@@ -159,17 +171,29 @@ export function IssueForm({
             </Select>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="deadline">Deadline</Label>
-            <Input
-              id="deadline"
-              name="deadline"
-              type="date"
-              defaultValue={
-                issue?.deadline
-                  ? new Date(issue.deadline).toISOString().split("T")[0]
-                  : ""
-              }
-            />
+            <Label>Deadline</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-full justify-start text-left font-normal",
+                    !deadline && "text-muted-foreground",
+                  )}
+                >
+                  <RiCalendarLine className="mr-2 size-4" />
+                  {deadline ? format(deadline, "PPP") : "Pick a date"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={deadline}
+                  onSelect={setDeadline}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
           </div>
           <div className="space-y-2">
             <Label>Labels</Label>

@@ -13,11 +13,13 @@ import { Input } from "@workspace/ui/components/input"
 import { Field, FieldGroup, FieldLabel } from "@workspace/ui/components/field"
 import { Separator } from "@workspace/ui/components/separator"
 import { authClient } from "@/lib/auth-client"
+import { useAuth } from "@/lib/auth-context"
 import { getUserInvitations } from "@/lib/organization"
 
 export function OnboardingPage() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
+  const { refetch } = useAuth()
   const [orgName, setOrgName] = useState("")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -60,6 +62,7 @@ export function OnboardingPage() {
       return
     }
 
+    await refetch()
     navigate("/")
   }
 
@@ -76,6 +79,7 @@ export function OnboardingPage() {
       return
     }
 
+    await refetch()
     navigate("/")
   }
 

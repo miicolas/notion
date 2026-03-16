@@ -1,4 +1,5 @@
 import * as React from "react"
+import { format } from "date-fns"
 import {
   Dialog,
   DialogContent,
@@ -16,8 +17,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@workspace/ui/components/popover"
+import { Calendar } from "@workspace/ui/components/calendar"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { RiCalendarLine } from "@remixicon/react"
 import { createProject, updateProject } from "@/lib/projects"
+import { cn } from "@workspace/ui/lib/utils"
 import type { Client, Project } from "@/lib/types"
 
 export function ProjectForm({
@@ -32,6 +41,12 @@ export function ProjectForm({
   onOpenChange: (open: boolean) => void
 }) {
   const queryClient = useQueryClient()
+  const [startDate, setStartDate] = React.useState<Date | undefined>(
+    project?.startDate ? new Date(project.startDate) : undefined,
+  )
+  const [endDate, setEndDate] = React.useState<Date | undefined>(
+    project?.endDate ? new Date(project.endDate) : undefined,
+  )
 
   const mutation = useMutation({
     mutationFn: (data: Record<string, unknown>) => {
@@ -53,8 +68,8 @@ export function ProjectForm({
       description: (formData.get("description") as string) || undefined,
       clientId: (formData.get("clientId") as string) || undefined,
       status: (formData.get("status") as string) || "active",
-      startDate: (formData.get("startDate") as string) || undefined,
-      endDate: (formData.get("endDate") as string) || undefined,
+      startDate: startDate ? format(startDate, "yyyy-MM-dd") : undefined,
+      endDate: endDate ? format(endDate, "yyyy-MM-dd") : undefined,
     })
   }
 
@@ -102,22 +117,54 @@ export function ProjectForm({
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="startDate">Start date</Label>
-              <Input
-                id="startDate"
-                name="startDate"
-                type="date"
-                defaultValue={project?.startDate ? new Date(project.startDate).toISOString().split("T")[0] : ""}
-              />
+              <Label>Start date</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !startDate && "text-muted-foreground",
+                    )}
+                  >
+                    <RiCalendarLine className="mr-2 size-4" />
+                    {startDate ? format(startDate, "PPP") : "Pick a date"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={startDate}
+                    onSelect={setStartDate}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="endDate">End date</Label>
-              <Input
-                id="endDate"
-                name="endDate"
-                type="date"
-                defaultValue={project?.endDate ? new Date(project.endDate).toISOString().split("T")[0] : ""}
-              />
+              <Label>End date</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !endDate && "text-muted-foreground",
+                    )}
+                  >
+                    <RiCalendarLine className="mr-2 size-4" />
+                    {endDate ? format(endDate, "PPP") : "Pick a date"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={endDate}
+                    onSelect={setEndDate}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
           <div className="flex justify-end gap-2">

@@ -7,10 +7,8 @@ import {
   TableHeader,
   TableRow,
 } from "@workspace/ui/components/table"
-import { IssuePriorityIcon, type Priority } from "./issue-priority-icon"
-import { IssueStatusIcon, type IssueStatus } from "./issue-status-icon"
 import { LabelBadge } from "./label-badge"
-import { UserAvatar } from "./user-avatar"
+import { StatusDropdown, PriorityDropdown, AssigneeDropdown } from "./issue-inline-edit"
 import type { Issue } from "@/lib/types"
 
 export function IssueTable({ issues }: { issues: Issue[] }) {
@@ -26,8 +24,8 @@ export function IssueTable({ issues }: { issues: Issue[] }) {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead className="w-8"></TableHead>
-          <TableHead className="w-8"></TableHead>
+          <TableHead className="w-8">Priority</TableHead>
+          <TableHead className="w-8">Status</TableHead>
           <TableHead>Title</TableHead>
           <TableHead>Labels</TableHead>
           <TableHead>Assignee</TableHead>
@@ -38,10 +36,10 @@ export function IssueTable({ issues }: { issues: Issue[] }) {
         {issues.map((issue) => (
           <TableRow key={issue.id}>
             <TableCell>
-              <IssuePriorityIcon priority={issue.priority as Priority} />
+              <PriorityDropdown issueId={issue.id} value={issue.priority} />
             </TableCell>
             <TableCell>
-              <IssueStatusIcon status={issue.status as IssueStatus} />
+              <StatusDropdown issueId={issue.id} value={issue.status} />
             </TableCell>
             <TableCell>
               <Link
@@ -63,14 +61,7 @@ export function IssueTable({ issues }: { issues: Issue[] }) {
               </div>
             </TableCell>
             <TableCell>
-              {issue.assignee ? (
-                <div className="flex items-center gap-2">
-                  <UserAvatar name={issue.assignee.user.name} image={issue.assignee.user.image} />
-                  <span className="text-sm">{issue.assignee.user.name}</span>
-                </div>
-              ) : (
-                <span className="text-muted-foreground">&mdash;</span>
-              )}
+              <AssigneeDropdown issueId={issue.id} assignee={issue.assignee} />
             </TableCell>
             <TableCell className="text-muted-foreground">
               {issue.deadline

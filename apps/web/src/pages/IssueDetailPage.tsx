@@ -7,11 +7,9 @@ import { getMembers } from "@/lib/members"
 import { IssueForm } from "@/components/issue-form"
 import { CommentList } from "@/components/comment-list"
 import { CommentForm } from "@/components/comment-form"
-import { IssueStatusIcon, statusConfig, type IssueStatus } from "@/components/issue-status-icon"
-import { IssuePriorityIcon, priorityConfig, type Priority } from "@/components/issue-priority-icon"
+import { StatusDropdown, PriorityDropdown, AssigneeDropdown } from "@/components/issue-inline-edit"
 import { LabelBadge } from "@/components/label-badge"
 import { Button } from "@workspace/ui/components/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar"
 import { ArrowLeft, Pencil, Trash2 } from "lucide-react"
 import { Separator } from "@workspace/ui/components/separator"
 
@@ -56,9 +54,6 @@ export function IssueDetailPage() {
     deleteMutation.mutate()
   }
 
-  const statusCfg = statusConfig[issue.status as IssueStatus]
-  const priorityCfg = priorityConfig[issue.priority as Priority]
-
   return (
     <div className="flex flex-1 flex-col gap-6 p-4">
       <div className="flex items-center gap-4">
@@ -86,26 +81,10 @@ export function IssueDetailPage() {
         </Button>
       </div>
 
-      <div className="flex flex-wrap gap-4">
-        <div className="flex items-center gap-2">
-          <IssueStatusIcon status={issue.status as IssueStatus} />
-          <span className="text-sm">{statusCfg?.label}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <IssuePriorityIcon priority={issue.priority as Priority} />
-          <span className="text-sm">{priorityCfg?.label}</span>
-        </div>
-        {issue.assignee && (
-          <div className="flex items-center gap-2">
-            <Avatar className="size-6">
-              <AvatarImage src={issue.assignee.user.image ?? undefined} />
-              <AvatarFallback className="text-xs">
-                {issue.assignee.user.name.charAt(0)}
-              </AvatarFallback>
-            </Avatar>
-            <span className="text-sm">{issue.assignee.user.name}</span>
-          </div>
-        )}
+      <div className="flex flex-wrap items-center gap-2">
+        <StatusDropdown issueId={issue.id} value={issue.status} />
+        <PriorityDropdown issueId={issue.id} value={issue.priority} />
+        <AssigneeDropdown issueId={issue.id} assignee={issue.assignee} />
         {issue.deadline && (
           <span className="text-sm text-muted-foreground">
             Due {new Date(issue.deadline).toLocaleDateString()}
