@@ -25,6 +25,7 @@ import { IssuePriorityIcon, type Priority } from "./issue-priority-icon"
 import { LabelBadge } from "./label-badge"
 import { UserAvatar } from "./user-avatar"
 import { Card, CardContent } from "@workspace/ui/components/card"
+import { CopyPromptButton } from "./copy-prompt-button"
 import { Link } from "react-router-dom"
 import type { Issue } from "@/lib/types"
 
@@ -38,10 +39,11 @@ function IssueCard({ issue }: { issue: Issue }) {
           <IssuePriorityIcon priority={issue.priority as Priority} />
           <Link
             to={`/issues/${issue.id}`}
-            className="text-sm font-medium hover:underline"
+            className="flex-1 text-sm font-medium hover:underline"
           >
             {issue.title}
           </Link>
+          <CopyPromptButton issue={issue} />
         </div>
         <div className="flex items-center gap-2">
           {issue.issueLabels?.map((il) => (

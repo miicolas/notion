@@ -1,15 +1,34 @@
-import { Link } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
+import { useState } from "react"
+import {
+  DndContext,
+  type DragEndEvent,
+  type DragStartEvent,
+  DragOverlay,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  closestCenter,
+} from "@dnd-kit/core"
+import {
+  SortableContext,
+  rectSortingStrategy,
+} from "@dnd-kit/sortable"
 import { useAuth } from "@/lib/auth-context"
 import { getProjects } from "@/lib/projects"
 import { getIssues } from "@/lib/issues"
+import { getDashboardStats } from "@/lib/dashboard"
+import { useDashboardConfig } from "@/hooks/use-dashboard-config"
 import { PageHeader } from "@/components/page-header"
-import { Badge } from "@workspace/ui/components/badge"
+import { DashboardWidgetCard } from "@/components/dashboard/dashboard-widget-card"
+import { AddWidgetDialog } from "@/components/dashboard/add-widget-dialog"
 import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/components/card"
 import { FolderKanban, CheckCircle2, Clock, AlertTriangle } from "lucide-react"
 
 export function DashboardPage() {
   const { activeOrganization } = useAuth()
+  const { widgets, addWidget, removeWidget, reorderWidgets } = useDashboardConfig()
+
   const { data: projects = [] } = useQuery({
     queryKey: ["projects"],
     queryFn: getProjects,
@@ -20,6 +39,15 @@ export function DashboardPage() {
     queryFn: () => getIssues(),
     enabled: !!activeOrganization,
   })
+  const { data: stats } = useQuery({
+    queryKey: ["dashboard-stats"],
+    queryFn: getDashboardStats,
+    enabled: !!activeOrganization,
+  })
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+  )
 
   const activeProjects = projects.filter((p) => p.status === "active")
   const todoCount = issues.filter(
@@ -30,10 +58,39 @@ export function DashboardPage() {
     (i) => i.priority === "urgent" || i.priority === "high",
   ).length
 
+  const [activeWidgetId, setActiveWidgetId] = useState<string | null>(null)
+  const activeWidget = activeWidgetId
+    ? widgets.find((w) => w.id === activeWidgetId)
+    : null
+
+  function handleDragStart(event: DragStartEvent) {
+    setActiveWidgetId(event.active.id as string)
+  }
+
+  function handleDragEnd(event: DragEndEvent) {
+    setActiveWidgetId(null)
+    const { active, over } = event
+    if (!over || active.id === over.id) return
+
+    const oldIndex = widgets.findIndex((w) => w.id === active.id)
+    const newIndex = widgets.findIndex((w) => w.id === over.id)
+    if (oldIndex !== -1 && newIndex !== -1) {
+      reorderWidgets(oldIndex, newIndex)
+    }
+  }
+
   return (
     <>
-      <PageHeader title="Dashboard" />
+      <PageHeader title="Dashboard">
+        <AddWidgetDialog
+          widgets={widgets}
+          onAdd={addWidget}
+          onRemove={removeWidget}
+        />
+      </PageHeader>
+
       <div className="flex flex-1 flex-col gap-4 p-4">
+        {/* KPI Cards */}
         <div className="grid gap-4 md:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -73,54 +130,43 @@ export function DashboardPage() {
           </Card>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Recent Projects</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {activeProjects.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No projects yet.</p>
-              ) : (
-                <div className="space-y-2">
-                  {activeProjects.slice(0, 5).map((project) => (
-                    <Link
-                      key={project.id}
-                      to={`/projects/${project.id}?view=table`}
-                      className="flex items-center justify-between rounded-md px-2 py-1.5 hover:bg-muted"
-                    >
-                      <span className="text-sm font-medium">{project.name}</span>
-                      <Badge variant="secondary">{project.issues?.length ?? 0} issues</Badge>
-                    </Link>
-                  ))}
+        {/* Widgets Grid */}
+        {stats && (
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={widgets.map((w) => w.id)}
+              strategy={rectSortingStrategy}
+            >
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                {widgets.map((widget) => (
+                  <DashboardWidgetCard
+                    key={widget.id}
+                    config={widget}
+                    stats={stats}
+                    onRemove={removeWidget}
+                  />
+                ))}
+              </div>
+            </SortableContext>
+            <DragOverlay>
+              {activeWidget && stats ? (
+                <div className="w-[300px]">
+                  <DashboardWidgetCard
+                    config={activeWidget}
+                    stats={stats}
+                    onRemove={() => {}}
+                    isDragOverlay
+                  />
                 </div>
-              )}
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Recent Issues</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {issues.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No issues yet.</p>
-              ) : (
-                <div className="space-y-2">
-                  {issues.slice(0, 5).map((issue) => (
-                    <Link
-                      key={issue.id}
-                      to={`/issues/${issue.id}`}
-                      className="flex items-center justify-between rounded-md px-2 py-1.5 hover:bg-muted"
-                    >
-                      <span className="text-sm">{issue.title}</span>
-                      <Badge variant="outline">{issue.status.replace("_", " ")}</Badge>
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
+              ) : null}
+            </DragOverlay>
+          </DndContext>
+        )}
       </div>
     </>
   )

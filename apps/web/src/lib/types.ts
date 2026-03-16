@@ -69,3 +69,17 @@ export type Comment = {
   createdAt: string
   author: { id: string; name: string; image?: string | null }
 }
+
+export type DashboardStats = {
+  issuesByStatus: { status: string; count: number }[]
+  issuesByPriority: { priority: string; count: number }[]
+  issuesByAssignee: { assigneeId: string; assigneeName: string; count: number }[]
+  issuesByProject: { projectId: string; projectName: string; count: number }[]
+  issuesOverTime: { date: string; count: number }[]
+}
+
+export type WidgetConfig = {
+  id: string
+  type: string
+  size: "sm" | "md" | "lg"
+}

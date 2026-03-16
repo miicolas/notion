@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import {
   Table,
   TableBody,
@@ -9,9 +9,12 @@ import {
 } from "@workspace/ui/components/table"
 import { LabelBadge } from "./label-badge"
 import { StatusDropdown, PriorityDropdown, AssigneeDropdown } from "./issue-inline-edit"
+import { CopyPromptButton } from "./copy-prompt-button"
 import type { Issue } from "@/lib/types"
 
 export function IssueTable({ issues }: { issues: Issue[] }) {
+  const navigate = useNavigate()
+
   if (issues.length === 0) {
     return (
       <div className="flex h-40 items-center justify-center text-muted-foreground">
@@ -30,24 +33,24 @@ export function IssueTable({ issues }: { issues: Issue[] }) {
           <TableHead>Labels</TableHead>
           <TableHead>Assignee</TableHead>
           <TableHead>Deadline</TableHead>
+          <TableHead className="w-8"></TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {issues.map((issue) => (
-          <TableRow key={issue.id}>
-            <TableCell>
+          <TableRow
+            key={issue.id}
+            className="cursor-pointer"
+            onClick={() => navigate(`/issues/${issue.id}`)}
+          >
+            <TableCell onClick={(e) => e.stopPropagation()}>
               <PriorityDropdown issueId={issue.id} value={issue.priority} />
             </TableCell>
-            <TableCell>
+            <TableCell onClick={(e) => e.stopPropagation()}>
               <StatusDropdown issueId={issue.id} value={issue.status} />
             </TableCell>
-            <TableCell>
-              <Link
-                to={`/issues/${issue.id}`}
-                className="font-medium hover:underline"
-              >
-                {issue.title}
-              </Link>
+            <TableCell className="font-medium">
+              {issue.title}
             </TableCell>
             <TableCell>
               <div className="flex gap-1">
@@ -60,13 +63,16 @@ export function IssueTable({ issues }: { issues: Issue[] }) {
                 ))}
               </div>
             </TableCell>
-            <TableCell>
+            <TableCell onClick={(e) => e.stopPropagation()}>
               <AssigneeDropdown issueId={issue.id} assignee={issue.assignee} />
             </TableCell>
             <TableCell className="text-muted-foreground">
               {issue.deadline
                 ? new Date(issue.deadline).toLocaleDateString()
                 : "\u2014"}
+            </TableCell>
+            <TableCell onClick={(e) => e.stopPropagation()}>
+              <CopyPromptButton issue={issue} />
             </TableCell>
           </TableRow>
         ))}

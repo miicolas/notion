@@ -9,6 +9,7 @@ import { CommentList } from "@/components/comment-list"
 import { CommentForm } from "@/components/comment-form"
 import { StatusDropdown, PriorityDropdown, AssigneeDropdown } from "@/components/issue-inline-edit"
 import { LabelBadge } from "@/components/label-badge"
+import { CopyPromptButton } from "@/components/copy-prompt-button"
 import { Button } from "@workspace/ui/components/button"
 import { ArrowLeft, Pencil, Trash2 } from "lucide-react"
 import { Separator } from "@workspace/ui/components/separator"
@@ -71,6 +72,7 @@ export function IssueDetailPage() {
             </Link>
           )}
         </div>
+        <CopyPromptButton issue={issue} showLabel />
         <Button variant="outline" onClick={() => setShowEdit(true)}>
           <Pencil className="mr-2 size-4" />
           Edit
