@@ -14,7 +14,7 @@ bun run build:lambda
 
 echo "Creating deployment package..."
 cd dist
-zip -j lambda.zip lambda.js
+zip -j lambda.zip index.js
 
 echo "Updating Lambda function code..."
 aws lambda update-function-code \
