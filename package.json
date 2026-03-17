@@ -10,6 +10,7 @@
     "typecheck": "turbo typecheck"
   },
   "devDependencies": {
+    "@types/node-cron": "^3.0.11",
     "@types/pg": "^8.18.0",
     "api": "workspace:*",
     "drizzle-kit": "^0.31.9",
@@ -28,9 +29,12 @@
     "packages/*"
   ],
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1010.0",
+    "@aws-sdk/s3-request-presigner": "^3.1010.0",
     "better-auth": "^1.5.5",
     "dotenv": "^17.3.1",
     "drizzle-orm": "^0.45.1",
+    "node-cron": "^4.2.1",
     "pg": "^8.20.0"
   }
 }
