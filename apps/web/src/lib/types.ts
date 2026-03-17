@@ -52,7 +52,30 @@ export type Sprint = {
   goal?: string | null;
   startDate: string;
   endDate: string;
-  status: "planned" | "active" | "completed";
+  status: "draft" | "planned" | "active" | "in_review" | "completed";
+  duration: "1w" | "2w" | "3w" | "1m" | "custom";
+  ownerId?: string | null;
+  owner?: {
+    user: { id: string; name: string; image?: string | null };
+  } | null;
+  releaseStatus?: "pre_release" | "release_candidate" | "released" | null;
+  retrospective?: string | null;
+  sprintMembers?: {
+    member: {
+      id: string;
+      user: { id: string; name: string; image?: string | null };
+    };
+  }[];
+};
+
+export type SprintComment = {
+  id: string;
+  sprintId: string;
+  content: string;
+  type: "update" | "retrospective";
+  createdAt: string;
+  updatedAt: string;
+  author: { id: string; name: string; image?: string | null };
 };
 
 export type Issue = {
@@ -95,6 +118,39 @@ export type TeamMember = {
   teamId: string;
   userId: string;
   user?: { id: string; name: string; email?: string; image?: string | null };
+};
+
+export type OrgMember = {
+  id: string;
+  role: "owner" | "admin" | "member";
+  userId: string;
+  organizationId: string;
+  createdAt: string;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    image?: string | null;
+  };
+};
+
+export type OrgInvitation = {
+  id: string;
+  email: string;
+  role: "admin" | "member";
+  status: "pending" | "accepted" | "rejected" | "canceled";
+  organizationId: string;
+  inviterId: string;
+  expiresAt: string;
+};
+
+export type FullOrganization = {
+  id: string;
+  name: string;
+  slug: string;
+  logo?: string | null;
+  members: OrgMember[];
+  invitations: OrgInvitation[];
 };
 
 export type DashboardStats = {

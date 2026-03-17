@@ -36,6 +36,20 @@
       "when": 1773675713453,
       "tag": "0004_bumpy_multiple_man",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1773676515861,
+      "tag": "0005_dark_puppet_master",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1773692509192,
+      "tag": "0006_remarkable_mongoose",
+      "breakpoints": true
     }
   ]
 }

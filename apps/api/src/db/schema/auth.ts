@@ -8,6 +8,7 @@ import {
   uniqueIndex,
 } from "drizzle-orm/pg-core";
 import { comment } from "./comment";
+import { sprintComment } from "./sprint-comment";
 import { client } from "./client";
 import { project } from "./project";
 import { label } from "./label";
@@ -189,6 +190,7 @@ export const userRelations = relations(user, ({ many }) => ({
   members: many(member),
   invitations: many(invitation),
   comments: many(comment),
+  sprintComments: many(sprintComment),
   teamMembers: many(teamMember),
 }));
 

@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { serve } from "@hono/node-server";
@@ -10,6 +11,7 @@ import commentsRoutes from "./routes/comments";
 import membersRoutes from "./routes/members";
 import dashboardRoutes from "./routes/dashboard";
 import sprintsRoutes from "./routes/sprints";
+import sprintCommentsRoutes from "./routes/sprint-comments";
 import teamsRoutes from "./routes/teams";
 
 const ORIGIN = "https://d2v9z14bwlzu0y.cloudfront.net";
@@ -48,6 +50,7 @@ app.route("/api/comments", commentsRoutes);
 app.route("/api/members", membersRoutes);
 app.route("/api/dashboard", dashboardRoutes);
 app.route("/api/sprints", sprintsRoutes);
+app.route("/api/sprint-comments", sprintCommentsRoutes);
 app.route("/api/teams", teamsRoutes);
 
 app.get("/", (c) => {

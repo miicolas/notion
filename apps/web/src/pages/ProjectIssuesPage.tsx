@@ -9,7 +9,6 @@ import { getTeams } from "@/lib/teams";
 import { IssueTable } from "@/components/issue-table";
 import { IssueKanban } from "@/components/issue-kanban";
 import { IssueForm } from "@/components/issue-form";
-import { SprintList } from "@/components/sprint-list";
 import { Button } from "@workspace/ui/components/button";
 import {
   Select,
@@ -18,21 +17,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@workspace/ui/components/sheet";
-import { Plus, LayoutList, Kanban, Settings } from "lucide-react";
+import { Plus, LayoutList, Kanban } from "lucide-react";
 
 export function ProjectIssuesPage() {
   const { projectId } = useParams<{ projectId: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
   const view = searchParams.get("view") ?? "table";
   const [showForm, setShowForm] = useState(false);
-  const [showSprintSheet, setShowSprintSheet] = useState(false);
-  const [selectedSprintId, setSelectedSprintId] = useState<string>("backlog");
+  const [selectedSprintId, setSelectedSprintId] = useState<string>("all");
   const [selectedTeamId, setSelectedTeamId] = useState<string>("all");
 
   const { data: sprints = [] } = useQuery({
@@ -47,7 +39,11 @@ export function ProjectIssuesPage() {
   });
 
   const sprintIdParam =
-    selectedSprintId === "backlog" ? "none" : selectedSprintId;
+    selectedSprintId === "all"
+      ? undefined
+      : selectedSprintId === "backlog"
+        ? "none"
+        : selectedSprintId;
   const teamIdParam = selectedTeamId === "all" ? undefined : selectedTeamId;
 
   const { data: issues = [] } = useQuery({
@@ -72,7 +68,9 @@ export function ProjectIssuesPage() {
   }
 
   const activeSprints = sprints.filter((s) => s.status === "active");
+  const inReviewSprints = sprints.filter((s) => s.status === "in_review");
   const plannedSprints = sprints.filter((s) => s.status === "planned");
+  const draftSprints = sprints.filter((s) => s.status === "draft");
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
@@ -81,18 +79,29 @@ export function ProjectIssuesPage() {
         <div className="flex items-center gap-2">
           <Select value={selectedSprintId} onValueChange={setSelectedSprintId}>
             <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select sprint" />
+              <SelectValue placeholder="All issues" />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem value="all">All issues</SelectItem>
               <SelectItem value="backlog">Backlog</SelectItem>
               {activeSprints.map((s) => (
                 <SelectItem key={s.id} value={s.id}>
                   {s.name} (active)
                 </SelectItem>
               ))}
+              {inReviewSprints.map((s) => (
+                <SelectItem key={s.id} value={s.id}>
+                  {s.name} (in review)
+                </SelectItem>
+              ))}
               {plannedSprints.map((s) => (
                 <SelectItem key={s.id} value={s.id}>
                   {s.name} (planned)
+                </SelectItem>
+              ))}
+              {draftSprints.map((s) => (
+                <SelectItem key={s.id} value={s.id}>
+                  {s.name} (draft)
                 </SelectItem>
               ))}
             </SelectContent>
@@ -110,14 +119,6 @@ export function ProjectIssuesPage() {
               ))}
             </SelectContent>
           </Select>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setShowSprintSheet(true)}
-          >
-            <Settings className="mr-1 size-4" />
-            Sprints
-          </Button>
           <Button variant="outline" size="sm" onClick={toggleView}>
             {view === "kanban" ? (
               <>
@@ -152,17 +153,6 @@ export function ProjectIssuesPage() {
         open={showForm}
         onOpenChange={setShowForm}
       />
-
-      <Sheet open={showSprintSheet} onOpenChange={setShowSprintSheet}>
-        <SheetContent>
-          <SheetHeader>
-            <SheetTitle>Manage Sprints</SheetTitle>
-          </SheetHeader>
-          <div className="p-6 pt-0">
-            <SprintList sprints={sprints} projectId={projectId!} />
-          </div>
-        </SheetContent>
-      </Sheet>
     </div>
   );
 }

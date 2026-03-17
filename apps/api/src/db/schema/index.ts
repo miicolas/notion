@@ -6,3 +6,5 @@ export * from "./issue";
 export * from "./issue-label";
 export * from "./comment";
 export * from "./sprint";
+export * from "./sprint-comment";
+export * from "./sprint-member";

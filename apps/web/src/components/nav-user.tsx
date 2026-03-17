@@ -110,7 +110,7 @@ export function NavUser({
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => navigate("/settings/organization")}>
                 <BadgeCheck />
                 Account
               </DropdownMenuItem>
