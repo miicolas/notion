@@ -88,6 +88,13 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      - name: Run migrations
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}staging
+        run: |
+          chmod +x infrastructure/scripts/migrate.sh
+          ./infrastructure/scripts/migrate.sh
+
       - name: Build and deploy Lambda
         run: |
           chmod +x infrastructure/scripts/deploy-api.sh
