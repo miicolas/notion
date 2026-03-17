@@ -59,6 +59,8 @@ app.get("/", (c) => {
   return c.json({ message: "API is running" });
 });
 
+export default app;
+
 serve({ fetch: app.fetch, port: 3001 }, () => {
   console.log("Server is running on http://localhost:3001");
 });
