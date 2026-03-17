@@ -13,6 +13,7 @@ import dashboardRoutes from "./routes/dashboard";
 import sprintsRoutes from "./routes/sprints";
 import sprintCommentsRoutes from "./routes/sprint-comments";
 import teamsRoutes from "./routes/teams";
+import migrateRoutes from "./routes/migrate";
 
 const ORIGIN = "https://d2v9z14bwlzu0y.cloudfront.net";
 
@@ -52,6 +53,7 @@ app.route("/api/dashboard", dashboardRoutes);
 app.route("/api/sprints", sprintsRoutes);
 app.route("/api/sprint-comments", sprintCommentsRoutes);
 app.route("/api/teams", teamsRoutes);
+app.route("/api/migrate", migrateRoutes);
 
 app.get("/", (c) => {
   return c.json({ message: "API is running" });
