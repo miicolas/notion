@@ -12,4 +12,7 @@ export const env = {
   DATABASE_URL: required("DATABASE_URL"),
   PORT: Number(process.env.PORT ?? "3001"),
   CORS_ORIGINS: originsRaw.split(",").map((s) => s.trim()),
+  BETTER_AUTH_SECRET: required("BETTER_AUTH_SECRET"),
+  BETTER_AUTH_URL: required("BETTER_AUTH_URL"),
+  MIGRATE_PASSWORD: required("MIGRATE_PASSWORD"),
 } as const;

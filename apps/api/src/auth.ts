@@ -13,12 +13,15 @@ import * as schema from "./db/schema";
 import { eq } from "drizzle-orm";
 import { ac, admin, user } from "./auth/permissions";
 import { getActiveOrgId } from "./auth/session";
+import { env } from "./env";
 
 export const auth = betterAuth({
+  secret: env.BETTER_AUTH_SECRET,
+  baseURL: env.BETTER_AUTH_URL,
   database: drizzleAdapter(db, {
     provider: "pg",
   }),
-  trustedOrigins: ["http://localhost:3000", "https://iim.eric.ht", "https://d2v9z14bwlzu0y.cloudfront.net"],
+  trustedOrigins: env.CORS_ORIGINS,
   emailAndPassword: {
     enabled: true,
   },
