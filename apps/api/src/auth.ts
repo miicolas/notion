@@ -6,7 +6,6 @@ import {
   multiSession,
   organization,
   customSession,
-  testUtils,
 } from "better-auth/plugins";
 import { db } from "./db";
 import * as schema from "./db/schema";
@@ -59,7 +58,6 @@ export const auth = betterAuth({
     }),
     openAPI(),
     multiSession(),
-    testUtils({ captureOTP: true }),
     customSession(async ({ user, session }) => {
       let activeOrganization = null;
 

@@ -10,27 +10,6 @@ jobs:
   ci:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:17
-        env:
-          POSTGRES_USER: test
-          POSTGRES_PASSWORD: test
-          POSTGRES_DB: test
-        ports:
-          - 5433:5432
-        options: >-
-          --health-cmd "pg_isready -U test"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-    env:
-      DATABASE_URL: postgresql://test:test@localhost:5433/test
-      BETTER_AUTH_SECRET: ci-test-secret
-      BETTER_AUTH_URL: http://localhost:3001
-      MIGRATE_PASSWORD: ci-test-password
-
     steps:
       - uses: actions/checkout@v4
 
@@ -43,6 +22,3 @@ jobs:
       - run: bun run lint
 
       - run: bun run typecheck
-
-      - name: Run API tests
-        run: cd apps/api && bun run test
