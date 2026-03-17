@@ -1,0 +1,94 @@
+name: Deploy Staging
+
+on:
+  push:
+    branches: [dev]
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+
+  deploy-web:
+    needs: ci
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.3.4"
+
+      - run: bun install --frozen-lockfile
+
+      - name: Build web
+        env:
+          VITE_API_URL: ${{ secrets.STAGING_API_URL }}
+        run: bunx turbo run build --filter=web
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Deploy to S3 + CloudFront
+        run: |
+          chmod +x infrastructure/scripts/deploy-frontend.sh
+          ./infrastructure/scripts/deploy-frontend.sh \
+            apps/web/dist \
+            ${{ secrets.STAGING_WEB_S3_BUCKET }} \
+            ${{ secrets.STAGING_WEB_CLOUDFRONT_ID }}
+
+  deploy-admin:
+    needs: ci
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.3.4"
+
+      - run: bun install --frozen-lockfile
+
+      - name: Build admin
+        env:
+          VITE_API_URL: ${{ secrets.STAGING_API_URL }}
+        run: bunx turbo run build --filter=admin
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Deploy to S3 + CloudFront
+        run: |
+          chmod +x infrastructure/scripts/deploy-frontend.sh
+          ./infrastructure/scripts/deploy-frontend.sh \
+            apps/admin/dist \
+            ${{ secrets.STAGING_ADMIN_S3_BUCKET }} \
+            ${{ secrets.STAGING_ADMIN_CLOUDFRONT_ID }}
+
+  deploy-api:
+    needs: ci
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.3.4"
+
+      - run: bun install --frozen-lockfile
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Build and deploy Lambda
+        run: |
+          chmod +x infrastructure/scripts/deploy-api.sh
+          ./infrastructure/scripts/deploy-api.sh ${{ secrets.STAGING_API_LAMBDA_NAME }}

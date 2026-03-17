@@ -1,0 +1,17 @@
+{
+  "environment": "production",
+  "aws": {
+    "region": "eu-west-1",
+    "web": {
+      "s3Bucket": "PRODUCTION_WEB_S3_BUCKET",
+      "cloudfrontDistributionId": "PRODUCTION_WEB_CLOUDFRONT_ID"
+    },
+    "admin": {
+      "s3Bucket": "PRODUCTION_ADMIN_S3_BUCKET",
+      "cloudfrontDistributionId": "PRODUCTION_ADMIN_CLOUDFRONT_ID"
+    },
+    "api": {
+      "lambdaFunctionName": "PRODUCTION_API_LAMBDA_NAME"
+    }
+  }
+}

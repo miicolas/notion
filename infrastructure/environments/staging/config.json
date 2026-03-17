@@ -1,0 +1,17 @@
+{
+  "environment": "staging",
+  "aws": {
+    "region": "eu-west-1",
+    "web": {
+      "s3Bucket": "STAGING_WEB_S3_BUCKET",
+      "cloudfrontDistributionId": "STAGING_WEB_CLOUDFRONT_ID"
+    },
+    "admin": {
+      "s3Bucket": "STAGING_ADMIN_S3_BUCKET",
+      "cloudfrontDistributionId": "STAGING_ADMIN_CLOUDFRONT_ID"
+    },
+    "api": {
+      "lambdaFunctionName": "STAGING_API_LAMBDA_NAME"
+    }
+  }
+}
