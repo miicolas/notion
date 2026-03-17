@@ -1,7 +1,7 @@
 import { apiFetch } from "./api-client";
 import type { Sprint, SprintComment } from "./types";
 
-export async function getSprints(projectId: string): Promise<Sprint[]> {
+export async function getSprints(projectId: string): Promise<Array<Sprint>> {
   return apiFetch(`/api/sprints?projectId=${projectId}`);
 }
 
@@ -60,7 +60,7 @@ export async function deleteSprint(id: string): Promise<void> {
 
 export async function updateSprintMembers(
   sprintId: string,
-  memberIds: string[],
+  memberIds: Array<string>,
 ): Promise<void> {
   return apiFetch(`/api/sprints/${sprintId}/members`, {
     method: "PUT",
@@ -71,7 +71,7 @@ export async function updateSprintMembers(
 // Sprint comments
 export async function getSprintComments(
   sprintId: string,
-): Promise<SprintComment[]> {
+): Promise<Array<SprintComment>> {
   return apiFetch(`/api/sprint-comments?sprintId=${sprintId}`);
 }
 

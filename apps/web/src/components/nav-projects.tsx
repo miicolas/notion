@@ -9,7 +9,7 @@ import {
 } from "@workspace/ui/components/sidebar";
 import type { Project } from "@/lib/types";
 
-export function NavProjects({ projects }: { projects: Project[] }) {
+export function NavProjects({ projects }: { projects: Array<Project> }) {
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>Projects</SidebarGroupLabel>

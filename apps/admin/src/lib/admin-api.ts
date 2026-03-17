@@ -52,37 +52,37 @@ export function fetchStats() {
 }
 
 export function fetchUsers() {
-  return apiFetch<AdminUser[]>("/api/admin/users");
+  return apiFetch<Array<AdminUser>>("/api/admin/users");
 }
 
 export function fetchOrganizations() {
-  return apiFetch<AdminOrganization[]>("/api/admin/organizations");
+  return apiFetch<Array<AdminOrganization>>("/api/admin/organizations");
 }
 
 export function fetchUsersGrowth() {
-  return apiFetch<ChartDataPoint[]>("/api/admin/charts/users-growth");
+  return apiFetch<Array<ChartDataPoint>>("/api/admin/charts/users-growth");
 }
 
 export function fetchIssuesOverTime() {
-  return apiFetch<ChartDataPoint[]>("/api/admin/charts/issues-over-time");
+  return apiFetch<Array<ChartDataPoint>>("/api/admin/charts/issues-over-time");
 }
 
 export function fetchIssuesByStatus() {
-  return apiFetch<StatusDataPoint[]>("/api/admin/charts/issues-by-status");
+  return apiFetch<Array<StatusDataPoint>>("/api/admin/charts/issues-by-status");
 }
 
 export function fetchIssuesByPriority() {
-  return apiFetch<PriorityDataPoint[]>("/api/admin/charts/issues-by-priority");
+  return apiFetch<Array<PriorityDataPoint>>("/api/admin/charts/issues-by-priority");
 }
 
 export function fetchOrgsActivity() {
-  return apiFetch<OrgDataPoint[]>("/api/admin/charts/orgs-activity");
+  return apiFetch<Array<OrgDataPoint>>("/api/admin/charts/orgs-activity");
 }
 
 export function fetchProjectsPerOrg() {
-  return apiFetch<OrgDataPoint[]>("/api/admin/charts/projects-per-org");
+  return apiFetch<Array<OrgDataPoint>>("/api/admin/charts/projects-per-org");
 }
 
 export function fetchUsersPerOrg() {
-  return apiFetch<OrgDataPoint[]>("/api/admin/charts/users-per-org");
+  return apiFetch<Array<OrgDataPoint>>("/api/admin/charts/users-per-org");
 }

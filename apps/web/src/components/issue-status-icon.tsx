@@ -1,4 +1,4 @@
-import { Circle, CircleDot, Loader, CheckCircle2, XCircle } from "lucide-react";
+import { CheckCircle2, Circle, CircleDot, Loader, XCircle } from "lucide-react";
 import { cn } from "@workspace/ui/lib/utils";
 
 const statusConfig = {

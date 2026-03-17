@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { ProtectedRoute } from "@/lib/auth-context";
 import { AdminLayout } from "@/layouts/AdminLayout";
 import { SignInPage } from "@/pages/SignInPage";

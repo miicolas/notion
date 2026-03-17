@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { Button } from "@workspace/ui/components/button";
+import { Plus } from "lucide-react";
 import { getClients } from "@/lib/clients";
 import { ClientTable } from "@/components/client-table";
 import { ClientForm } from "@/components/client-form";
-import { Button } from "@workspace/ui/components/button";
-import { Plus } from "lucide-react";
 
 export function ClientsPage() {
   const { data: clients = [] } = useQuery({

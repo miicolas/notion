@@ -1,12 +1,10 @@
-import type { ComponentType } from "react";
-import type { DashboardStats, WidgetConfig } from "@/lib/types";
 import {
+  Activity,
   BarChart3,
+  FolderKanban,
   PieChart,
   TrendingUp,
   Users,
-  FolderKanban,
-  Activity,
 } from "lucide-react";
 import { IssuesByStatusChart } from "./widgets/issues-by-status-chart";
 import { IssuesByPriorityChart } from "./widgets/issues-by-priority-chart";
@@ -14,6 +12,8 @@ import { IssuesOverTimeChart } from "./widgets/issues-over-time-chart";
 import { IssuesByAssigneeChart } from "./widgets/issues-by-assignee-chart";
 import { IssuesByProjectChart } from "./widgets/issues-by-project-chart";
 import { RecentActivityWidget } from "./widgets/recent-activity-widget";
+import type { DashboardStats, WidgetConfig } from "@/lib/types";
+import type { ComponentType } from "react";
 
 export type WidgetProps = { stats: DashboardStats };
 
@@ -77,7 +77,7 @@ export const WIDGET_REGISTRY: Record<string, WidgetDefinition> = {
   },
 };
 
-export const DEFAULT_WIDGETS: WidgetConfig[] = [
+export const DEFAULT_WIDGETS: Array<WidgetConfig> = [
   { id: "1", type: "issues-by-status", size: "md" },
   { id: "2", type: "issues-by-priority", size: "sm" },
   { id: "3", type: "issues-over-time", size: "lg" },

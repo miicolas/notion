@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { z } from "zod";
 import { format } from "date-fns";
@@ -28,9 +28,9 @@ import {
 import { Calendar } from "@workspace/ui/components/calendar";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { RiCalendarLine } from "@remixicon/react";
-import { createProject, updateProject } from "@/lib/projects";
 import { cn } from "@workspace/ui/lib/utils";
 import type { Client, Project } from "@/lib/types";
+import { createProject, updateProject } from "@/lib/projects";
 
 const projectSchema = z.object({
   name: z.string().min(1),
@@ -50,7 +50,7 @@ export function ProjectForm({
   onOpenChange,
 }: {
   project?: Project | null;
-  clients: Client[];
+  clients: Array<Client>;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {

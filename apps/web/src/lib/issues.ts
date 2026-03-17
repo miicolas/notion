@@ -9,7 +9,7 @@ export async function getIssues(params?: {
   labelId?: string;
   sprintId?: string;
   teamId?: string;
-}): Promise<Issue[]> {
+}): Promise<Array<Issue>> {
   const search = new URLSearchParams();
   if (params?.projectId) search.set("projectId", params.projectId);
   if (params?.status) search.set("status", params.status);
@@ -34,7 +34,7 @@ export async function createIssue(data: {
   priority?: string;
   assigneeId?: string;
   deadline?: string;
-  labelIds?: string[];
+  labelIds?: Array<string>;
   sprintId?: string;
 }): Promise<Issue> {
   return apiFetch("/api/issues", {

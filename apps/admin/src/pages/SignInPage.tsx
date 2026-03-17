@@ -3,9 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
-import { signIn, signOut } from "@/lib/auth-client";
-import { authClient } from "@/lib/auth-client";
-import { useAdminAuth } from "@/lib/auth-context";
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
 import { Label } from "@workspace/ui/components/label";
@@ -16,6 +13,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@workspace/ui/components/card";
+import { useAdminAuth } from "@/lib/auth-context";
+import { authClient, signIn, signOut  } from "@/lib/auth-client";
 
 const signInSchema = z.object({
   email: z.string().email("Invalid email"),
@@ -52,7 +51,7 @@ export function SignInPage() {
 
       // Verify the user is an admin
       const { data: session } = await authClient.getSession();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       const user = session?.user as any;
       if (!user || user.role !== "admin") {
         await signOut();

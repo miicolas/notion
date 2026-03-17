@@ -1,7 +1,7 @@
 import * as React from "react"
 
-import { cn } from "@workspace/ui/lib/utils"
 import { RiArrowDownSLine } from "@remixicon/react"
+import { cn } from "@workspace/ui/lib/utils"
 
 type NativeSelectProps = Omit<React.ComponentProps<"select">, "size"> & {
   size?: "sm" | "default"

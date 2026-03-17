@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { authClient } from "@/lib/auth-client";
-import { useAuth } from "@/lib/auth-context";
 import { Button } from "@workspace/ui/components/button";
 import {
   Card,
@@ -10,6 +8,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@workspace/ui/components/card";
+import { authClient } from "@/lib/auth-client";
+import { useAuth } from "@/lib/auth-context";
 
 export function InvitationAcceptPage() {
   const [searchParams] = useSearchParams();

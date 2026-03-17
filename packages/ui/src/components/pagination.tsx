@@ -1,8 +1,8 @@
 import * as React from "react"
 
+import { RiArrowLeftSLine, RiArrowRightSLine, RiMoreLine } from "@remixicon/react"
 import { cn } from "@workspace/ui/lib/utils"
 import { Button } from "@workspace/ui/components/button"
-import { RiArrowLeftSLine, RiArrowRightSLine, RiMoreLine } from "@remixicon/react"
 
 function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
   return (

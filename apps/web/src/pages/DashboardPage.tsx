@@ -2,15 +2,23 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import {
   DndContext,
-  type DragEndEvent,
-  type DragStartEvent,
+  
   DragOverlay,
+  
   PointerSensor,
-  useSensor,
-  useSensors,
   closestCenter,
+  useSensor,
+  useSensors
 } from "@dnd-kit/core";
 import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@workspace/ui/components/card";
+import { AlertTriangle, CheckCircle2, Clock, FolderKanban } from "lucide-react";
+import type {DragEndEvent, DragStartEvent} from "@dnd-kit/core";
 import { useAuth } from "@/lib/auth-context";
 import { getProjects } from "@/lib/projects";
 import { getIssues } from "@/lib/issues";
@@ -19,13 +27,6 @@ import { useDashboardConfig } from "@/hooks/use-dashboard-config";
 import { PageHeader } from "@/components/page-header";
 import { DashboardWidgetCard } from "@/components/dashboard/dashboard-widget-card";
 import { AddWidgetDialog } from "@/components/dashboard/add-widget-dialog";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@workspace/ui/components/card";
-import { FolderKanban, CheckCircle2, Clock, AlertTriangle } from "lucide-react";
 
 export function DashboardPage() {
   const { activeOrganization } = useAuth();
@@ -159,7 +160,7 @@ export function DashboardPage() {
               </div>
             </SortableContext>
             <DragOverlay>
-              {activeWidget && stats ? (
+              {activeWidget && stats ? ( // eslint-disable-line @typescript-eslint/no-unnecessary-condition
                 <div className="w-[300px]">
                   <DashboardWidgetCard
                     config={activeWidget}

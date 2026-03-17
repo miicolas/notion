@@ -7,8 +7,8 @@ import {
   CardTitle,
 } from "@workspace/ui/components/card";
 import { Button } from "@workspace/ui/components/button";
-import type { WidgetConfig, DashboardStats } from "@/lib/types";
 import { WIDGET_REGISTRY } from "./widget-registry";
+import type { DashboardStats, WidgetConfig } from "@/lib/types";
 
 const sizeClasses: Record<WidgetConfig["size"], string> = {
   sm: "col-span-1",
@@ -46,6 +46,7 @@ export function DashboardWidgetCard({
     opacity: isDragging ? 0.3 : 1,
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (!def) return null;
 
   const WidgetComponent = def.component;

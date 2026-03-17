@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { arrayMove } from "@dnd-kit/sortable";
 import type { WidgetConfig } from "@/lib/types";
 import {
@@ -8,11 +8,11 @@ import {
 
 const STORAGE_KEY = "dashboard-widgets";
 
-function loadWidgets(): WidgetConfig[] {
+function loadWidgets(): Array<WidgetConfig> {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
-      const parsed = JSON.parse(stored) as WidgetConfig[];
+      const parsed = JSON.parse(stored) as Array<WidgetConfig>;
       // Filter out widgets that no longer exist in registry
       return parsed.filter((w) => w.type in WIDGET_REGISTRY);
     }
@@ -23,7 +23,7 @@ function loadWidgets(): WidgetConfig[] {
 }
 
 export function useDashboardConfig() {
-  const [widgets, setWidgets] = useState<WidgetConfig[]>(loadWidgets);
+  const [widgets, setWidgets] = useState<Array<WidgetConfig>>(loadWidgets);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(widgets));
@@ -31,6 +31,7 @@ export function useDashboardConfig() {
 
   const addWidget = useCallback((type: string) => {
     const def = WIDGET_REGISTRY[type];
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (!def) return;
     setWidgets((prev) => [
       ...prev,

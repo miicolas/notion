@@ -1,13 +1,14 @@
 import {
+  
   createContext,
   useCallback,
   useContext,
   useEffect,
-  useState,
-  type ReactNode,
+  useState
 } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { authClient } from "./auth-client";
+import type {ReactNode} from "react";
 import type { Organization } from "./types";
 
 type User = {
@@ -19,7 +20,7 @@ type User = {
 
 type AuthContextValue = {
   user: User | null;
-  organizations: Organization[];
+  organizations: Array<Organization>;
   activeOrganization: Organization | null;
   loading: boolean;
   refetch: () => Promise<void>;
@@ -29,7 +30,7 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [organizations, setOrganizations] = useState<Organization[]>([]);
+  const [organizations, setOrganizations] = useState<Array<Organization>>([]);
   const [activeOrganization, setActiveOrganization] =
     useState<Organization | null>(null);
   const [loading, setLoading] = useState(true);

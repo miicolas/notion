@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { z } from "zod";
 import { format } from "date-fns";
@@ -28,12 +28,12 @@ import {
 import { Calendar } from "@workspace/ui/components/calendar";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { RiCalendarLine } from "@remixicon/react";
-import { createIssue, updateIssue } from "@/lib/issues";
+import { cn } from "@workspace/ui/lib/utils";
 import { statusConfig } from "./issue-status-icon";
 import { priorityConfig } from "./issue-priority-icon";
 import { UserAvatar } from "./user-avatar";
-import { cn } from "@workspace/ui/lib/utils";
-import type { Member, LabelItem, Issue, Sprint } from "@/lib/types";
+import type { Issue, LabelItem, Member, Sprint } from "@/lib/types";
+import { createIssue, updateIssue } from "@/lib/issues";
 
 const issueSchema = z.object({
   title: z.string().min(1),
@@ -59,9 +59,9 @@ export function IssueForm({
 }: {
   issue?: Issue | null;
   projectId: string;
-  labels: LabelItem[];
-  members: Member[];
-  sprints?: Sprint[];
+  labels: Array<LabelItem>;
+  members: Array<Member>;
+  sprints?: Array<Sprint>;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {

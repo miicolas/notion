@@ -1,21 +1,21 @@
 import { Link } from "react-router-dom";
-import { type LucideIcon } from "lucide-react";
-
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@workspace/ui/components/sidebar";
+import type {LucideIcon} from "lucide-react";
+
 
 export function NavMain({
   items,
 }: {
-  items: {
+  items: Array<{
     title: string;
     url: string;
     icon: LucideIcon;
     isActive?: boolean;
-  }[];
+  }>;
 }) {
   return (
     <SidebarMenu>

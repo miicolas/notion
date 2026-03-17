@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
+import type { FullOrganization, OrgMember } from "@/lib/types";
 import { authClient } from "@/lib/auth-client";
 import { useAuth } from "@/lib/auth-context";
-import type { FullOrganization, OrgMember } from "@/lib/types";
 
 export function useActiveMember() {
   const { user, activeOrganization } = useAuth();

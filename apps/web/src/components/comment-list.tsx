@@ -1,7 +1,7 @@
 import { UserAvatar } from "./user-avatar";
 import type { Comment } from "@/lib/types";
 
-export function CommentList({ comments }: { comments: Comment[] }) {
+export function CommentList({ comments }: { comments: Array<Comment> }) {
   if (comments.length === 0) {
     return <p className="text-sm text-muted-foreground">No comments yet.</p>;
   }

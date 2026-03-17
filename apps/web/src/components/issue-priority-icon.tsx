@@ -1,9 +1,9 @@
 import {
-  SignalHigh,
-  SignalMedium,
-  SignalLow,
-  Signal,
   Minus,
+  Signal,
+  SignalHigh,
+  SignalLow,
+  SignalMedium,
 } from "lucide-react";
 import { cn } from "@workspace/ui/lib/utils";
 

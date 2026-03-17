@@ -4,9 +4,6 @@ import { useForm } from "react-hook-form";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { z } from "zod";
 import { useQueryClient } from "@tanstack/react-query";
-import { authClient } from "@/lib/auth-client";
-import { useAuth } from "@/lib/auth-context";
-import { useActiveMember } from "@/hooks/use-active-member";
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
 import {
@@ -28,6 +25,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@workspace/ui/components/alert-dialog";
+import { useActiveMember } from "@/hooks/use-active-member";
+import { useAuth } from "@/lib/auth-context";
+import { authClient } from "@/lib/auth-client";
 
 const orgSchema = z.object({
   name: z.string().min(1, "Name is required"),

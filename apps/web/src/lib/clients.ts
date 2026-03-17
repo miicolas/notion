@@ -1,7 +1,7 @@
 import { apiFetch } from "./api-client";
 import type { Client } from "./types";
 
-export async function getClients(): Promise<Client[]> {
+export async function getClients(): Promise<Array<Client>> {
   return apiFetch("/api/clients");
 }
 

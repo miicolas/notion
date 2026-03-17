@@ -1,7 +1,7 @@
 import { apiFetch } from "./api-client";
 import type { Team } from "./types";
 
-export async function getTeams(): Promise<Team[]> {
+export async function getTeams(): Promise<Array<Team>> {
   return apiFetch("/api/teams");
 }
 

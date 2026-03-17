@@ -11,7 +11,7 @@ export function DatePicker({
 }: {
   selectedDate?: Date;
   onSelectDate?: (date: Date | undefined) => void;
-  taskDates?: Date[];
+  taskDates?: Array<Date>;
 }) {
   return (
     <SidebarGroup className="px-0">

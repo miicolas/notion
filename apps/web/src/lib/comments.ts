@@ -1,7 +1,7 @@
 import { apiFetch } from "./api-client";
 import type { Comment } from "./types";
 
-export async function getComments(issueId: string): Promise<Comment[]> {
+export async function getComments(issueId: string): Promise<Array<Comment>> {
   return apiFetch(`/api/comments?issueId=${issueId}`);
 }
 

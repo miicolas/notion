@@ -10,7 +10,7 @@ import {
 } from "@workspace/ui/components/table";
 import type { Project } from "@/lib/types";
 
-export function ProjectTable({ projects }: { projects: Project[] }) {
+export function ProjectTable({ projects }: { projects: Array<Project> }) {
   if (projects.length === 0) {
     return (
       <div className="flex h-40 items-center justify-center text-muted-foreground">

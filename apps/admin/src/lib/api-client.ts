@@ -1,6 +1,6 @@
 import { API_URL } from "./api";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 export async function apiFetch<T = any>(
   path: string,
   init?: RequestInit,

@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { Button } from "@workspace/ui/components/button";
+import { Plus } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { getProjects } from "@/lib/projects";
 import { getClients } from "@/lib/clients";
 import { ProjectTable } from "@/components/project-table";
 import { ProjectForm } from "@/components/project-form";
-import { Button } from "@workspace/ui/components/button";
-import { Plus } from "lucide-react";
 
 export function ProjectsPage() {
   const { activeOrganization } = useAuth();

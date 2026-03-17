@@ -1,10 +1,11 @@
 import { Pie, PieChart } from "recharts";
 import {
+  
   ChartContainer,
   ChartTooltip,
-  ChartTooltipContent,
-  type ChartConfig,
+  ChartTooltipContent
 } from "@workspace/ui/components/chart";
+import type {ChartConfig} from "@workspace/ui/components/chart";
 import type { WidgetProps } from "../widget-registry";
 
 const priorityColors: Record<string, string> = {

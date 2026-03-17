@@ -1,7 +1,7 @@
 import { apiFetch } from "./api-client";
 import type { LabelItem } from "./types";
 
-export async function getLabels(): Promise<LabelItem[]> {
+export async function getLabels(): Promise<Array<LabelItem>> {
   return apiFetch("/api/labels");
 }
 

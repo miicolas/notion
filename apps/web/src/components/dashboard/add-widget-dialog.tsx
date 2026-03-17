@@ -7,15 +7,15 @@ import {
   DialogTrigger,
 } from "@workspace/ui/components/dialog";
 import { Button } from "@workspace/ui/components/button";
-import type { WidgetConfig } from "@/lib/types";
 import { WIDGET_REGISTRY } from "./widget-registry";
+import type { WidgetConfig } from "@/lib/types";
 
 export function AddWidgetDialog({
   widgets,
   onAdd,
   onRemove,
 }: {
-  widgets: WidgetConfig[];
+  widgets: Array<WidgetConfig>;
   onAdd: (type: string) => void;
   onRemove: (id: string) => void;
 }) {

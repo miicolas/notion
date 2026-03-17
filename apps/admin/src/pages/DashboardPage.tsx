@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Users, Building2, FolderKanban, CircleDot } from "lucide-react";
+import { Building2, CircleDot, FolderKanban, Users } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -16,21 +16,21 @@ import {
   AreaChart,
   Bar,
   BarChart,
+  CartesianGrid,
   Cell,
   Pie,
   PieChart,
   XAxis,
   YAxis,
-  CartesianGrid,
 } from "recharts";
 import {
-  fetchStats,
-  fetchUsersGrowth,
-  fetchIssuesOverTime,
-  fetchIssuesByStatus,
   fetchIssuesByPriority,
+  fetchIssuesByStatus,
+  fetchIssuesOverTime,
   fetchOrgsActivity,
   fetchProjectsPerOrg,
+  fetchStats,
+  fetchUsersGrowth,
   fetchUsersPerOrg,
 } from "@/lib/admin-api";
 

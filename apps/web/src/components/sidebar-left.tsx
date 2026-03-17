@@ -1,24 +1,24 @@
 import * as React from "react";
 import {
+  FolderKanban,
   Home,
+  Settings2,
+  Tags,
   Users,
   UsersRound,
-  FolderKanban,
-  Tags,
-  Settings2,
 } from "lucide-react";
 
-import { NavMain } from "@/components/nav-main";
-import { NavProjects } from "@/components/nav-projects";
-import { NavSecondary } from "@/components/nav-secondary";
-import { TeamSwitcher } from "@/components/team-switcher";
-import type { Organization, Project } from "@/lib/types";
 import {
   Sidebar,
   SidebarContent,
   SidebarHeader,
   SidebarRail,
 } from "@workspace/ui/components/sidebar";
+import type { Organization, Project } from "@/lib/types";
+import { NavMain } from "@/components/nav-main";
+import { NavProjects } from "@/components/nav-projects";
+import { NavSecondary } from "@/components/nav-secondary";
+import { TeamSwitcher } from "@/components/team-switcher";
 
 const navMain = [
   {
@@ -63,9 +63,9 @@ export function SidebarLeft({
   projects = [],
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
-  organizations: Organization[];
+  organizations: Array<Organization>;
   activeOrganization?: Organization | null;
-  projects?: Project[];
+  projects?: Array<Project>;
 }) {
   return (
     <Sidebar className="border-r-0" {...props}>

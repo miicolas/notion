@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { Badge } from "@workspace/ui/components/badge";
+import type { WidgetProps } from "../widget-registry";
 import { useAuth } from "@/lib/auth-context";
 import { getProjects } from "@/lib/projects";
 import { getIssues } from "@/lib/issues";
-import { Badge } from "@workspace/ui/components/badge";
-import type { WidgetProps } from "../widget-registry";
 
 export function RecentActivityWidget(_props: WidgetProps) {
   const { activeOrganization } = useAuth();

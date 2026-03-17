@@ -1,22 +1,22 @@
 import { useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getIssue, deleteIssue } from "@/lib/issues";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Button } from "@workspace/ui/components/button";
+import { ArrowLeft, Pencil, Trash2 } from "lucide-react";
+import { Separator } from "@workspace/ui/components/separator";
+import { deleteIssue, getIssue } from "@/lib/issues";
 import { getLabels } from "@/lib/labels";
 import { getMembers } from "@/lib/members";
 import { IssueForm } from "@/components/issue-form";
 import { CommentList } from "@/components/comment-list";
 import { CommentForm } from "@/components/comment-form";
 import {
-  StatusDropdown,
-  PriorityDropdown,
   AssigneeDropdown,
+  PriorityDropdown,
+  StatusDropdown,
 } from "@/components/issue-inline-edit";
 import { LabelBadge } from "@/components/label-badge";
 import { CopyPromptButton } from "@/components/copy-prompt-button";
-import { Button } from "@workspace/ui/components/button";
-import { ArrowLeft, Pencil, Trash2 } from "lucide-react";
-import { Separator } from "@workspace/ui/components/separator";
 
 export function IssueDetailPage() {
   const { issueId } = useParams<{ issueId: string }>();

@@ -13,8 +13,8 @@ import { Input } from "@workspace/ui/components/input";
 import { Label } from "@workspace/ui/components/label";
 import { Textarea } from "@workspace/ui/components/textarea";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createClient, updateClient } from "@/lib/clients";
 import type { Client } from "@/lib/types";
+import { createClient, updateClient } from "@/lib/clients";
 
 const clientSchema = z.object({
   name: z.string().min(1),

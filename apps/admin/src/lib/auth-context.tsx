@@ -1,13 +1,14 @@
 import {
+  
   createContext,
   useCallback,
   useContext,
   useEffect,
-  useState,
-  type ReactNode,
+  useState
 } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { authClient } from "./auth-client";
+import type {ReactNode} from "react";
 
 type User = {
   id: string;

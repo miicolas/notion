@@ -2,15 +2,16 @@
 
 import * as React from "react"
 import {
+  
   DayPicker,
-  getDefaultClassNames,
-  type DayButton,
-  type Locale,
+  
+  getDefaultClassNames
 } from "react-day-picker"
 
+import { RiArrowDownSLine, RiArrowLeftSLine, RiArrowRightSLine } from "@remixicon/react"
 import { cn } from "@workspace/ui/lib/utils"
 import { Button, buttonVariants } from "@workspace/ui/components/button"
-import { RiArrowLeftSLine, RiArrowRightSLine, RiArrowDownSLine } from "@remixicon/react"
+import type {DayButton, Locale} from "react-day-picker";
 
 function Calendar({
   className,

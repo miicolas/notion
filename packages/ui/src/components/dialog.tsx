@@ -3,9 +3,9 @@
 import * as React from "react"
 import { Dialog as DialogPrimitive } from "radix-ui"
 
+import { RiCloseLine } from "@remixicon/react"
 import { cn } from "@workspace/ui/lib/utils"
 import { Button } from "@workspace/ui/components/button"
-import { RiCloseLine } from "@remixicon/react"
 
 function Dialog({
   ...props

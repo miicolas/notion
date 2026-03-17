@@ -3,16 +3,16 @@ import { format } from "date-fns";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from "@workspace/ui/components/dialog";
 import { Button } from "@workspace/ui/components/button";
 import { Label } from "@workspace/ui/components/label";
 import { Textarea } from "@workspace/ui/components/textarea";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { transitionSprint } from "@/lib/sprints";
 import type { Sprint } from "@/lib/types";
+import { transitionSprint } from "@/lib/sprints";
 
 export function SprintCompleteDialog({
   sprint,

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { format, addWeeks, addMonths } from "date-fns";
+import { addMonths, addWeeks, format } from "date-fns";
 import {
   Dialog,
   DialogContent,
@@ -34,10 +34,10 @@ import {
 } from "@workspace/ui/components/avatar";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { RiCalendarLine } from "@remixicon/react";
-import { createSprint, updateSprint, updateSprintMembers } from "@/lib/sprints";
 import { Checkbox } from "@workspace/ui/components/checkbox";
 import { cn } from "@workspace/ui/lib/utils";
-import type { Sprint, Member } from "@/lib/types";
+import type { Member, Sprint } from "@/lib/types";
+import { createSprint, updateSprint, updateSprintMembers } from "@/lib/sprints";
 
 type Duration = "1w" | "2w" | "3w" | "1m" | "custom";
 
@@ -74,7 +74,7 @@ export function SprintForm({
 }: {
   sprint?: Sprint | null;
   projectId: string;
-  members?: Member[];
+  members?: Array<Member>;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   sprintCount?: number;
@@ -123,7 +123,7 @@ export function SprintForm({
 
   const mutation = useMutation({
     mutationFn: async (data: Record<string, unknown>) => {
-      const memberIds = data.memberIds as string[];
+      const memberIds = data.memberIds as Array<string>;
       const { memberIds: _, ...sprintData } = data;
       let result;
       if (sprint) {
@@ -187,7 +187,7 @@ export function SprintForm({
               }}
               className="justify-start"
             >
-              {(Object.keys(DURATION_LABELS) as Duration[]).map((d) => (
+              {(Object.keys(DURATION_LABELS) as Array<Duration>).map((d) => (
                 <ToggleGroupItem key={d} value={d} size="sm">
                   {DURATION_LABELS[d]}
                 </ToggleGroupItem>

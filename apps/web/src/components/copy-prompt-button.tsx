@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Copy, Check } from "lucide-react";
+import { Check, Copy } from "lucide-react";
 import { Button } from "@workspace/ui/components/button";
-import { copyIssueAsPrompt } from "@/lib/copy-issue-prompt";
 import type { Issue } from "@/lib/types";
+import { copyIssueAsPrompt } from "@/lib/copy-issue-prompt";
 
 export function CopyPromptButton({
   issue,

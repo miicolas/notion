@@ -14,7 +14,7 @@ export type Client = {
   website?: string | null;
   logo?: string | null;
   notes?: string | null;
-  projects?: Project[];
+  projects?: Array<Project>;
 };
 
 export type Project = {
@@ -24,7 +24,7 @@ export type Project = {
   status: string;
   clientId?: string | null;
   client?: { id: string; name: string } | null;
-  issues?: { id: string }[];
+  issues?: Array<{ id: string }>;
   startDate?: string | null;
   endDate?: string | null;
 };
@@ -60,12 +60,12 @@ export type Sprint = {
   } | null;
   releaseStatus?: "pre_release" | "release_candidate" | "released" | null;
   retrospective?: string | null;
-  sprintMembers?: {
+  sprintMembers?: Array<{
     member: {
       id: string;
       user: { id: string; name: string; image?: string | null };
     };
-  }[];
+  }>;
 };
 
 export type SprintComment = {
@@ -92,10 +92,10 @@ export type Issue = {
   assignee?: {
     user: { id: string; name: string; image?: string | null };
   } | null;
-  issueLabels?: { label: LabelItem }[];
+  issueLabels?: Array<{ label: LabelItem }>;
   project?: { id: string; name: string } | null;
   sprint?: { id: string; name: string; status: string } | null;
-  comments?: Comment[];
+  comments?: Array<Comment>;
 };
 
 export type Comment = {
@@ -110,7 +110,7 @@ export type Team = {
   name: string;
   organizationId: string;
   createdAt: string;
-  members?: TeamMember[];
+  members?: Array<TeamMember>;
 };
 
 export type TeamMember = {
@@ -149,20 +149,20 @@ export type FullOrganization = {
   name: string;
   slug: string;
   logo?: string | null;
-  members: OrgMember[];
-  invitations: OrgInvitation[];
+  members: Array<OrgMember>;
+  invitations: Array<OrgInvitation>;
 };
 
 export type DashboardStats = {
-  issuesByStatus: { status: string; count: number }[];
-  issuesByPriority: { priority: string; count: number }[];
-  issuesByAssignee: {
+  issuesByStatus: Array<{ status: string; count: number }>;
+  issuesByPriority: Array<{ priority: string; count: number }>;
+  issuesByAssignee: Array<{
     assigneeId: string;
     assigneeName: string;
     count: number;
-  }[];
-  issuesByProject: { projectId: string; projectName: string; count: number }[];
-  issuesOverTime: { date: string; count: number }[];
+  }>;
+  issuesByProject: Array<{ projectId: string; projectName: string; count: number }>;
+  issuesOverTime: Array<{ date: string; count: number }>;
 };
 
 export type WidgetConfig = {

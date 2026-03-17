@@ -1,10 +1,10 @@
 import { createAuthClient } from "better-auth/react";
 import {
-  organizationClient,
   customSessionClient,
+  organizationClient,
 } from "better-auth/client/plugins";
-import type { auth } from "@api/auth";
 import { API_URL } from "./api";
+import type { auth } from "@api/auth";
 
 export const authClient = createAuthClient({
   baseURL: API_URL,

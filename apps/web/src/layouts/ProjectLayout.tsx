@@ -1,7 +1,7 @@
-import { Link, Outlet, useParams, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { getProject } from "@/lib/projects";
 import { cn } from "@workspace/ui/lib/utils";
+import { getProject } from "@/lib/projects";
 
 export function ProjectLayout() {
   const { projectId } = useParams<{ projectId: string }>();

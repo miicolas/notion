@@ -21,14 +21,14 @@ import {
 export function NavWorkspaces({
   workspaces,
 }: {
-  workspaces: {
+  workspaces: Array<{
     name: string;
     emoji: React.ReactNode;
-    pages: {
+    pages: Array<{
       name: string;
       emoji: React.ReactNode;
-    }[];
-  }[];
+    }>;
+  }>;
 }) {
   return (
     <SidebarGroup>

@@ -1,6 +1,4 @@
-import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
-import { addTeamMember, removeTeamMember } from "@/lib/teams";
-import { getMembers } from "@/lib/members";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@workspace/ui/components/button";
 import {
   Select,
@@ -15,15 +13,17 @@ import {
   AvatarImage,
 } from "@workspace/ui/components/avatar";
 import { UserMinus } from "lucide-react";
-import type { TeamMember } from "@/lib/types";
 import { useState } from "react";
+import type { TeamMember } from "@/lib/types";
+import { getMembers } from "@/lib/members";
+import { addTeamMember, removeTeamMember } from "@/lib/teams";
 
 export function TeamMemberList({
   teamId,
   members,
 }: {
   teamId: string;
-  members: TeamMember[];
+  members: Array<TeamMember>;
 }) {
   const queryClient = useQueryClient();
   const [selectedUserId, setSelectedUserId] = useState("");

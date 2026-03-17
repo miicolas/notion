@@ -26,11 +26,11 @@ import {
 export function NavFavorites({
   favorites,
 }: {
-  favorites: {
+  favorites: Array<{
     name: string;
     url: string;
     emoji: string;
-  }[];
+  }>;
 }) {
   const { isMobile } = useSidebar();
 

@@ -1,25 +1,26 @@
 import * as React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { DatePicker } from "@/components/date-picker";
-import { NavUser } from "@/components/nav-user";
-import {
-  IssuePriorityIcon,
-  type Priority,
-} from "@/components/issue-priority-icon";
-import { useAuth } from "@/lib/auth-context";
-import { getIssues } from "@/lib/issues";
-import { getMembers } from "@/lib/members";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarHeader,
   SidebarGroup,
-  SidebarGroupLabel,
   SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
   SidebarSeparator,
 } from "@workspace/ui/components/sidebar";
+import type {Priority} from "@/components/issue-priority-icon";
+import { DatePicker } from "@/components/date-picker";
+import { NavUser } from "@/components/nav-user";
+import {
+  IssuePriorityIcon
+  
+} from "@/components/issue-priority-icon";
+import { useAuth } from "@/lib/auth-context";
+import { getIssues } from "@/lib/issues";
+import { getMembers } from "@/lib/members";
 
 export function SidebarRight({
   user,
@@ -48,7 +49,7 @@ export function SidebarRight({
 
   const taskDates = React.useMemo(() => {
     if (!issues) return [];
-    const dates: Date[] = [];
+    const dates: Array<Date> = [];
     for (const issue of issues) {
       if (issue.deadline) {
         dates.push(new Date(issue.deadline));

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { format } from "date-fns";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@workspace/ui/components/button";
 import { Textarea } from "@workspace/ui/components/textarea";
 import {
@@ -9,14 +9,14 @@ import {
   AvatarImage,
 } from "@workspace/ui/components/avatar";
 import { Badge } from "@workspace/ui/components/badge";
-import { Pencil, Trash2, Send } from "lucide-react";
-import {
-  getSprintComments,
-  createSprintComment,
-  updateSprintComment,
-  deleteSprintComment,
-} from "@/lib/sprints";
+import { Pencil, Send, Trash2 } from "lucide-react";
 import type { SprintComment } from "@/lib/types";
+import {
+  createSprintComment,
+  deleteSprintComment,
+  getSprintComments,
+  updateSprintComment,
+} from "@/lib/sprints";
 
 export function SprintComments({
   sprintId,

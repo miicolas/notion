@@ -1,14 +1,6 @@
 import { useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { getIssues } from "@/lib/issues";
-import { getLabels } from "@/lib/labels";
-import { getMembers } from "@/lib/members";
-import { getSprints } from "@/lib/sprints";
-import { getTeams } from "@/lib/teams";
-import { IssueTable } from "@/components/issue-table";
-import { IssueKanban } from "@/components/issue-kanban";
-import { IssueForm } from "@/components/issue-form";
 import { Button } from "@workspace/ui/components/button";
 import {
   Select,
@@ -17,7 +9,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select";
-import { Plus, LayoutList, Kanban } from "lucide-react";
+import { Kanban, LayoutList, Plus } from "lucide-react";
+import { getIssues } from "@/lib/issues";
+import { getLabels } from "@/lib/labels";
+import { getMembers } from "@/lib/members";
+import { getSprints } from "@/lib/sprints";
+import { getTeams } from "@/lib/teams";
+import { IssueTable } from "@/components/issue-table";
+import { IssueKanban } from "@/components/issue-kanban";
+import { IssueForm } from "@/components/issue-form";
 
 export function ProjectIssuesPage() {
   const { projectId } = useParams<{ projectId: string }>();

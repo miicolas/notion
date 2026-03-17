@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { LayoutDashboard, Users, Building2, LogOut } from "lucide-react";
+import { Building2, LayoutDashboard, LogOut, Users } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,

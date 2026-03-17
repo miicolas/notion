@@ -16,15 +16,15 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@workspace/ui/components/sidebar";
+import type { Organization } from "@/lib/types";
 import { authClient } from "@/lib/auth-client";
 import { useAuth } from "@/lib/auth-context";
-import type { Organization } from "@/lib/types";
 
 export function TeamSwitcher({
   organizations,
   activeOrganization,
 }: {
-  organizations: Organization[];
+  organizations: Array<Organization>;
   activeOrganization?: Organization | null;
 }) {
   const navigate = useNavigate();
@@ -40,6 +40,7 @@ export function TeamSwitcher({
     queryClient.invalidateQueries();
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (!activeOrg) {
     return null;
   }

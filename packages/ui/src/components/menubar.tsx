@@ -3,8 +3,8 @@
 import * as React from "react"
 import { Menubar as MenubarPrimitive } from "radix-ui"
 
+import { RiArrowRightSLine, RiCheckLine } from "@remixicon/react"
 import { cn } from "@workspace/ui/lib/utils"
-import { RiCheckLine, RiArrowRightSLine } from "@remixicon/react"
 
 function Menubar({
   className,

@@ -1,9 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getTeams, deleteTeam } from "@/lib/teams";
-import { useActiveMember } from "@/hooks/use-active-member";
-import { TeamForm } from "@/components/team-form";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@workspace/ui/components/button";
 import {
   Table,
@@ -15,11 +12,14 @@ import {
 } from "@workspace/ui/components/table";
 import { Plus, Trash2 } from "lucide-react";
 import type { Team } from "@/lib/types";
+import { TeamForm } from "@/components/team-form";
+import { useActiveMember } from "@/hooks/use-active-member";
+import { deleteTeam, getTeams } from "@/lib/teams";
 
 export function SettingsTeamsPage() {
   const queryClient = useQueryClient();
   const { canManage } = useActiveMember();
-  const { data: teams = [] } = useQuery<Team[]>({
+  const { data: teams = [] } = useQuery<Array<Team>>({
     queryKey: ["teams"],
     queryFn: getTeams,
   });

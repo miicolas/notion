@@ -1,6 +1,6 @@
-import { useState, useMemo } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMemo, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { Button } from "@workspace/ui/components/button";
 import { Checkbox } from "@workspace/ui/components/checkbox";
@@ -11,15 +11,15 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@workspace/ui/components/avatar";
-import { getIssues, updateIssue } from "@/lib/issues";
-import { getSprint } from "@/lib/sprints";
 import {
-  ChevronRight,
-  ChevronLeft,
-  Loader2,
   ArrowLeft,
+  ChevronLeft,
+  ChevronRight,
+  Loader2,
 } from "lucide-react";
 import type { Issue } from "@/lib/types";
+import { getIssues, updateIssue } from "@/lib/issues";
+import { getSprint } from "@/lib/sprints";
 
 const PRIORITY_COLORS: Record<string, string> = {
   urgent: "text-red-600",
@@ -126,7 +126,7 @@ export function SprintPlanningPage() {
   );
 
   const addMutation = useMutation({
-    mutationFn: (ids: string[]) =>
+    mutationFn: (ids: Array<string>) =>
       Promise.all(ids.map((id) => updateIssue({ id, sprintId }))),
     onSuccess: () => {
       setBacklogSelected(new Set());
@@ -136,7 +136,7 @@ export function SprintPlanningPage() {
   });
 
   const removeMutation = useMutation({
-    mutationFn: (ids: string[]) =>
+    mutationFn: (ids: Array<string>) =>
       Promise.all(ids.map((id) => updateIssue({ id, sprintId: null }))),
     onSuccess: () => {
       setSprintSelected(new Set());

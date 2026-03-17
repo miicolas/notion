@@ -1,29 +1,31 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { updateIssue } from "@/lib/issues";
-import { getMembers } from "@/lib/members";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
-  DropdownMenuTrigger,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu";
+import { UserCircle } from "lucide-react";
+import { cn } from "@workspace/ui/lib/utils";
 import {
+  
   IssueStatusIcon,
-  statusConfig,
-  type IssueStatus,
+  statusConfig
 } from "./issue-status-icon";
 import {
   IssuePriorityIcon,
-  priorityConfig,
-  type Priority,
+  
+  priorityConfig
 } from "./issue-priority-icon";
 import { UserAvatar } from "./user-avatar";
-import { UserCircle } from "lucide-react";
-import { cn } from "@workspace/ui/lib/utils";
+import type {IssueStatus} from "./issue-status-icon";
+import type {Priority} from "./issue-priority-icon";
+import { getMembers } from "@/lib/members";
+import { updateIssue } from "@/lib/issues";
 
 function useInlineUpdate() {
   const queryClient = useQueryClient();
@@ -54,7 +56,7 @@ export function StatusDropdown({
         {children ?? (
           <button className="flex items-center gap-2 rounded-md px-2 py-1 text-sm hover:bg-accent transition-colors">
             <IssueStatusIcon status={value as IssueStatus} />
-            <span>{config?.label}</span>
+            <span>{config.label}</span>
           </button>
         )}
       </DropdownMenuTrigger>
@@ -66,10 +68,10 @@ export function StatusDropdown({
           onValueChange={(v) => mutation.mutate({ id: issueId, status: v })}
         >
           {(
-            Object.entries(statusConfig) as [
+            Object.entries(statusConfig) as Array<[
               IssueStatus,
               (typeof statusConfig)[IssueStatus],
-            ][]
+            ]>
           ).map(([key, cfg]) => (
             <DropdownMenuRadioItem key={key} value={key}>
               <IssueStatusIcon status={key} />
@@ -100,7 +102,7 @@ export function PriorityDropdown({
         {children ?? (
           <button className="flex items-center gap-2 rounded-md px-2 py-1 text-sm hover:bg-accent transition-colors">
             <IssuePriorityIcon priority={value as Priority} />
-            <span>{config?.label}</span>
+            <span>{config.label}</span>
           </button>
         )}
       </DropdownMenuTrigger>
@@ -112,10 +114,10 @@ export function PriorityDropdown({
           onValueChange={(v) => mutation.mutate({ id: issueId, priority: v })}
         >
           {(
-            Object.entries(priorityConfig) as [
+            Object.entries(priorityConfig) as Array<[
               Priority,
               (typeof priorityConfig)[Priority],
-            ][]
+            ]>
           ).map(([key, cfg]) => (
             <DropdownMenuRadioItem key={key} value={key}>
               <IssuePriorityIcon priority={key} />

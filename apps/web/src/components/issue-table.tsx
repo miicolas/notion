@@ -9,14 +9,14 @@ import {
 } from "@workspace/ui/components/table";
 import { LabelBadge } from "./label-badge";
 import {
-  StatusDropdown,
-  PriorityDropdown,
   AssigneeDropdown,
+  PriorityDropdown,
+  StatusDropdown,
 } from "./issue-inline-edit";
 import { CopyPromptButton } from "./copy-prompt-button";
 import type { Issue } from "@/lib/types";
 
-export function IssueTable({ issues }: { issues: Issue[] }) {
+export function IssueTable({ issues }: { issues: Array<Issue> }) {
   const navigate = useNavigate();
 
   if (issues.length === 0) {

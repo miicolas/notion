@@ -1,39 +1,42 @@
 import * as React from "react";
 import {
   DndContext,
-  type DragEndEvent,
+  
+  
   DragOverlay,
-  type DragStartEvent,
-  type DragOverEvent,
+  
   PointerSensor,
-  useSensor,
-  useSensors,
   closestCorners,
   useDroppable,
+  useSensor,
+  useSensors
 } from "@dnd-kit/core";
 import {
   SortableContext,
-  verticalListSortingStrategy,
-  useSortable,
   arrayMove,
+  useSortable,
+  verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { reorderIssue } from "@/lib/issues";
+import { Card, CardContent } from "@workspace/ui/components/card";
+import { Link } from "react-router-dom";
 import {
+  
   IssueStatusIcon,
-  statusConfig,
-  type IssueStatus,
+  statusConfig
 } from "./issue-status-icon";
-import { IssuePriorityIcon, type Priority } from "./issue-priority-icon";
+import { IssuePriorityIcon  } from "./issue-priority-icon";
 import { LabelBadge } from "./label-badge";
 import { UserAvatar } from "./user-avatar";
-import { Card, CardContent } from "@workspace/ui/components/card";
 import { CopyPromptButton } from "./copy-prompt-button";
-import { Link } from "react-router-dom";
+import type {IssueStatus} from "./issue-status-icon";
+import type {Priority} from "./issue-priority-icon";
+import type {DragEndEvent, DragOverEvent, DragStartEvent} from "@dnd-kit/core";
 import type { Issue } from "@/lib/types";
+import { reorderIssue } from "@/lib/issues";
 
-const COLUMNS: IssueStatus[] = [
+const COLUMNS: Array<IssueStatus> = [
   "backlog",
   "todo",
   "in_progress",
@@ -131,17 +134,18 @@ function DroppableColumn({
   );
 }
 
-function buildColumns(issues: Issue[]): Record<string, Issue[]> {
-  const map: Record<string, Issue[]> = {};
+function buildColumns(issues: Array<Issue>): Record<string, Array<Issue>> {
+  const map: Record<string, Array<Issue>> = {};
   for (const col of COLUMNS) map[col] = [];
   for (const issue of issues) {
-    if (map[issue.status]) map[issue.status].push(issue);
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    map[issue.status]?.push(issue);
   }
   return map;
 }
 
 function findColumnOfItem(
-  columns: Record<string, Issue[]>,
+  columns: Record<string, Array<Issue>>,
   itemId: string,
 ): string | null {
   for (const [status, items] of Object.entries(columns)) {
@@ -150,7 +154,7 @@ function findColumnOfItem(
   return null;
 }
 
-export function IssueKanban({ issues }: { issues: Issue[] }) {
+export function IssueKanban({ issues }: { issues: Array<Issue> }) {
   const queryClient = useQueryClient();
   const [activeIssue, setActiveIssue] = React.useState<Issue | null>(null);
   const [columns, setColumns] = React.useState(() => buildColumns(issues));

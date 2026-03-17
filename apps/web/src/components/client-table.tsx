@@ -9,7 +9,7 @@ import {
 } from "@workspace/ui/components/table";
 import type { Client } from "@/lib/types";
 
-export function ClientTable({ clients }: { clients: Client[] }) {
+export function ClientTable({ clients }: { clients: Array<Client> }) {
   if (clients.length === 0) {
     return (
       <div className="flex h-40 items-center justify-center text-muted-foreground">

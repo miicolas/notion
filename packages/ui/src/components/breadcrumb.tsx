@@ -1,8 +1,8 @@
 import * as React from "react"
 import { Slot } from "radix-ui"
 
-import { cn } from "@workspace/ui/lib/utils"
 import { RiArrowRightSLine, RiMoreLine } from "@remixicon/react"
+import { cn } from "@workspace/ui/lib/utils"
 
 function Breadcrumb({ className, ...props }: React.ComponentProps<"nav">) {
   return (

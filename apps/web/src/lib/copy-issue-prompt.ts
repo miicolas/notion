@@ -17,7 +17,7 @@ const priorityLabels: Record<string, string> = {
 };
 
 export function formatIssueAsPrompt(issue: Issue): string {
-  const lines: string[] = [];
+  const lines: Array<string> = [];
 
   lines.push(`# ${issue.title}`);
   lines.push("");

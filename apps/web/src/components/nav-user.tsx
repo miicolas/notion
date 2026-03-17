@@ -8,7 +8,6 @@ import {
   Sparkles,
 } from "lucide-react";
 
-import { signOut } from "@/lib/auth-client";
 import {
   Avatar,
   AvatarFallback,
@@ -29,6 +28,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@workspace/ui/components/sidebar";
+import { signOut } from "@/lib/auth-client";
 
 export function NavUser({
   user,

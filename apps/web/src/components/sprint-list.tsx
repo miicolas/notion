@@ -9,23 +9,23 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@workspace/ui/components/avatar";
-import { transitionSprint, deleteSprint } from "@/lib/sprints";
+import {
+  ArrowLeft,
+  ChevronDown,
+  ChevronRight,
+  ClipboardList,
+  Eye,
+  FileText,
+  Pencil,
+  Play,
+  Plus,
+  Trash2,
+} from "lucide-react";
+import type { Member, Sprint } from "@/lib/types";
+import { deleteSprint, transitionSprint } from "@/lib/sprints";
 import { SprintForm } from "@/components/sprint-form";
 import { SprintCompleteDialog } from "@/components/sprint-complete-dialog";
 import { SprintComments } from "@/components/sprint-comments";
-import {
-  Play,
-  Pencil,
-  Trash2,
-  Plus,
-  ArrowLeft,
-  Eye,
-  FileText,
-  ClipboardList,
-  ChevronDown,
-  ChevronRight,
-} from "lucide-react";
-import type { Sprint, Member } from "@/lib/types";
 
 const STATUS_COLORS: Record<Sprint["status"], string> = {
   draft: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
@@ -66,9 +66,9 @@ export function SprintList({
   members,
   currentUserId,
 }: {
-  sprints: Sprint[];
+  sprints: Array<Sprint>;
   projectId: string;
-  members?: Member[];
+  members?: Array<Member>;
   currentUserId?: string;
 }) {
   const queryClient = useQueryClient();

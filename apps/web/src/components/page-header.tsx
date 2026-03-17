@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -7,6 +6,7 @@ import {
 } from "@workspace/ui/components/breadcrumb";
 import { Separator } from "@workspace/ui/components/separator";
 import { SidebarTrigger } from "@workspace/ui/components/sidebar";
+import type { ReactNode } from "react";
 
 export function PageHeader({
   title,

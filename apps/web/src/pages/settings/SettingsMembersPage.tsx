@@ -1,8 +1,5 @@
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { authClient } from "@/lib/auth-client";
-import { useActiveMember } from "@/hooks/use-active-member";
-import type { OrgMember, OrgInvitation } from "@/lib/types";
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
 import { Badge } from "@workspace/ui/components/badge";
@@ -34,6 +31,9 @@ import {
   SelectValue,
 } from "@workspace/ui/components/select";
 import { Copy, Trash2, UserPlus } from "lucide-react";
+import type { OrgInvitation, OrgMember } from "@/lib/types";
+import { useActiveMember } from "@/hooks/use-active-member";
+import { authClient } from "@/lib/auth-client";
 
 export function SettingsMembersPage() {
   const queryClient = useQueryClient();
@@ -50,8 +50,8 @@ export function SettingsMembersPage() {
     );
   }
 
-  const members = fullOrg.members ?? [];
-  const invitations = (fullOrg.invitations ?? []).filter(
+  const members = fullOrg.members;
+  const invitations = fullOrg.invitations.filter(
     (inv: OrgInvitation) => inv.status === "pending",
   );
 
@@ -76,7 +76,7 @@ export function SettingsMembersPage() {
       return;
     }
 
-    if (data?.id) {
+    if (data.id) {
       const link = `${window.location.origin}/invitations/accept?invitationId=${data.id}`;
       await navigator.clipboard.writeText(link);
       setCopiedId(data.id);

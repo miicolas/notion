@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { ProtectedRoute } from "@/lib/auth-context";
 import { AuthedLayout } from "@/layouts/AuthedLayout";
 import { ProjectLayout } from "@/layouts/ProjectLayout";

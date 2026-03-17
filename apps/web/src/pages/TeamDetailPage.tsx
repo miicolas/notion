@@ -1,10 +1,10 @@
-import { useParams, Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { Button } from "@workspace/ui/components/button";
+import { ArrowLeft } from "lucide-react";
 import { getTeam } from "@/lib/teams";
 import { TeamMemberList } from "@/components/team-member-list";
 import { PageHeader } from "@/components/page-header";
-import { Button } from "@workspace/ui/components/button";
-import { ArrowLeft } from "lucide-react";
 
 export function TeamDetailPage() {
   const { teamId } = useParams<{ teamId: string }>();

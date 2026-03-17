@@ -1,10 +1,8 @@
 import { useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getClient, deleteClient } from "@/lib/clients";
-import { ClientForm } from "@/components/client-form";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@workspace/ui/components/button";
-import { Pencil, Trash2, ArrowLeft } from "lucide-react";
+import { ArrowLeft, Pencil, Trash2 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -13,6 +11,8 @@ import {
   TableHeader,
   TableRow,
 } from "@workspace/ui/components/table";
+import { ClientForm } from "@/components/client-form";
+import { deleteClient, getClient } from "@/lib/clients";
 
 export function ClientDetailPage() {
   const { clientId } = useParams<{ clientId: string }>();

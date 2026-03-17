@@ -1,6 +1,6 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
-import { PageHeader } from "@/components/page-header";
 import { cn } from "@workspace/ui/lib/utils";
+import { PageHeader } from "@/components/page-header";
 
 const tabs = [
   { label: "Organization", href: "/settings/organization" },

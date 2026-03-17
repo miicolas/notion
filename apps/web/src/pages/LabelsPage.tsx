@@ -1,9 +1,8 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { z } from "zod";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getLabels, createLabel, updateLabel, deleteLabel } from "@/lib/labels";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
 import { Label } from "@workspace/ui/components/label";
@@ -21,9 +20,10 @@ import {
   TableHeader,
   TableRow,
 } from "@workspace/ui/components/table";
-import { PageHeader } from "@/components/page-header";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Pencil, Plus, Trash2 } from "lucide-react";
 import type { LabelItem } from "@/lib/types";
+import { PageHeader } from "@/components/page-header";
+import { createLabel, deleteLabel, getLabels, updateLabel } from "@/lib/labels";
 
 const PRESET_COLORS = [
   "#ef4444",
