@@ -12,7 +12,6 @@ import dashboardRoutes from "./routes/dashboard";
 import sprintsRoutes from "./routes/sprints";
 import sprintCommentsRoutes from "./routes/sprint-comments";
 import teamsRoutes from "./routes/teams";
-import migrateRoutes from "./routes/migrate";
 import adminRoutes from "./routes/admin";
 
 const app = new Hono();
@@ -41,7 +40,6 @@ app.route("/api/dashboard", dashboardRoutes);
 app.route("/api/sprints", sprintsRoutes);
 app.route("/api/sprint-comments", sprintCommentsRoutes);
 app.route("/api/teams", teamsRoutes);
-app.route("/api/migrate", migrateRoutes);
 app.route("/api/admin", adminRoutes);
 
 app.get("/", (c) => {
