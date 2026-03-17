@@ -14,14 +14,13 @@ on:
 jobs:
   migrate:
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
 
     steps:
       - uses: actions/checkout@v4
 
       - name: Run migrations
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}${{ inputs.environment }}
         run: |
           chmod +x infrastructure/scripts/migrate.sh
           ./infrastructure/scripts/migrate.sh

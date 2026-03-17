@@ -90,7 +90,7 @@ jobs:
 
       - name: Run migrations
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}production
         run: |
           chmod +x infrastructure/scripts/migrate.sh
           ./infrastructure/scripts/migrate.sh
