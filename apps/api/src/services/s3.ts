@@ -9,10 +9,7 @@ import { env } from "../env";
 
 const s3 = new S3Client({ region: env.S3_REGION, requestChecksumCalculation:"WHEN_REQUIRED" });
 
-const bucket =
-  env.NODE_ENV === "production"
-    ? env.PROD_S3_ASSETS_BUCKET
-    : env.STAGING_S3_ASSETS_BUCKET;
+const bucket = env.S3_ASSETS_BUCKET;
 
 export async function getPresignedUploadUrl(
   key: string,
