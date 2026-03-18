@@ -154,6 +154,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "team_id": {
+          "name": "team_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
         "status": {
           "name": "status",
           "type": "text",
@@ -483,6 +489,12 @@
         },
         "active_organization_id": {
           "name": "active_organization_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "active_team_id": {
+          "name": "active_team_id",
           "type": "text",
           "primaryKey": false,
           "notNull": false
