@@ -29,9 +29,8 @@ app.use(
   }),
 );
 
-app.on(["POST", "GET"], "/api/auth/**", async (c) => {
+app.all("/api/auth/*", async (c) => {
   const response = await auth.handler(c.req.raw);
-  // Copy auth response into Hono context so CORS middleware can add headers
   c.status(response.status as any);
   response.headers.forEach((value, key) => {
     c.header(key, value);

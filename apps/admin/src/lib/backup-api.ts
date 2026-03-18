@@ -8,7 +8,6 @@ export type Backup = {
   status: "pending" | "completed" | "failed";
   error: string | null;
   createdAt: string;
-  downloadUrl: string | null;
 };
 
 export type BackupConfig = {
@@ -40,6 +39,12 @@ export function deleteBackup(id: string) {
   return apiFetch<{ ok: boolean }>(`/api/admin/backups/${id}`, {
     method: "DELETE",
   });
+}
+
+export function fetchDownloadUrl(id: string) {
+  return apiFetch<{ downloadUrl: string }>(
+    `/api/admin/backups/${id}/download`,
+  );
 }
 
 export function updateBackupConfig(data: Partial<BackupConfig>) {

@@ -1,5 +1,4 @@
-import { exec } from "child_process";
-import { promisify } from "util";
+import { spawn } from "child_process";
 import {
   S3Client,
   PutObjectCommand,
@@ -11,22 +10,63 @@ import { db } from "../db";
 import * as schema from "../db/schema";
 import { eq, desc } from "drizzle-orm";
 
-const execAsync = promisify(exec);
-
 function generateId() {
   return crypto.randomUUID();
 }
 
+const s3Clients = new Map<string, S3Client>();
+
 function getS3Client(region: string) {
-  return new S3Client({ region });
+  let client = s3Clients.get(region);
+  if (!client) {
+    client = new S3Client({ region });
+    s3Clients.set(region, client);
+  }
+  return client;
+}
+
+let backupInProgress = false;
+
+function runPgDumpGzip(databaseUrl: string): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    const pgDump = spawn("pg_dump", [databaseUrl], { stdio: ["ignore", "pipe", "pipe"] });
+    const gzip = spawn("gzip", [], { stdio: ["pipe", "pipe", "pipe"] });
+
+    pgDump.stdout.pipe(gzip.stdin);
+
+    const chunks: Buffer[] = [];
+    gzip.stdout.on("data", (chunk: Buffer) => chunks.push(chunk));
+
+    let pgDumpError = "";
+    pgDump.stderr.on("data", (data: Buffer) => { pgDumpError += data.toString(); });
+
+    let gzipError = "";
+    gzip.stderr.on("data", (data: Buffer) => { gzipError += data.toString(); });
+
+    gzip.on("close", (code) => {
+      if (code !== 0) {
+        reject(new Error(pgDumpError || gzipError || `pg_dump/gzip exited with code ${code}`));
+      } else {
+        resolve(Buffer.concat(chunks));
+      }
+    });
+
+    pgDump.on("error", reject);
+    gzip.on("error", reject);
+  });
 }
 
 export async function runBackup() {
+  if (backupInProgress) {
+    throw new Error("A backup is already in progress");
+  }
+
   const config = await getBackupConfig();
   if (!config.s3Bucket) {
     throw new Error("S3 bucket not configured");
   }
 
+  backupInProgress = true;
   const id = generateId();
   const now = new Date();
   const timestamp = now.toISOString().replace(/[:.]/g, "-");
@@ -45,11 +85,8 @@ export async function runBackup() {
   try {
     const databaseUrl = process.env.DATABASE_URL!;
 
-    // Run pg_dump and gzip
-    const { stdout } = await execAsync(
-      `pg_dump "${databaseUrl}" | gzip`,
-      { encoding: "buffer", maxBuffer: 500 * 1024 * 1024 },
-    );
+    // Run pg_dump piped to gzip (no shell interpolation)
+    const compressedData = await runPgDumpGzip(databaseUrl);
 
     // Upload to S3
     const s3 = getS3Client(config.s3Region);
@@ -57,7 +94,7 @@ export async function runBackup() {
       new PutObjectCommand({
         Bucket: config.s3Bucket,
         Key: s3Key,
-        Body: stdout,
+        Body: compressedData,
         ContentType: "application/gzip",
       }),
     );
@@ -66,7 +103,7 @@ export async function runBackup() {
     await db
       .update(schema.dbBackup)
       .set({
-        sizeBytes: stdout.length,
+        sizeBytes: compressedData.length,
         status: "completed",
       })
       .where(eq(schema.dbBackup.id, id));
@@ -77,7 +114,7 @@ export async function runBackup() {
       .set({ lastRunAt: now })
       .where(eq(schema.backupConfig.id, "default"));
 
-    return { id, filename, sizeBytes: stdout.length };
+    return { id, filename, sizeBytes: compressedData.length };
   } catch (err) {
     const errorMsg = err instanceof Error ? err.message : String(err);
     await db
@@ -85,45 +122,39 @@ export async function runBackup() {
       .set({ status: "failed", error: errorMsg })
       .where(eq(schema.dbBackup.id, id));
     throw err;
+  } finally {
+    backupInProgress = false;
   }
 }
 
 export async function listBackups() {
-  const config = await getBackupConfig();
   const backups = await db
     .select()
     .from(schema.dbBackup)
     .orderBy(desc(schema.dbBackup.createdAt))
     .limit(100);
 
-  if (!config.s3Bucket) {
-    return backups.map((b) => ({ ...b, downloadUrl: null }));
-  }
+  return backups;
+}
+
+export async function getBackupDownloadUrl(id: string) {
+  const backup = await db.query.dbBackup.findFirst({
+    where: eq(schema.dbBackup.id, id),
+  });
+  if (!backup || backup.status !== "completed") return null;
+
+  const config = await getBackupConfig();
+  if (!config.s3Bucket) return null;
 
   const s3 = getS3Client(config.s3Region);
-
-  const enriched = await Promise.all(
-    backups.map(async (b) => {
-      let downloadUrl: string | null = null;
-      if (b.status === "completed") {
-        try {
-          downloadUrl = await getSignedUrl(
-            s3,
-            new GetObjectCommand({
-              Bucket: config.s3Bucket,
-              Key: b.s3Key,
-            }),
-            { expiresIn: 3600 },
-          );
-        } catch {
-          // S3 might not be reachable in dev
-        }
-      }
-      return { ...b, downloadUrl };
+  return getSignedUrl(
+    s3,
+    new GetObjectCommand({
+      Bucket: config.s3Bucket,
+      Key: backup.s3Key,
     }),
+    { expiresIn: 3600 },
   );
-
-  return enriched;
 }
 
 export async function deleteBackup(id: string) {
@@ -183,12 +214,14 @@ export async function updateBackupConfig(data: {
   s3Bucket?: string;
   s3Region?: string;
 }) {
-  const existing = await getBackupConfig();
+  // Ensure default config exists
+  await getBackupConfig();
 
   await db
     .update(schema.backupConfig)
     .set(data)
     .where(eq(schema.backupConfig.id, "default"));
 
-  return { ...existing, ...data };
+  // Re-fetch to return fresh data with correct updatedAt
+  return getBackupConfig();
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
@@ -33,6 +33,7 @@ import { Badge } from "@workspace/ui/components/badge";
 import {
   fetchBackups,
   fetchBackupConfig,
+  fetchDownloadUrl,
   triggerBackup,
   deleteBackup,
   updateBackupConfig,
@@ -58,8 +59,40 @@ function StatusBadge({ status }: { status: Backup["status"] }) {
   return <Badge variant={variant}>{status}</Badge>;
 }
 
+function DownloadButton({ backupId }: { backupId: string }) {
+  const [loading, setLoading] = useState(false);
+
+  async function handleDownload() {
+    setLoading(true);
+    try {
+      const { downloadUrl } = await fetchDownloadUrl(backupId);
+      window.open(downloadUrl, "_blank");
+    } catch {
+      // silently fail
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <Button
+      variant="outline"
+      size="sm"
+      onClick={handleDownload}
+      disabled={loading}
+    >
+      {loading ? (
+        <Loader2 className="h-4 w-4 animate-spin" />
+      ) : (
+        <Download className="h-4 w-4" />
+      )}
+    </Button>
+  );
+}
+
 export function BackupsPage() {
   const queryClient = useQueryClient();
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   const { data: backups, isLoading: loadingBackups } = useQuery({
     queryKey: ["admin", "backups"],
@@ -82,6 +115,7 @@ export function BackupsPage() {
   const deleteMutation = useMutation({
     mutationFn: deleteBackup,
     onSuccess: () => {
+      setDeleteConfirmId(null);
       queryClient.invalidateQueries({ queryKey: ["admin", "backups"] });
     },
   });
@@ -98,7 +132,7 @@ export function BackupsPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Database Backups</h1>
+        <h1 className="text-3xl font-bold">Sauvegardes</h1>
         <Button
           onClick={() => triggerMutation.mutate()}
           disabled={triggerMutation.isPending}
@@ -108,17 +142,17 @@ export function BackupsPage() {
           ) : (
             <Play className="mr-2 h-4 w-4" />
           )}
-          Run Backup Now
+          Lancer un backup
         </Button>
       </div>
 
       {triggerMutation.isError && (
         <div className="bg-destructive/10 text-destructive rounded-md p-3 text-sm">
-          Backup failed: {triggerMutation.error.message}
+          Erreur : {triggerMutation.error.message}
         </div>
       )}
 
-      {/* Cron Configuration */}
+      {/* Configuration Cron */}
       <CronConfigCard
         config={config}
         isLoading={loadingConfig}
@@ -126,12 +160,12 @@ export function BackupsPage() {
         isSaving={configMutation.isPending}
       />
 
-      {/* Backups Table */}
+      {/* Tableau des backups */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Database className="h-5 w-5" />
-            Backup History
+            Historique des sauvegardes
           </CardTitle>
           <CardDescription>
             Liste des sauvegardes de la base de données
@@ -178,25 +212,42 @@ export function BackupsPage() {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
-                        {backup.downloadUrl && (
-                          <Button variant="outline" size="sm" asChild>
-                            <a
-                              href={backup.downloadUrl}
-                              target="_blank"
-                              rel="noreferrer"
+                        {backup.status === "completed" && (
+                          <DownloadButton backupId={backup.id} />
+                        )}
+                        {deleteConfirmId === backup.id ? (
+                          <div className="flex items-center gap-1">
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              onClick={() =>
+                                deleteMutation.mutate(backup.id)
+                              }
+                              disabled={deleteMutation.isPending}
                             >
-                              <Download className="h-4 w-4" />
-                            </a>
+                              {deleteMutation.isPending ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : (
+                                "Confirmer"
+                              )}
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setDeleteConfirmId(null)}
+                            >
+                              Annuler
+                            </Button>
+                          </div>
+                        ) : (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setDeleteConfirmId(backup.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
                           </Button>
                         )}
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => deleteMutation.mutate(backup.id)}
-                          disabled={deleteMutation.isPending}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -225,14 +276,13 @@ function CronConfigCard({
   const [s3Bucket, setS3Bucket] = useState("");
   const [s3Region, setS3Region] = useState("");
 
-  // Sync local state with fetched config
-  const initialized = useState(false);
-  if (config && !initialized[0]) {
-    setCronExpression(config.cronExpression);
-    setS3Bucket(config.s3Bucket);
-    setS3Region(config.s3Region);
-    initialized[1](true);
-  }
+  useEffect(() => {
+    if (config) {
+      setCronExpression(config.cronExpression);
+      setS3Bucket(config.s3Bucket);
+      setS3Region(config.s3Region);
+    }
+  }, [config]);
 
   if (isLoading) {
     return (
@@ -249,7 +299,7 @@ function CronConfigCard({
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Settings className="h-5 w-5" />
-          Cron Configuration
+          Configuration du cron
         </CardTitle>
         <CardDescription>
           Configurer la sauvegarde automatique de la base de données
