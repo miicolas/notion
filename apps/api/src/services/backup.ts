@@ -9,6 +9,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { db } from "../db";
 import * as schema from "../db/schema";
 import { eq, desc } from "drizzle-orm";
+import { env } from "../env";
 
 function generateId() {
   return crypto.randomUUID();
@@ -43,15 +44,28 @@ function runPgDumpGzip(databaseUrl: string): Promise<Buffer> {
     let gzipError = "";
     gzip.stderr.on("data", (data: Buffer) => { gzipError += data.toString(); });
 
+    let pgDumpExitCode: number | null = null;
+
+    pgDump.on("close", (code) => {
+      pgDumpExitCode = code;
+    });
+
     gzip.on("close", (code) => {
-      if (code !== 0) {
-        reject(new Error(pgDumpError || gzipError || `pg_dump/gzip exited with code ${code}`));
+      if (pgDumpExitCode !== 0) {
+        reject(new Error(pgDumpError || `pg_dump exited with code ${pgDumpExitCode}`));
+      } else if (code !== 0) {
+        reject(new Error(gzipError || `gzip exited with code ${code}`));
       } else {
-        resolve(Buffer.concat(chunks));
+        const result = Buffer.concat(chunks);
+        if (result.length < 30) {
+          reject(new Error(pgDumpError || "pg_dump produced empty output"));
+        } else {
+          resolve(result);
+        }
       }
     });
 
-    pgDump.on("error", reject);
+    pgDump.on("error", (err) => reject(new Error(`pg_dump not found: ${err.message}`)));
     gzip.on("error", reject);
   });
 }
@@ -83,7 +97,7 @@ export async function runBackup() {
   });
 
   try {
-    const databaseUrl = process.env.DATABASE_URL!;
+    const databaseUrl = env.BACKUP_DATABASE_URL;
 
     // Run pg_dump piped to gzip (no shell interpolation)
     const compressedData = await runPgDumpGzip(databaseUrl);
@@ -195,7 +209,7 @@ export async function getBackupConfig() {
       enabled: false,
       cronExpression: "0 * * * *",
       s3Bucket: process.env.BACKUP_S3_BUCKET ?? "",
-      s3Region: process.env.AWS_REGION ?? "eu-west-1",
+      s3Region: process.env.S3_REGION ?? "eu-west-3",
     };
     await db.insert(schema.backupConfig).values(defaultConfig);
     return {
