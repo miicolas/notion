@@ -17,4 +17,6 @@ export const env = {
   MIGRATE_PASSWORD: required("MIGRATE_PASSWORD"),
   SES_FROM_EMAIL: required("SES_FROM_EMAIL"),
   FRONTEND_URL: required("FRONTEND_URL"),
+  S3_BUCKET: required("S3_BUCKET"),
+  S3_REGION: process.env.S3_REGION ?? "eu-west-1",
 } as const;

@@ -2,6 +2,7 @@ import { relations } from "drizzle-orm";
 import { pgTable, text, timestamp, index } from "drizzle-orm/pg-core";
 import { user } from "./auth";
 import { issue } from "./issue";
+import { commentAsset } from "./asset";
 
 export const comment = pgTable(
   "comment",
@@ -26,7 +27,7 @@ export const comment = pgTable(
   ],
 );
 
-export const commentRelations = relations(comment, ({ one }) => ({
+export const commentRelations = relations(comment, ({ one, many }) => ({
   issue: one(issue, {
     fields: [comment.issueId],
     references: [issue.id],
@@ -35,4 +36,5 @@ export const commentRelations = relations(comment, ({ one }) => ({
     fields: [comment.authorId],
     references: [user.id],
   }),
+  commentAssets: many(commentAsset),
 }));

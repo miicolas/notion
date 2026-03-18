@@ -61,7 +61,9 @@
       "name": "api",
       "version": "0.0.1",
       "dependencies": {
+        "@aws-sdk/client-s3": "^3.1011.0",
         "@aws-sdk/client-sesv2": "^3.1011.0",
+        "@aws-sdk/s3-request-presigner": "^3.1011.0",
         "@hono/node-server": "^1.14.3",
         "constructs": "^10.5.1",
         "hono": "^4.7.12",
