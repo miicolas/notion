@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import {
@@ -30,15 +30,14 @@ import { Input } from "@workspace/ui/components/input";
 import { Label } from "@workspace/ui/components/label";
 import { Switch } from "@workspace/ui/components/switch";
 import { Badge } from "@workspace/ui/components/badge";
+import type { Backup, BackupConfig } from "@/lib/backup-api";
 import {
-  fetchBackups,
+  deleteBackup,
   fetchBackupConfig,
+  fetchBackups,
   fetchDownloadUrl,
   triggerBackup,
-  deleteBackup,
   updateBackupConfig,
-  type Backup,
-  type BackupConfig,
 } from "@/lib/backup-api";
 
 function formatBytes(bytes: number) {
@@ -220,9 +219,7 @@ export function BackupsPage() {
                             <Button
                               variant="destructive"
                               size="sm"
-                              onClick={() =>
-                                deleteMutation.mutate(backup.id)
-                              }
+                              onClick={() => deleteMutation.mutate(backup.id)}
                               disabled={deleteMutation.isPending}
                             >
                               {deleteMutation.isPending ? (

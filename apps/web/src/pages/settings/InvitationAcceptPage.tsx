@@ -81,11 +81,7 @@ export function InvitationAcceptPage() {
         </CardHeader>
         {result !== "rejected" && (
           <CardContent className="flex gap-3">
-            <Button
-              variant="outline"
-              onClick={handleReject}
-              disabled={loading}
-            >
+            <Button variant="outline" onClick={handleReject} disabled={loading}>
               Decline
             </Button>
             <Button onClick={handleAccept} disabled={loading}>

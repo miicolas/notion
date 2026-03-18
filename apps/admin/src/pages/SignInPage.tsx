@@ -14,7 +14,7 @@ import {
   CardTitle,
 } from "@workspace/ui/components/card";
 import { useAdminAuth } from "@/lib/auth-context";
-import { authClient, signIn, signOut  } from "@/lib/auth-client";
+import { authClient, signIn, signOut } from "@/lib/auth-client";
 
 const signInSchema = z.object({
   email: z.string().email("Invalid email"),
@@ -51,7 +51,7 @@ export function SignInPage() {
 
       // Verify the user is an admin
       const { data: session } = await authClient.getSession();
-       
+
       const user = session?.user as any;
       if (!user || user.role !== "admin") {
         await signOut();
@@ -71,9 +71,7 @@ export function SignInPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">Admin Dashboard</CardTitle>
-          <CardDescription>
-            Sign in with your admin account
-          </CardDescription>
+          <CardDescription>Sign in with your admin account</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -98,11 +96,7 @@ export function SignInPage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                {...register("password")}
-              />
+              <Input id="password" type="password" {...register("password")} />
               {errors.password && (
                 <p className="text-destructive text-sm">
                   {errors.password.message}

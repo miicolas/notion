@@ -21,7 +21,7 @@ export type BackupConfig = {
 };
 
 export function fetchBackups() {
-  return apiFetch<Backup[]>("/api/admin/backups");
+  return apiFetch<Array<Backup>>("/api/admin/backups");
 }
 
 export function fetchBackupConfig() {
@@ -42,9 +42,7 @@ export function deleteBackup(id: string) {
 }
 
 export function fetchDownloadUrl(id: string) {
-  return apiFetch<{ downloadUrl: string }>(
-    `/api/admin/backups/${id}/download`,
-  );
+  return apiFetch<{ downloadUrl: string }>(`/api/admin/backups/${id}/download`);
 }
 
 export function updateBackupConfig(data: Partial<BackupConfig>) {

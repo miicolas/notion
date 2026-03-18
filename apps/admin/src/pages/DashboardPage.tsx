@@ -136,7 +136,9 @@ export function DashboardPage() {
           </CardHeader>
           <CardContent>
             <ChartContainer
-              config={{ count: { label: "Users", color: "hsl(var(--chart-1))" } }}
+              config={{
+                count: { label: "Users", color: "hsl(var(--chart-1))" },
+              }}
               className="h-[300px] w-full"
             >
               <AreaChart data={usersGrowth ?? []}>
@@ -163,7 +165,9 @@ export function DashboardPage() {
           </CardHeader>
           <CardContent>
             <ChartContainer
-              config={{ count: { label: "Issues", color: "hsl(var(--chart-2))" } }}
+              config={{
+                count: { label: "Issues", color: "hsl(var(--chart-2))" },
+              }}
               className="h-[300px] w-full"
             >
               <AreaChart data={issuesOverTime ?? []}>
@@ -190,7 +194,9 @@ export function DashboardPage() {
           </CardHeader>
           <CardContent>
             <ChartContainer
-              config={{ count: { label: "Issues", color: "hsl(var(--chart-3))" } }}
+              config={{
+                count: { label: "Issues", color: "hsl(var(--chart-3))" },
+              }}
               className="h-[300px] w-full"
             >
               <BarChart data={issuesByStatus ?? []}>
@@ -198,7 +204,11 @@ export function DashboardPage() {
                 <XAxis dataKey="status" />
                 <YAxis />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="count" fill="hsl(var(--chart-3))" radius={[4, 4, 0, 0]} />
+                <Bar
+                  dataKey="count"
+                  fill="hsl(var(--chart-3))"
+                  radius={[4, 4, 0, 0]}
+                />
               </BarChart>
             </ChartContainer>
           </CardContent>
@@ -211,7 +221,9 @@ export function DashboardPage() {
           </CardHeader>
           <CardContent>
             <ChartContainer
-              config={{ count: { label: "Issues", color: "hsl(var(--chart-4))" } }}
+              config={{
+                count: { label: "Issues", color: "hsl(var(--chart-4))" },
+              }}
               className="h-[300px] w-full"
             >
               <PieChart>
@@ -241,7 +253,9 @@ export function DashboardPage() {
           </CardHeader>
           <CardContent>
             <ChartContainer
-              config={{ count: { label: "Issues", color: "hsl(var(--chart-1))" } }}
+              config={{
+                count: { label: "Issues", color: "hsl(var(--chart-1))" },
+              }}
               className="h-[300px] w-full"
             >
               <BarChart data={orgsActivity ?? []} layout="vertical">
@@ -249,7 +263,11 @@ export function DashboardPage() {
                 <XAxis type="number" />
                 <YAxis dataKey="orgName" type="category" width={120} />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="count" fill="hsl(var(--chart-1))" radius={[0, 4, 4, 0]} />
+                <Bar
+                  dataKey="count"
+                  fill="hsl(var(--chart-1))"
+                  radius={[0, 4, 4, 0]}
+                />
               </BarChart>
             </ChartContainer>
           </CardContent>
@@ -262,7 +280,9 @@ export function DashboardPage() {
           </CardHeader>
           <CardContent>
             <ChartContainer
-              config={{ count: { label: "Projects", color: "hsl(var(--chart-2))" } }}
+              config={{
+                count: { label: "Projects", color: "hsl(var(--chart-2))" },
+              }}
               className="h-[300px] w-full"
             >
               <BarChart data={projectsPerOrg ?? []} layout="vertical">
@@ -270,7 +290,11 @@ export function DashboardPage() {
                 <XAxis type="number" />
                 <YAxis dataKey="orgName" type="category" width={120} />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="count" fill="hsl(var(--chart-2))" radius={[0, 4, 4, 0]} />
+                <Bar
+                  dataKey="count"
+                  fill="hsl(var(--chart-2))"
+                  radius={[0, 4, 4, 0]}
+                />
               </BarChart>
             </ChartContainer>
           </CardContent>
@@ -283,7 +307,9 @@ export function DashboardPage() {
           </CardHeader>
           <CardContent>
             <ChartContainer
-              config={{ count: { label: "Members", color: "hsl(var(--chart-3))" } }}
+              config={{
+                count: { label: "Members", color: "hsl(var(--chart-3))" },
+              }}
               className="h-[300px] w-full"
             >
               <BarChart data={usersPerOrg ?? []} layout="vertical">
@@ -291,7 +317,11 @@ export function DashboardPage() {
                 <XAxis type="number" />
                 <YAxis dataKey="orgName" type="category" width={120} />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="count" fill="hsl(var(--chart-3))" radius={[0, 4, 4, 0]} />
+                <Bar
+                  dataKey="count"
+                  fill="hsl(var(--chart-3))"
+                  radius={[0, 4, 4, 0]}
+                />
               </BarChart>
             </ChartContainer>
           </CardContent>
