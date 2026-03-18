@@ -1,14 +1,13 @@
-import { useState, useRef } from "react";
+import { useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@workspace/ui/components/button";
-import { ArrowLeft, Pencil, Trash2, Paperclip, X } from "lucide-react";
+import { ArrowLeft, Paperclip, Pencil, Trash2, X } from "lucide-react";
 import { Separator } from "@workspace/ui/components/separator";
 import { deleteIssue, getIssue } from "@/lib/issues";
 import { getLabels } from "@/lib/labels";
 import { getMembers } from "@/lib/members";
-import { uploadFile } from "@/lib/assets";
-import { deleteAsset } from "@/lib/assets";
+import { deleteAsset, uploadFile } from "@/lib/assets";
 import { IssueForm } from "@/components/issue-form";
 import { CommentList } from "@/components/comment-list";
 import { CommentForm } from "@/components/comment-form";

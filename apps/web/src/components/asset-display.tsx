@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getDownloadUrl } from "@/lib/assets";
 import { Download, FileText } from "lucide-react";
 import type { Asset } from "@/lib/types";
+import { getDownloadUrl } from "@/lib/assets";
 
 function formatFileSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;

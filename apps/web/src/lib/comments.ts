@@ -8,7 +8,7 @@ export async function getComments(issueId: string): Promise<Array<Comment>> {
 export async function createComment(data: {
   issueId: string;
   content: string;
-  assetIds?: string[];
+  assetIds?: Array<string>;
 }): Promise<Comment> {
   return apiFetch("/api/comments", {
     method: "POST",

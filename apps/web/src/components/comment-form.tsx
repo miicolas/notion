@@ -5,9 +5,9 @@ import { z } from "zod";
 import { Button } from "@workspace/ui/components/button";
 import { Textarea } from "@workspace/ui/components/textarea";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Paperclip, X } from "lucide-react";
 import { createComment } from "@/lib/comments";
 import { useFileUpload } from "@/hooks/use-file-upload";
-import { Paperclip, X } from "lucide-react";
 
 const commentSchema = z.object({
   content: z.string().min(1),
@@ -34,7 +34,7 @@ export function CommentForm({ issueId }: { issueId: string }) {
 
   const mutation = useMutation({
     mutationFn: async (data: CommentFormValues) => {
-      let assetIds: string[] | undefined;
+      let assetIds: Array<string> | undefined;
 
       if (pendingFiles.length > 0) {
         const assets = await uploadAll();
@@ -120,9 +120,7 @@ export function CommentForm({ issueId }: { issueId: string }) {
           type="submit"
           size="sm"
           disabled={
-            mutation.isPending ||
-            isUploading ||
-            !form.watch("content").trim()
+            mutation.isPending || isUploading || !form.watch("content").trim()
           }
         >
           {mutation.isPending || isUploading ? "Posting..." : "Comment"}

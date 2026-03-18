@@ -1,7 +1,7 @@
-import { useState, useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { uploadFile } from "@/lib/assets";
 import type { Asset } from "@/lib/types";
+import { uploadFile } from "@/lib/assets";
 
 type PendingFile = {
   id: string;
@@ -10,10 +10,10 @@ type PendingFile = {
 };
 
 export function useFileUpload() {
-  const [pendingFiles, setPendingFiles] = useState<PendingFile[]>([]);
-  const [uploadedAssets, setUploadedAssets] = useState<Asset[]>([]);
+  const [pendingFiles, setPendingFiles] = useState<Array<PendingFile>>([]);
+  const [uploadedAssets, setUploadedAssets] = useState<Array<Asset>>([]);
 
-  const addFiles = useCallback((files: FileList | File[]) => {
+  const addFiles = useCallback((files: FileList | Array<File>) => {
     const newFiles = Array.from(files).map((file) => ({
       id: crypto.randomUUID(),
       file,
@@ -34,7 +34,7 @@ export function useFileUpload() {
 
   const uploadMutation = useMutation({
     mutationFn: async (opts: { issueId?: string; commentId?: string }) => {
-      const assets: Asset[] = [];
+      const assets: Array<Asset> = [];
       for (const pending of pendingFiles) {
         const asset = await uploadFile(pending.file, opts);
         assets.push(asset);
