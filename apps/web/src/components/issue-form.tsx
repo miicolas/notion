@@ -217,12 +217,17 @@ export function IssueForm({
                 control={form.control}
                 name="sprintId"
                 render={({ field }) => (
-                  <Select value={field.value} onValueChange={field.onChange}>
+                  <Select
+                      value={field.value || "none"}
+                      onValueChange={(v) =>
+                        field.onChange(v === "none" ? "" : v)
+                      }
+                    >
                     <SelectTrigger>
                       <SelectValue placeholder="No sprint" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">No sprint</SelectItem>
+                      <SelectItem value="none">No sprint</SelectItem>
                       {sprints
                         .filter(
                           (s) =>

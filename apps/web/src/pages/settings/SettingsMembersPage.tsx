@@ -210,7 +210,7 @@ export function SettingsMembersPage() {
                   <TableCell>
                     {canManage && member.role !== "owner" ? (
                       <Select
-                        value={member.role}
+                        value={member.role || "member"}
                         onValueChange={(v) => handleChangeRole(member.id, v)}
                       >
                         <SelectTrigger className="h-8 w-28">

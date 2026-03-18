@@ -49,6 +49,7 @@ export const session = pgTable(
       .references(() => user.id, { onDelete: "cascade" }),
     impersonatedBy: text("impersonated_by"),
     activeOrganizationId: text("active_organization_id"),
+    activeTeamId: text("active_team_id"),
   },
   (table) => [index("session_userId_idx").on(table.userId)],
 );
@@ -134,6 +135,7 @@ export const invitation = pgTable(
       .references(() => organization.id, { onDelete: "cascade" }),
     email: text("email").notNull(),
     role: text("role"),
+    teamId: text("team_id"),
     status: text("status").default("pending").notNull(),
     expiresAt: timestamp("expires_at").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),

@@ -1,7 +1,7 @@
 import { SESv2Client, SendEmailCommand } from "@aws-sdk/client-sesv2";
 import { env } from "../env";
 
-const ses = new SESv2Client({ region: "eu-west-1" });
+const ses = new SESv2Client({ region: process.env.AWS_REGION ?? "eu-west-1" });
 
 export async function sendEmail({
   to,
