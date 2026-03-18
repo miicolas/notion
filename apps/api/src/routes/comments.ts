@@ -17,6 +17,7 @@ app.get("/", async (c) => {
     where: eq(schema.comment.issueId, issueId),
     with: {
       author: { columns: { id: true, name: true, image: true } },
+      commentAssets: { with: { asset: true } },
     },
     orderBy: (comment, { asc }) => [asc(comment.createdAt)],
   });
@@ -39,6 +40,15 @@ app.post("/", async (c) => {
       content: body.content,
     })
     .returning();
+
+  if (body.assetIds?.length) {
+    await db.insert(schema.commentAsset).values(
+      body.assetIds.map((assetId: string) => ({
+        commentId: id,
+        assetId,
+      })),
+    );
+  }
 
   return c.json(created, 201);
 });

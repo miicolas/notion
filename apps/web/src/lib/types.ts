@@ -93,9 +93,19 @@ export type Issue = {
     user: { id: string; name: string; image?: string | null };
   } | null;
   issueLabels?: Array<{ label: LabelItem }>;
+  issueAssets?: Array<{ asset: Asset }>;
   project?: { id: string; name: string } | null;
   sprint?: { id: string; name: string; status: string } | null;
   comments?: Array<Comment>;
+};
+
+export type Asset = {
+  id: string;
+  key: string;
+  filename: string;
+  mimeType: string;
+  size: number;
+  createdAt: string;
 };
 
 export type Comment = {
@@ -103,6 +113,7 @@ export type Comment = {
   content: string;
   createdAt: string;
   author: { id: string; name: string; image?: string | null };
+  commentAssets?: Array<{ asset: Asset }>;
 };
 
 export type Team = {
