@@ -7,7 +7,7 @@ import {
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { env } from "../env";
 
-const s3 = new S3Client({ region: env.S3_REGION });
+const s3 = new S3Client({ region: env.S3_REGION, requestChecksumCalculation:"WHEN_REQUIRED" });
 
 const bucket =
   env.NODE_ENV === "production"
