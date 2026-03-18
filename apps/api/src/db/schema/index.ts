@@ -8,3 +8,5 @@ export * from "./comment";
 export * from "./sprint";
 export * from "./sprint-comment";
 export * from "./sprint-member";
+export * from "./backup";
+export * from "./asset";

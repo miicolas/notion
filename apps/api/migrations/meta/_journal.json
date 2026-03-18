@@ -54,6 +54,20 @@
     {
       "idx": 7,
       "version": "7",
+      "when": 1773773938446,
+      "tag": "0007_military_zarda",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1773824359499,
+      "tag": "0008_kind_stellaris",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
       "when": 1773825757868,
       "tag": "0007_black_roughhouse",
       "breakpoints": true

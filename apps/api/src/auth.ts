@@ -3,7 +3,6 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import {
   admin as adminPlugin,
   openAPI,
-  multiSession,
   organization,
   customSession,
 } from "better-auth/plugins";
@@ -76,8 +75,7 @@ export const auth = betterAuth({
       },
     }),
     openAPI(),
-    multiSession(),
-    customSession(async ({ user, session }) => {
+customSession(async ({ user, session }) => {
       let activeOrganization = null;
 
       const activeOrgId = getActiveOrgId(session as Record<string, unknown>);

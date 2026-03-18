@@ -1,4 +1,5 @@
 import { UserAvatar } from "./user-avatar";
+import { AssetDisplay } from "./asset-display";
 import type { Comment } from "@/lib/types";
 
 export function CommentList({ comments }: { comments: Array<Comment> }) {
@@ -23,6 +24,13 @@ export function CommentList({ comments }: { comments: Array<Comment> }) {
               </span>
             </div>
             <p className="text-sm whitespace-pre-wrap">{comment.content}</p>
+            {comment.commentAssets && comment.commentAssets.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-2">
+                {comment.commentAssets.map(({ asset }) => (
+                  <AssetDisplay key={asset.id} asset={asset} />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       ))}
