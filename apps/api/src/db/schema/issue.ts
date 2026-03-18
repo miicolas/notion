@@ -11,6 +11,7 @@ import { project } from "./project";
 import { sprint } from "./sprint";
 import { issueLabel } from "./issue-label";
 import { comment } from "./comment";
+import { issueAsset } from "./asset";
 
 export const issue = pgTable(
   "issue",
@@ -76,4 +77,5 @@ export const issueRelations = relations(issue, ({ one, many }) => ({
   }),
   issueLabels: many(issueLabel),
   comments: many(comment),
+  issueAssets: many(issueAsset),
 }));

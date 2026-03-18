@@ -15,4 +15,11 @@ export const env = {
   BETTER_AUTH_SECRET: required("BETTER_AUTH_SECRET"),
   BETTER_AUTH_URL: required("BETTER_AUTH_URL"),
   MIGRATE_PASSWORD: required("MIGRATE_PASSWORD"),
+  SES_FROM_EMAIL: process.env.SES_FROM_EMAIL ?? "",
+  FRONTEND_URL: process.env.FRONTEND_URL ?? "http://localhost:3000",
+  BACKUP_DATABASE_URL: process.env.BACKUP_DATABASE_URL ?? process.env.DATABASE_URL!,
+  NODE_ENV: process.env.NODE_ENV ?? "development",
+  STAGING_S3_ASSETS_BUCKET: process.env.STAGING_S3_ASSETS_BUCKET ?? "",
+  PROD_S3_ASSETS_BUCKET: process.env.PROD_S3_ASSETS_BUCKET ?? "",
+  S3_REGION: process.env.S3_REGION ?? "eu-west-3",
 } as const;

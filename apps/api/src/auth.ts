@@ -3,7 +3,6 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import {
   admin as adminPlugin,
   openAPI,
-  multiSession,
   organization,
   customSession,
 } from "better-auth/plugins";
@@ -13,6 +12,8 @@ import { eq } from "drizzle-orm";
 import { ac, admin, user } from "./auth/permissions";
 import { getActiveOrgId } from "./auth/session";
 import { env } from "./env";
+import { sendEmail } from "./services/email";
+import { invitationEmailHtml } from "./emails/invitation";
 
 export const auth = betterAuth({
   secret: env.BETTER_AUTH_SECRET,
@@ -55,10 +56,26 @@ export const auth = betterAuth({
     }),
     organization({
       teams: { enabled: true },
+      async sendInvitationEmail(data) {
+        const acceptUrl = `${env.FRONTEND_URL}/invitations/accept?invitationId=${data.id}`;
+        try {
+          await sendEmail({
+            to: data.email,
+            subject: `${data.inviter.user.name} vous invite à rejoindre ${data.organization.name}`,
+            html: invitationEmailHtml({
+              inviterName: data.inviter.user.name,
+              organizationName: data.organization.name,
+              role: data.role,
+              acceptUrl,
+            }),
+          });
+        } catch (error) {
+          console.error("Failed to send invitation email:", error);
+        }
+      },
     }),
     openAPI(),
-    multiSession(),
-    customSession(async ({ user, session }) => {
+customSession(async ({ user, session }) => {
       let activeOrganization = null;
 
       const activeOrgId = getActiveOrgId(session as Record<string, unknown>);

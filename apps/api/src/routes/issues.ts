@@ -166,11 +166,13 @@ app.get("/:id", async (c) => {
         },
       },
       issueLabels: { with: { label: true } },
+      issueAssets: { with: { asset: true } },
       project: { columns: { id: true, name: true } },
       sprint: { columns: { id: true, name: true, status: true } },
       comments: {
         with: {
           author: { columns: { id: true, name: true, image: true } },
+          commentAssets: { with: { asset: true } },
         },
         orderBy: (comment, { asc }) => [asc(comment.createdAt)],
       },

@@ -32,8 +32,7 @@ const STATUS_COLORS: Record<Sprint["status"], string> = {
   planned:
     "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300",
   active: "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300",
-  in_review:
-    "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300",
+  in_review: "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300",
   completed:
     "bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300",
 };
@@ -133,9 +132,7 @@ export function SprintList({
                   type="button"
                   className="mt-0.5 shrink-0 text-muted-foreground hover:text-foreground"
                   onClick={() =>
-                    setExpandedId(
-                      expandedId === sprint.id ? null : sprint.id,
-                    )
+                    setExpandedId(expandedId === sprint.id ? null : sprint.id)
                   }
                 >
                   {expandedId === sprint.id ? (
@@ -145,7 +142,9 @@ export function SprintList({
                   )}
                 </button>
                 <div className="flex flex-col gap-1">
-                  <span className="text-sm font-medium leading-tight">{sprint.name}</span>
+                  <span className="text-sm font-medium leading-tight">
+                    {sprint.name}
+                  </span>
                   <div className="flex flex-wrap items-center gap-1.5">
                     <span
                       className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium whitespace-nowrap ${STATUS_COLORS[sprint.status]}`}
@@ -166,9 +165,7 @@ export function SprintList({
               <div className="flex shrink-0 items-center gap-1">
                 {sprint.owner && (
                   <Avatar className="size-6" title={sprint.owner.user.name}>
-                    <AvatarImage
-                      src={sprint.owner.user.image ?? undefined}
-                    />
+                    <AvatarImage src={sprint.owner.user.image ?? undefined} />
                     <AvatarFallback className="text-[10px]">
                       {sprint.owner.user.name
                         .split(" ")
@@ -185,9 +182,7 @@ export function SprintList({
                         className="size-5 border border-background"
                         title={sm.member.user.name}
                       >
-                        <AvatarImage
-                          src={sm.member.user.image ?? undefined}
-                        />
+                        <AvatarImage src={sm.member.user.image ?? undefined} />
                         <AvatarFallback className="text-[8px]">
                           {sm.member.user.name
                             .split(" ")
@@ -210,7 +205,11 @@ export function SprintList({
                     <Button
                       variant="ghost"
                       size="icon-sm"
-                      onClick={() => navigate(`/projects/${projectId}/sprint-planning/${sprint.id}`)}
+                      onClick={() =>
+                        navigate(
+                          `/projects/${projectId}/sprint-planning/${sprint.id}`,
+                        )
+                      }
                       title="Plan issues"
                     >
                       <ClipboardList className="size-4" />
@@ -253,7 +252,11 @@ export function SprintList({
                     <Button
                       variant="ghost"
                       size="icon-sm"
-                      onClick={() => navigate(`/projects/${projectId}/sprint-planning/${sprint.id}`)}
+                      onClick={() =>
+                        navigate(
+                          `/projects/${projectId}/sprint-planning/${sprint.id}`,
+                        )
+                      }
                       title="Plan issues"
                     >
                       <ClipboardList className="size-4" />
@@ -405,7 +408,6 @@ export function SprintList({
           }}
         />
       )}
-
     </div>
   );
 }
