@@ -102,9 +102,7 @@ export function SprintForm({
   React.useEffect(() => {
     if (open) {
       setDuration(sprint?.duration ?? "2w");
-      setStartDate(
-        sprint?.startDate ? new Date(sprint.startDate) : undefined,
-      );
+      setStartDate(sprint?.startDate ? new Date(sprint.startDate) : undefined);
       setEndDate(sprint?.endDate ? new Date(sprint.endDate) : undefined);
       setOwnerId(sprint?.ownerId ?? "none");
       setReleaseStatus(sprint?.releaseStatus ?? "none");
@@ -161,7 +159,11 @@ export function SprintForm({
         <DialogHeader>
           <DialogTitle>{sprint ? "Edit sprint" : "New sprint"}</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4" key={sprint?.id ?? `new-${sprintCount}`}>
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-4"
+          key={sprint?.id ?? `new-${sprintCount}`}
+        >
           <div className="space-y-2">
             <Label htmlFor="name">Name *</Label>
             <Input

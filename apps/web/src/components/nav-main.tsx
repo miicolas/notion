@@ -4,8 +4,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@workspace/ui/components/sidebar";
-import type {LucideIcon} from "lucide-react";
-
+import type { LucideIcon } from "lucide-react";
 
 export function NavMain({
   items,

@@ -11,19 +11,11 @@ import {
 } from "@workspace/ui/components/dropdown-menu";
 import { UserCircle } from "lucide-react";
 import { cn } from "@workspace/ui/lib/utils";
-import {
-  
-  IssueStatusIcon,
-  statusConfig
-} from "./issue-status-icon";
-import {
-  IssuePriorityIcon,
-  
-  priorityConfig
-} from "./issue-priority-icon";
+import { IssueStatusIcon, statusConfig } from "./issue-status-icon";
+import { IssuePriorityIcon, priorityConfig } from "./issue-priority-icon";
 import { UserAvatar } from "./user-avatar";
-import type {IssueStatus} from "./issue-status-icon";
-import type {Priority} from "./issue-priority-icon";
+import type { IssueStatus } from "./issue-status-icon";
+import type { Priority } from "./issue-priority-icon";
 import { getMembers } from "@/lib/members";
 import { updateIssue } from "@/lib/issues";
 
@@ -68,10 +60,9 @@ export function StatusDropdown({
           onValueChange={(v) => mutation.mutate({ id: issueId, status: v })}
         >
           {(
-            Object.entries(statusConfig) as Array<[
-              IssueStatus,
-              (typeof statusConfig)[IssueStatus],
-            ]>
+            Object.entries(statusConfig) as Array<
+              [IssueStatus, (typeof statusConfig)[IssueStatus]]
+            >
           ).map(([key, cfg]) => (
             <DropdownMenuRadioItem key={key} value={key}>
               <IssueStatusIcon status={key} />
@@ -114,10 +105,9 @@ export function PriorityDropdown({
           onValueChange={(v) => mutation.mutate({ id: issueId, priority: v })}
         >
           {(
-            Object.entries(priorityConfig) as Array<[
-              Priority,
-              (typeof priorityConfig)[Priority],
-            ]>
+            Object.entries(priorityConfig) as Array<
+              [Priority, (typeof priorityConfig)[Priority]]
+            >
           ).map(([key, cfg]) => (
             <DropdownMenuRadioItem key={key} value={key}>
               <IssuePriorityIcon priority={key} />

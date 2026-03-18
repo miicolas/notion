@@ -11,12 +11,7 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@workspace/ui/components/avatar";
-import {
-  ArrowLeft,
-  ChevronLeft,
-  ChevronRight,
-  Loader2,
-} from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import type { Issue } from "@/lib/types";
 import { getIssues, updateIssue } from "@/lib/issues";
 import { getSprint } from "@/lib/sprints";
@@ -40,10 +35,7 @@ function IssueRow({
 }) {
   return (
     <label className="flex cursor-pointer items-center gap-2 rounded px-3 py-2 hover:bg-muted/50">
-      <Checkbox
-        checked={selected}
-        onCheckedChange={() => onToggle(issue.id)}
-      />
+      <Checkbox checked={selected} onCheckedChange={() => onToggle(issue.id)} />
       <span
         className={`text-xs font-bold ${PRIORITY_COLORS[issue.priority] ?? "text-gray-400"}`}
       >
@@ -79,9 +71,7 @@ export function SprintPlanningPage() {
   const [backlogSelected, setBacklogSelected] = useState<Set<string>>(
     new Set(),
   );
-  const [sprintSelected, setSprintSelected] = useState<Set<string>>(
-    new Set(),
-  );
+  const [sprintSelected, setSprintSelected] = useState<Set<string>>(new Set());
   const [backlogSearch, setBacklogSearch] = useState("");
   const [sprintSearch, setSprintSearch] = useState("");
 
@@ -97,13 +87,11 @@ export function SprintPlanningPage() {
     enabled: !!projectId,
   });
 
-  const { data: sprintIssues = [], isLoading: sprintIssuesLoading } = useQuery(
-    {
-      queryKey: ["issues", { projectId, sprintId }],
-      queryFn: () => getIssues({ projectId, sprintId }),
-      enabled: !!projectId && !!sprintId,
-    },
-  );
+  const { data: sprintIssues = [], isLoading: sprintIssuesLoading } = useQuery({
+    queryKey: ["issues", { projectId, sprintId }],
+    queryFn: () => getIssues({ projectId, sprintId }),
+    enabled: !!projectId && !!sprintId,
+  });
 
   const filteredBacklog = useMemo(
     () =>

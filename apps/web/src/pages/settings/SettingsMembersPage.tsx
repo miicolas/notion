@@ -64,11 +64,10 @@ export function SettingsMembersPage() {
     setError(null);
     setInviting(true);
 
-    const { data, error: invErr } =
-      await authClient.organization.inviteMember({
-        email,
-        role: inviteRole,
-      });
+    const { data, error: invErr } = await authClient.organization.inviteMember({
+      email,
+      role: inviteRole,
+    });
 
     if (invErr) {
       setError(invErr.message ?? "Failed to invite member.");
@@ -98,7 +97,9 @@ export function SettingsMembersPage() {
 
   async function handleRemoveMember(memberIdOrUserId: string) {
     if (!confirm("Remove this member?")) return;
-    await authClient.organization.removeMember({ memberIdOrEmail: memberIdOrUserId });
+    await authClient.organization.removeMember({
+      memberIdOrEmail: memberIdOrUserId,
+    });
     invalidate();
   }
 
@@ -210,7 +211,7 @@ export function SettingsMembersPage() {
                   <TableCell>
                     {canManage && member.role !== "owner" ? (
                       <Select
-                        value={member.role || "member"}
+                        value={member.role}
                         onValueChange={(v) => handleChangeRole(member.id, v)}
                       >
                         <SelectTrigger className="h-8 w-28">

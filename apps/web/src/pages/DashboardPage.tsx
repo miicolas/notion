@@ -2,13 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import {
   DndContext,
-  
   DragOverlay,
-  
   PointerSensor,
   closestCenter,
   useSensor,
-  useSensors
+  useSensors,
 } from "@dnd-kit/core";
 import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
 import {
@@ -18,7 +16,7 @@ import {
   CardTitle,
 } from "@workspace/ui/components/card";
 import { AlertTriangle, CheckCircle2, Clock, FolderKanban } from "lucide-react";
-import type {DragEndEvent, DragStartEvent} from "@dnd-kit/core";
+import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import { useAuth } from "@/lib/auth-context";
 import { getProjects } from "@/lib/projects";
 import { getIssues } from "@/lib/issues";

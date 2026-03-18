@@ -218,11 +218,9 @@ export function IssueForm({
                 name="sprintId"
                 render={({ field }) => (
                   <Select
-                      value={field.value || "none"}
-                      onValueChange={(v) =>
-                        field.onChange(v === "none" ? "" : v)
-                      }
-                    >
+                    value={field.value || "none"}
+                    onValueChange={(v) => field.onChange(v === "none" ? "" : v)}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="No sprint" />
                     </SelectTrigger>
