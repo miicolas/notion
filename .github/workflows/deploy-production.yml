@@ -97,7 +97,7 @@ jobs:
 
       - name: Build and deploy Lambda
         env:
-          LAMBDA_ENV_VARS: '{"PROD_S3_ASSETS_BUCKET":"${{ secrets.PROD_S3_ASSETS_BUCKET }}","BACKUP_S3_BUCKET":"${{ secrets.PROD_S3_BACKUPS_BUCKET }}","S3_REGION":"${{ secrets.AWS_REGION }}","FRONTEND_URL":"${{ secrets.FRONTEND_URL_PRD }}","SES_FROM_EMAIL":"${{ secrets.SES_FROM_EMAIL }}","NODE_ENV":"production"}'
+          LAMBDA_ENV_VARS: '{"S3_ASSETS_BUCKET":"${{ secrets.PROD_S3_ASSETS_BUCKET }}","BACKUP_S3_BUCKET":"${{ secrets.PROD_S3_BACKUPS_BUCKET }}","S3_REGION":"${{ secrets.AWS_REGION }}","FRONTEND_URL":"${{ secrets.FRONTEND_URL_PRD }}","SES_FROM_EMAIL":"${{ secrets.SES_FROM_EMAIL }}"}'
         run: |
           chmod +x infrastructure/scripts/deploy-api.sh
           ./infrastructure/scripts/deploy-api.sh ${{ secrets.PROD_API_LAMBDA_NAME }}
