@@ -53,7 +53,7 @@ app.post("/presign", async (c) => {
 
   const uploadUrl = await getPresignedUploadUrl(key, mimeType);
 
-  return c.json({ uploadUrl, key, assetId });
+  return c.json({ uploadUrl, key, assetId, mimeType });
 });
 
 // POST /api/assets/confirm

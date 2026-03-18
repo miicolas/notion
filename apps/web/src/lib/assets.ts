@@ -5,7 +5,7 @@ export async function requestPresignedUrl(data: {
   filename: string;
   mimeType: string;
   size: number;
-}): Promise<{ uploadUrl: string; key: string; assetId: string }> {
+}): Promise<{ uploadUrl: string; key: string; assetId: string; mimeType: string }> {
   return apiFetch("/api/assets/presign", {
     method: "POST",
     body: JSON.stringify(data),
@@ -41,17 +41,21 @@ export async function uploadFile(
   file: File,
   opts?: { issueId?: string; commentId?: string },
 ): Promise<Asset> {
-  const { uploadUrl, key, assetId } = await requestPresignedUrl({
+  const { uploadUrl, key, assetId, mimeType } = await requestPresignedUrl({
     filename: file.name,
-    mimeType: file.type,
+    mimeType: file.type || "application/octet-stream",
     size: file.size,
   });
 
-  await fetch(uploadUrl, {
+  const res = await fetch(uploadUrl, {
     method: "PUT",
     body: file,
-    headers: { "Content-Type": file.type },
+    headers: { "Content-Type": mimeType },
   });
+
+  if (!res.ok) {
+    throw new Error(`Upload failed: ${res.status} ${res.statusText}`);
+  }
 
   return confirmUpload({
     assetId,
