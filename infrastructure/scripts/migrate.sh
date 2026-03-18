@@ -15,9 +15,32 @@ echo "Running migrations against database..."
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 <<'SQL'
 CREATE TABLE IF NOT EXISTS _migrations (
   name TEXT PRIMARY KEY,
-  applied_atco TIMESTAMPTZ NOT NULL DEFAULT now()
+  applied_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 SQL
+
+# Seed existing migrations that were applied before tracking was added
+# Check if any migration is tracked; if not, detect already-applied migrations
+TRACKED_COUNT=$(psql "$DATABASE_URL" -tAc "SELECT count(*) FROM _migrations" 2>/dev/null)
+
+if [[ "$TRACKED_COUNT" == "0" ]]; then
+  echo "No migrations tracked yet, detecting already-applied migrations..."
+  for sql_file in "$SQL_DIR"/*.sql; do
+    if [[ -f "$sql_file" ]]; then
+      migration_name="$(basename "$sql_file")"
+      # Try applying; if it fails (table already exists), mark as applied and continue
+      if psql "$DATABASE_URL" -f "$sql_file" -v ON_ERROR_STOP=1 2>/dev/null; then
+        echo "Applied: $migration_name"
+      else
+        echo "Already applied (detected): $migration_name"
+      fi
+      psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -c \
+        "INSERT INTO _migrations (name) VALUES ('$migration_name') ON CONFLICT DO NOTHING"
+    fi
+  done
+  echo "Migrations complete."
+  exit 0
+fi
 
 for sql_file in "$SQL_DIR"/*.sql; do
   if [[ -f "$sql_file" ]]; then
