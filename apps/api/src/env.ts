@@ -15,4 +15,6 @@ export const env = {
   BETTER_AUTH_SECRET: required("BETTER_AUTH_SECRET"),
   BETTER_AUTH_URL: required("BETTER_AUTH_URL"),
   MIGRATE_PASSWORD: required("MIGRATE_PASSWORD"),
+  SES_FROM_EMAIL: required("SES_FROM_EMAIL"),
+  FRONTEND_URL: required("FRONTEND_URL"),
 } as const;
