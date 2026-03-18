@@ -1,6 +1,5 @@
 import { API_URL } from "./api";
 
- 
 export async function apiFetch<T = any>(
   path: string,
   init?: RequestInit,

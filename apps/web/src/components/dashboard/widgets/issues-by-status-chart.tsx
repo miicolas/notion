@@ -1,11 +1,10 @@
 import { Bar, BarChart, XAxis, YAxis } from "recharts";
 import {
-  
   ChartContainer,
   ChartTooltip,
-  ChartTooltipContent
+  ChartTooltipContent,
 } from "@workspace/ui/components/chart";
-import type {ChartConfig} from "@workspace/ui/components/chart";
+import type { ChartConfig } from "@workspace/ui/components/chart";
 import type { WidgetProps } from "../widget-registry";
 
 const chartConfig = {

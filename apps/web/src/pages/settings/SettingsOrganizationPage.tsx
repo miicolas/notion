@@ -115,7 +115,9 @@ export function SettingsOrganizationPage() {
               {canManage && (
                 <Button
                   type="submit"
-                  disabled={form.formState.isSubmitting || !form.formState.isDirty}
+                  disabled={
+                    form.formState.isSubmitting || !form.formState.isDirty
+                  }
                 >
                   {form.formState.isSubmitting ? "Saving..." : "Save changes"}
                 </Button>

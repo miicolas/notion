@@ -161,7 +161,11 @@ export type DashboardStats = {
     assigneeName: string;
     count: number;
   }>;
-  issuesByProject: Array<{ projectId: string; projectName: string; count: number }>;
+  issuesByProject: Array<{
+    projectId: string;
+    projectName: string;
+    count: number;
+  }>;
   issuesOverTime: Array<{ date: string; count: number }>;
 };
 

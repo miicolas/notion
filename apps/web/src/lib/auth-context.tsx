@@ -1,14 +1,13 @@
 import {
-  
   createContext,
   useCallback,
   useContext,
   useEffect,
-  useState
+  useState,
 } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { authClient } from "./auth-client";
-import type {ReactNode} from "react";
+import type { ReactNode } from "react";
 import type { Organization } from "./types";
 
 type User = {

@@ -50,6 +50,13 @@
       "when": 1773692509192,
       "tag": "0006_remarkable_mongoose",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1773773938446,
+      "tag": "0007_military_zarda",
+      "breakpoints": true
     }
   ]
 }

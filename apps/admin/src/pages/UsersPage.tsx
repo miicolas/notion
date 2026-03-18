@@ -53,7 +53,11 @@ export function UsersPage() {
                     <TableCell className="font-medium">{user.name}</TableCell>
                     <TableCell>{user.email}</TableCell>
                     <TableCell>
-                      <Badge variant={user.role === "admin" ? "default" : "secondary"}>
+                      <Badge
+                        variant={
+                          user.role === "admin" ? "default" : "secondary"
+                        }
+                      >
                         {user.role ?? "user"}
                       </Badge>
                     </TableCell>

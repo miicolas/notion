@@ -1,15 +1,12 @@
 import * as React from "react";
 import {
   DndContext,
-  
-  
   DragOverlay,
-  
   PointerSensor,
   closestCorners,
   useDroppable,
   useSensor,
-  useSensors
+  useSensors,
 } from "@dnd-kit/core";
 import {
   SortableContext,
@@ -21,18 +18,18 @@ import { CSS } from "@dnd-kit/utilities";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent } from "@workspace/ui/components/card";
 import { Link } from "react-router-dom";
-import {
-  
-  IssueStatusIcon,
-  statusConfig
-} from "./issue-status-icon";
-import { IssuePriorityIcon  } from "./issue-priority-icon";
+import { IssueStatusIcon, statusConfig } from "./issue-status-icon";
+import { IssuePriorityIcon } from "./issue-priority-icon";
 import { LabelBadge } from "./label-badge";
 import { UserAvatar } from "./user-avatar";
 import { CopyPromptButton } from "./copy-prompt-button";
-import type {IssueStatus} from "./issue-status-icon";
-import type {Priority} from "./issue-priority-icon";
-import type {DragEndEvent, DragOverEvent, DragStartEvent} from "@dnd-kit/core";
+import type { IssueStatus } from "./issue-status-icon";
+import type { Priority } from "./issue-priority-icon";
+import type {
+  DragEndEvent,
+  DragOverEvent,
+  DragStartEvent,
+} from "@dnd-kit/core";
 import type { Issue } from "@/lib/types";
 import { reorderIssue } from "@/lib/issues";
 

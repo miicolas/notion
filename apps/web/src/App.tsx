@@ -31,10 +31,7 @@ export function App() {
 
       <Route element={<ProtectedRoute />}>
         <Route path="/onboarding" element={<OnboardingPage />} />
-        <Route
-          path="/invitations/accept"
-          element={<InvitationAcceptPage />}
-        />
+        <Route path="/invitations/accept" element={<InvitationAcceptPage />} />
 
         <Route element={<AuthedLayout />}>
           <Route path="/" element={<DashboardPage />} />
@@ -60,10 +57,7 @@ export function App() {
               index
               element={<Navigate to="/settings/organization" replace />}
             />
-            <Route
-              path="organization"
-              element={<SettingsOrganizationPage />}
-            />
+            <Route path="organization" element={<SettingsOrganizationPage />} />
             <Route path="members" element={<SettingsMembersPage />} />
             <Route path="teams" element={<SettingsTeamsPage />} />
           </Route>

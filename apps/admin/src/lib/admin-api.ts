@@ -72,7 +72,9 @@ export function fetchIssuesByStatus() {
 }
 
 export function fetchIssuesByPriority() {
-  return apiFetch<Array<PriorityDataPoint>>("/api/admin/charts/issues-by-priority");
+  return apiFetch<Array<PriorityDataPoint>>(
+    "/api/admin/charts/issues-by-priority",
+  );
 }
 
 export function fetchOrgsActivity() {

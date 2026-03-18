@@ -13,6 +13,9 @@ import sprintsRoutes from "./routes/sprints";
 import sprintCommentsRoutes from "./routes/sprint-comments";
 import teamsRoutes from "./routes/teams";
 import adminRoutes from "./routes/admin";
+import adminBackupsRoutes from "./routes/admin-backups";
+import { adminMiddleware } from "./middleware/admin";
+import type { AdminContext } from "./middleware/admin";
 
 const app = new Hono();
 
@@ -26,8 +29,13 @@ app.use(
   }),
 );
 
-app.on(["POST", "GET", "OPTIONS"], "/api/auth/**", (c) => {
-  return auth.handler(c.req.raw);
+app.all("/api/auth/*", async (c) => {
+  const response = await auth.handler(c.req.raw);
+  c.status(response.status as any);
+  response.headers.forEach((value, key) => {
+    c.header(key, value);
+  });
+  return c.body(response.body);
 });
 
 app.route("/api/clients", clientsRoutes);
@@ -40,6 +48,12 @@ app.route("/api/dashboard", dashboardRoutes);
 app.route("/api/sprints", sprintsRoutes);
 app.route("/api/sprint-comments", sprintCommentsRoutes);
 app.route("/api/teams", teamsRoutes);
+app.route("/api/admin/backups", (() => {
+  const backupApp = new Hono<{ Variables: { admin: AdminContext } }>();
+  backupApp.use("*", adminMiddleware);
+  backupApp.route("/", adminBackupsRoutes);
+  return backupApp;
+})());
 app.route("/api/admin", adminRoutes);
 
 app.get("/", (c) => {

@@ -31,8 +31,7 @@ export function SprintCompleteDialog({
   }, [open]);
 
   const mutation = useMutation({
-    mutationFn: () =>
-      transitionSprint(sprint.id, "completed", retrospective),
+    mutationFn: () => transitionSprint(sprint.id, "completed", retrospective),
     onSuccess: () =>
       Promise.all([
         queryClient.invalidateQueries({ queryKey: ["sprints"] }),

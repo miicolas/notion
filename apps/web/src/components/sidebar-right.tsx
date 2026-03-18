@@ -11,13 +11,10 @@ import {
   SidebarHeader,
   SidebarSeparator,
 } from "@workspace/ui/components/sidebar";
-import type {Priority} from "@/components/issue-priority-icon";
+import type { Priority } from "@/components/issue-priority-icon";
 import { DatePicker } from "@/components/date-picker";
 import { NavUser } from "@/components/nav-user";
-import {
-  IssuePriorityIcon
-  
-} from "@/components/issue-priority-icon";
+import { IssuePriorityIcon } from "@/components/issue-priority-icon";
 import { useAuth } from "@/lib/auth-context";
 import { getIssues } from "@/lib/issues";
 import { getMembers } from "@/lib/members";
