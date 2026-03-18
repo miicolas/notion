@@ -22,7 +22,7 @@ jobs:
 
       - name: Build web
         env:
-          VITE_API_URL: ${{ secrets.PRODUCTION_API_URL }}
+          VITE_API_URL: ${{ secrets.PROD_API_URL }}
         run: bunx turbo run build --filter=web
 
       - uses: aws-actions/configure-aws-credentials@v4
@@ -36,8 +36,8 @@ jobs:
           chmod +x infrastructure/scripts/deploy-frontend.sh
           ./infrastructure/scripts/deploy-frontend.sh \
             apps/web/dist \
-            ${{ secrets.PRODUCTION_WEB_S3_BUCKET }} \
-            ${{ secrets.PRODUCTION_WEB_CLOUDFRONT_ID }}
+            ${{ secrets.PROD_WEB_S3_BUCKET }} \
+            ${{ secrets.PROD_WEB_CLOUDFRONT_ID }}
 
   deploy-admin:
     needs: ci
@@ -53,7 +53,7 @@ jobs:
 
       - name: Build admin
         env:
-          VITE_API_URL: ${{ secrets.PRODUCTION_API_URL }}
+          VITE_API_URL: ${{ secrets.PROD_API_URL }}
         run: bunx turbo run build --filter=admin
 
       - uses: aws-actions/configure-aws-credentials@v4
@@ -67,8 +67,8 @@ jobs:
           chmod +x infrastructure/scripts/deploy-frontend.sh
           ./infrastructure/scripts/deploy-frontend.sh \
             apps/admin/dist \
-            ${{ secrets.PRODUCTION_ADMIN_S3_BUCKET }} \
-            ${{ secrets.PRODUCTION_ADMIN_CLOUDFRONT_ID }}
+            ${{ secrets.PROD_ADMIN_S3_BUCKET }} \
+            ${{ secrets.PROD_ADMIN_CLOUDFRONT_ID }}
 
   deploy-api:
     needs: ci
@@ -97,7 +97,7 @@ jobs:
 
       - name: Build and deploy Lambda
         env:
-          LAMBDA_ENV_VARS: '{"PROD_S3_ASSETS_BUCKET":"${{ secrets.PROD_S3_ASSETS_BUCKET }}","BACKUP_S3_BUCKET":"${{ secrets.PRODUCTION_BACKUP_S3_BUCKET }}","S3_REGION":"eu-west-3","FRONTEND_URL":"${{ secrets.FRONTEND_URL_PRD }}","NODE_ENV":"production"}'
+          LAMBDA_ENV_VARS: '{"PROD_S3_ASSETS_BUCKET":"${{ secrets.PROD_S3_ASSETS_BUCKET }}","BACKUP_S3_BUCKET":"${{ secrets.PROD_S3_BACKUPS_BUCKET }}","S3_REGION":"${{ secrets.AWS_REGION }}","FRONTEND_URL":"${{ secrets.FRONTEND_URL_PRD }}","SES_FROM_EMAIL":"${{ secrets.SES_FROM_EMAIL }}","NODE_ENV":"production"}'
         run: |
           chmod +x infrastructure/scripts/deploy-api.sh
-          ./infrastructure/scripts/deploy-api.sh ${{ secrets.PRODUCTION_API_LAMBDA_NAME }}
+          ./infrastructure/scripts/deploy-api.sh ${{ secrets.PROD_API_LAMBDA_NAME }}
