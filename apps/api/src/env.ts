@@ -18,6 +18,8 @@ export const env = {
   SES_FROM_EMAIL: process.env.SES_FROM_EMAIL ?? "",
   FRONTEND_URL: process.env.FRONTEND_URL ?? "http://localhost:3000",
   BACKUP_DATABASE_URL: process.env.BACKUP_DATABASE_URL ?? process.env.DATABASE_URL!,
-  S3_BUCKET_ASSET: process.env.S3_BUCKET_ASSET ?? "",
+  NODE_ENV: process.env.NODE_ENV ?? "development",
+  STAGING_S3_ASSETS_BUCKET: process.env.STAGING_S3_ASSETS_BUCKET ?? "",
+  PROD_S3_ASSETS_BUCKET: process.env.PROD_S3_ASSETS_BUCKET ?? "",
   S3_REGION: process.env.S3_REGION ?? "eu-west-3",
 } as const;
