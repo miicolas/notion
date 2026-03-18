@@ -1,9 +1,22 @@
 import cron, { type ScheduledTask } from "node-cron";
 import { getBackupConfig, runBackup } from "./backup";
+import { env } from "../env";
 
 let currentTask: ScheduledTask | null = null;
 
 export async function startBackupCron() {
+  // In production with EventBridge, node-cron is not needed.
+  // The /api/cron/backup endpoint handles scheduled invocations.
+  if (env.CRON_SECRET) {
+    console.log(
+      "[backup-cron] CRON_SECRET is set — backups are managed by AWS EventBridge. " +
+        "Local node-cron scheduler is disabled.",
+    );
+    return;
+  }
+
+  // Fallback: use node-cron for local development
+  console.log("[backup-cron] No CRON_SECRET set — using local node-cron (dev mode)");
   await syncCron();
 }
 

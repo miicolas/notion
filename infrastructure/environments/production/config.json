@@ -12,6 +12,10 @@
     },
     "api": {
       "lambdaFunctionName": "PRODUCTION_API_LAMBDA_NAME"
+    },
+    "backupCron": {
+      "lambdaFunctionName": "production-backup-cron",
+      "scheduleExpression": "rate(6 hours)"
     }
   }
 }
