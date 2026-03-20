@@ -315,7 +315,7 @@ curl -X POST "$API_URL/api/cron/backup" \
 | **Invitations** | Lien `FRONTEND_URL/invitations/accept?invitationId=…` ; membre / org dans **Paramètres** (`SettingsMembersPage`) ; email envoyé depuis `apps/api/src/auth.ts` si SES OK. |
 | **Pièces jointes** | Issue détail : bouton d’ajout de fichier ; API `/api/assets` (presign S3 puis confirm). |
 | **Site user en ligne** | URL CloudFront après deploy du bucket **web**. |
-| **Site admin en ligne** | URL CloudFront bucket **admin** ; page Backups `/backups`. |
+| **Site admin en ligne** | URL CloudFront bucket **admin**. |
 
 ---
 
@@ -328,7 +328,7 @@ cd apps/api
 bun run dev
 ```
 
-**Explication :** `startBackupCron()` utilise **node-cron** selon la table `backup_config` (réglable dans l’admin). Backup immédiat : admin **Backups** ou `POST /api/admin/backups` (authentification admin).
+**Explication :** `startBackupCron()` utilise **node-cron** selon la table `backup_config` (modifiable directement en base). Backup immédiat : `POST /api/cron/backup` avec le header `x-cron-secret` (voir section **Production** ci‑dessous ; en local, définir `CRON_SECRET` pour utiliser le même endpoint).
 
 ### Production (avec `CRON_SECRET`)
 

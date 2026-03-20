@@ -149,7 +149,7 @@ cron(0 2,14 * * ? *)    # À 2h et 14h UTC
 En développement (sans `CRON_SECRET`), le système utilise `node-cron` comme fallback :
 
 - Le scheduler local se lance au démarrage du serveur API
-- La config est gérée via le panel admin (`/api/admin/backups/config`)
+- La config lit la table `backup_config` (mise à jour directe en base de données)
 - Les backups utilisent le même service (`runBackup()`)
 
 Quand `CRON_SECRET` est défini, `node-cron` est désactivé automatiquement et les backups sont gérés par EventBridge.
