@@ -296,14 +296,17 @@ export async function getBackupConfig() {
     where: eq(schema.backupConfig.id, "default"),
   });
 
+  const envBucket = process.env.BACKUP_S3_BUCKET ?? "";
+  const envRegion = process.env.S3_REGION ?? "eu-west-3";
+
   if (!config) {
     // Create default config
     const defaultConfig = {
       id: "default",
       enabled: false,
       cronExpression: "0 * * * *",
-      s3Bucket: process.env.BACKUP_S3_BUCKET ?? "",
-      s3Region: process.env.S3_REGION ?? "eu-west-3",
+      s3Bucket: envBucket,
+      s3Region: envRegion,
     };
     await db.insert(schema.backupConfig).values(defaultConfig);
     return {
@@ -313,7 +316,13 @@ export async function getBackupConfig() {
     };
   }
 
-  return config;
+  // Lignes créées avant BACKUP_S3_BUCKET en env peuvent avoir s3_bucket vide en base ;
+  // sans ce repli, runBackup() échoue alors que les variables d’environnement sont bonnes.
+  return {
+    ...config,
+    s3Bucket: config.s3Bucket.trim() ? config.s3Bucket : envBucket,
+    s3Region: config.s3Region.trim() ? config.s3Region : envRegion,
+  };
 }
 
 export async function updateBackupConfig(data: {
