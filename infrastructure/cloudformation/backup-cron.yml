@@ -1,0 +1,129 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  Scheduled database backup system using EventBridge Scheduler + Lambda.
+  Triggers the API's /api/cron/backup endpoint on a cron schedule.
+
+Parameters:
+  Environment:
+    Type: String
+    AllowedValues: [staging, production]
+    Description: Deployment environment
+
+  ApiUrl:
+    Type: String
+    Description: Base URL of the API (e.g. https://api.staging.example.com)
+
+  CronSecret:
+    Type: String
+    NoEcho: true
+    Description: Shared secret for authenticating cron backup requests
+
+  ScheduleExpression:
+    Type: String
+    Default: "rate(1 hour)"
+    Description: >
+      EventBridge schedule expression.
+      Examples: "rate(1 hour)", "rate(6 hours)", "rate(1 day)",
+      "cron(0 2 * * ? *)" for daily at 2 AM UTC
+
+  LambdaS3Bucket:
+    Type: String
+    Description: S3 bucket containing the Lambda deployment package
+
+  LambdaS3Key:
+    Type: String
+    Default: "lambda/backup-cron.zip"
+    Description: S3 key for the Lambda deployment package
+
+Resources:
+  # IAM Role for the Lambda function
+  BackupCronLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${Environment}-backup-cron-lambda-role"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
+  # Lambda function
+  BackupCronLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Sub "${Environment}-backup-cron"
+      Runtime: nodejs20.x
+      Handler: index.handler
+      Timeout: 300
+      MemorySize: 128
+      Role: !GetAtt BackupCronLambdaRole.Arn
+      Code:
+        S3Bucket: !Ref LambdaS3Bucket
+        S3Key: !Ref LambdaS3Key
+      Environment:
+        Variables:
+          API_URL: !Ref ApiUrl
+          CRON_SECRET: !Ref CronSecret
+
+  # IAM Role for EventBridge Scheduler
+  SchedulerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${Environment}-backup-scheduler-role"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: scheduler.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: InvokeLambda
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: lambda:InvokeFunction
+                Resource: !GetAtt BackupCronLambda.Arn
+
+  # EventBridge Scheduler rule
+  BackupSchedule:
+    Type: AWS::Scheduler::Schedule
+    Properties:
+      Name: !Sub "${Environment}-backup-cron-schedule"
+      Description: !Sub "Scheduled database backup for ${Environment}"
+      ScheduleExpression: !Ref ScheduleExpression
+      ScheduleExpressionTimezone: "UTC"
+      FlexibleTimeWindow:
+        Mode: "OFF"
+      State: ENABLED
+      Target:
+        Arn: !GetAtt BackupCronLambda.Arn
+        RoleArn: !GetAtt SchedulerRole.Arn
+        RetryPolicy:
+          MaximumRetryAttempts: 2
+          MaximumEventAgeInSeconds: 3600
+
+  # CloudWatch Log Group for Lambda
+  BackupCronLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${Environment}-backup-cron"
+      RetentionInDays: 30
+
+Outputs:
+  LambdaFunctionArn:
+    Description: ARN of the backup cron Lambda
+    Value: !GetAtt BackupCronLambda.Arn
+
+  ScheduleArn:
+    Description: ARN of the EventBridge schedule
+    Value: !GetAtt BackupSchedule.Arn
+
+  LambdaRoleArn:
+    Description: ARN of the Lambda execution role
+    Value: !GetAtt BackupCronLambdaRole.Arn

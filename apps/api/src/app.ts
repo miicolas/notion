@@ -17,6 +17,7 @@ import adminBackupsRoutes from "./routes/admin-backups";
 import { adminMiddleware } from "./middleware/admin";
 import type { AdminContext } from "./middleware/admin";
 import assetsRoutes from "./routes/assets";
+import cronBackupRoutes from "./routes/cron-backup";
 
 const app = new Hono();
 
@@ -57,6 +58,7 @@ app.route("/api/admin/backups", (() => {
 })());
 app.route("/api/admin", adminRoutes);
 app.route("/api/assets", assetsRoutes);
+app.route("/api/cron/backup", cronBackupRoutes);
 
 app.get("/", (c) => {
   return c.json({ message: "API is running" });
