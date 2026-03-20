@@ -1,11 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import {
-  Building2,
-  Database,
-  LayoutDashboard,
-  LogOut,
-  Users,
-} from "lucide-react";
+import { Building2, LayoutDashboard, LogOut, Users } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -25,7 +19,6 @@ const navItems = [
   { title: "Dashboard", path: "/", icon: LayoutDashboard },
   { title: "Users", path: "/users", icon: Users },
   { title: "Organizations", path: "/organizations", icon: Building2 },
-  { title: "Backups", path: "/backups", icon: Database },
 ];
 
 export function AdminSidebar() {

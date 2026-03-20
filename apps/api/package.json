@@ -17,7 +17,8 @@
     "@aws-sdk/s3-request-presigner": "^3.1011.0",
     "@hono/node-server": "^1.14.3",
     "constructs": "^10.5.1",
-    "hono": "^4.7.12"
+    "hono": "^4.7.12",
+    "pg": "^8.20.0"
   },
   "devDependencies": {
     "esbuild": "^0.27.4"

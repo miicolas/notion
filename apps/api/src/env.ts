@@ -20,4 +20,5 @@ export const env = {
   BACKUP_DATABASE_URL: process.env.BACKUP_DATABASE_URL ?? process.env.DATABASE_URL!,
   S3_ASSETS_BUCKET: required("S3_ASSETS_BUCKET"),
   S3_REGION: process.env.S3_REGION ?? "eu-west-3",
+  CRON_SECRET: process.env.CRON_SECRET ?? "",
 } as const;

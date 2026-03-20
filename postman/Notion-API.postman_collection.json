@@ -1,0 +1,308 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-notion-api",
+    "name": "Notion — API (Hono)",
+    "description": "Collection pour l’API du monorepo (`apps/api`, port 3001 par défaut).\n\n**Flux :** 1) Importer l’environnement `Local` et renseigner `authEmail` / `authPassword`. 2) Lancer **Auth → Sign in (email)**. 3) Appeler les routes **App** (session cookie). **Admin** nécessite un compte `role: admin`.\n\nOpenAPI Better Auth : `GET {{baseUrl}}/api/auth/reference` (si plugin activé).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:3001"
+    }
+  ],
+  "item": [
+    {
+      "name": "Public",
+      "item": [
+        {
+          "name": "Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/",
+            "description": "Réponse attendue : `{\"message\":\"API is running\"}`."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Auth (Better Auth)",
+      "item": [
+        {
+          "name": "Auth OK",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/auth/ok",
+            "description": "Vérifie que Better Auth répond (peut renvoyer `{ \"ok\": true }` selon version)."
+          },
+          "response": []
+        },
+        {
+          "name": "Sign in (email)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{authEmail}}\",\n  \"password\": \"{{authPassword}}\",\n  \"rememberMe\": true\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/sign-in/email",
+            "description": "Après succès, Postman garde les **cookies** de session pour les requêtes suivantes sur le même host."
+          },
+          "response": []
+        },
+        {
+          "name": "Sign up (email)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman User\",\n  \"email\": \"{{authEmail}}\",\n  \"password\": \"{{authPassword}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/sign-up/email",
+            "description": "Crée un compte si l’inscription n’est pas désactivée. Mot de passe : 8–128 caractères (défaut Better Auth)."
+          },
+          "response": []
+        },
+        {
+          "name": "Get session",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/auth/get-session",
+            "description": "Nécessite le cookie de session (exécuter Sign in avant)."
+          },
+          "response": []
+        },
+        {
+          "name": "Sign out",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{baseUrl}}/api/auth/sign-out",
+            "description": "Invalide la session côté serveur (cookie requis)."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "App (session requise)",
+      "item": [
+        {
+          "name": "List clients",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/clients"
+          },
+          "response": []
+        },
+        {
+          "name": "Create client",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Client démo Postman\",\n  \"email\": \"client-demo@example.com\",\n  \"phone\": null,\n  \"address\": null,\n  \"website\": null,\n  \"logo\": null,\n  \"notes\": \"Créé via Postman\"\n}"
+            },
+            "url": "{{baseUrl}}/api/clients"
+          },
+          "response": []
+        },
+        {
+          "name": "List projects",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/projects",
+            "description": "Query optionnels : `?status=active|archived`, `?clientId=`."
+          },
+          "response": []
+        },
+        {
+          "name": "List issues",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/issues",
+            "description": "Query utiles : `projectId`, `status`, `priority`, `sprintId`, `labelId`, `teamId`, `assigneeId`."
+          },
+          "response": []
+        },
+        {
+          "name": "List issues by project",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/issues?projectId={{projectId}}"
+          },
+          "response": []
+        },
+        {
+          "name": "Dashboard stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/dashboard/stats"
+          },
+          "response": []
+        },
+        {
+          "name": "List members",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/members"
+          },
+          "response": []
+        },
+        {
+          "name": "List teams",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/teams"
+          },
+          "response": []
+        },
+        {
+          "name": "List labels",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/labels"
+          },
+          "response": []
+        },
+        {
+          "name": "List comments (by issue)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/comments?issueId={{issueId}}",
+            "description": "Renseigner `issueId` dans l’environnement ou remplacer dans l’URL."
+          },
+          "response": []
+        },
+        {
+          "name": "List sprints",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/sprints"
+          },
+          "response": []
+        },
+        {
+          "name": "List sprint comments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/sprint-comments?sprintId={{sprintId}}"
+          },
+          "response": []
+        },
+        {
+          "name": "Assets — presign upload",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"filename\": \"demo.png\",\n  \"mimeType\": \"image/png\",\n  \"size\": 1024\n}"
+            },
+            "url": "{{baseUrl}}/api/assets/presign"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin (rôle admin + session)",
+      "item": [
+        {
+          "name": "Admin stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/admin/stats",
+            "description": "403 si l’utilisateur connecté n’a pas `role: admin`."
+          },
+          "response": []
+        },
+        {
+          "name": "Admin users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/admin/users"
+          },
+          "response": []
+        },
+        {
+          "name": "Admin organizations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/admin/organizations"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Cron",
+      "item": [
+        {
+          "name": "Trigger backup",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-cron-secret",
+                "value": "{{cronSecret}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": "{{baseUrl}}/api/cron/backup",
+            "description": "Même secret que `CRON_SECRET` côté API. Pas de session utilisateur."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

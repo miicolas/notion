@@ -13,10 +13,8 @@ import sprintsRoutes from "./routes/sprints";
 import sprintCommentsRoutes from "./routes/sprint-comments";
 import teamsRoutes from "./routes/teams";
 import adminRoutes from "./routes/admin";
-import adminBackupsRoutes from "./routes/admin-backups";
-import { adminMiddleware } from "./middleware/admin";
-import type { AdminContext } from "./middleware/admin";
 import assetsRoutes from "./routes/assets";
+import cronBackupRoutes from "./routes/cron-backup";
 
 const app = new Hono();
 
@@ -49,14 +47,9 @@ app.route("/api/dashboard", dashboardRoutes);
 app.route("/api/sprints", sprintsRoutes);
 app.route("/api/sprint-comments", sprintCommentsRoutes);
 app.route("/api/teams", teamsRoutes);
-app.route("/api/admin/backups", (() => {
-  const backupApp = new Hono<{ Variables: { admin: AdminContext } }>();
-  backupApp.use("*", adminMiddleware);
-  backupApp.route("/", adminBackupsRoutes);
-  return backupApp;
-})());
 app.route("/api/admin", adminRoutes);
 app.route("/api/assets", assetsRoutes);
+app.route("/api/cron/backup", cronBackupRoutes);
 
 app.get("/", (c) => {
   return c.json({ message: "API is running" });
